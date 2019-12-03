@@ -1,17 +1,17 @@
 import VueRouter from "vue-router";
-import ExampleComponent from "./components/ExampleComponent"
-import Flashcards from "./flashcards/Flashcards"
+import Decks from "./decks/Decks";
+import Deck from "./deck/Deck";
 
 const routes = [{
         path: "/",
-        component: Flashcards,
+        component: Decks,
         name: "home",
     },
     {
-        path: "/second",
-        component: ExampleComponent,
-        name: "second",
-    }
+        path: "/deck/:id",
+        component: Deck,
+        name: "deck"
+    },
 ];
 
 const router = new VueRouter({
