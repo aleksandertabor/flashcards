@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFlashcardDecksTable extends Migration
+class CreateCardDeckTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateFlashcardDecksTable extends Migration
      */
     public function up()
     {
-        Schema::create('flashcard_decks', function (Blueprint $table) {
+        Schema::create('card_deck', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title');
-            $table->text('description');
+            $table->unsignedBigInteger('card_id')->index();
+            $table->unsignedBigInteger('deck_id')->index();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateFlashcardDecksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('flashcard_decks');
+        Schema::dropIfExists('card_deck');
     }
 }

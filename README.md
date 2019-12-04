@@ -12,4 +12,5 @@ composer create-project --prefer-dist laravel/laravel flashcards
 composer require laravel/ui --dev
 php artisan ui vue
 npm install vue-router
+composer require barryvdh/laravel-debugbar --dev
 ```

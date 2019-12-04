@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFlashcardsTable extends Migration
+class CreateCardsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateFlashcardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('flashcards', function (Blueprint $table) {
+        Schema::create('cards', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('question');
+            $table->string('answer');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateFlashcardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('flashcards');
+        Schema::dropIfExists('cards');
     }
 }

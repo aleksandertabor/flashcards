@@ -1,7 +1,6 @@
 <template>
   <div>
-    Rows is: {{ rows }}
-    <div v-if="loading">Data is loading ...</div>
+    <div v-if="loading">Decks are loading ...</div>
     <div v-else>
       <div class="row mb-4" :class="'row-cols-' + columns" v-for="row in rows" :key="'row' + row">
         <div
@@ -44,7 +43,7 @@ export default {
   created() {
     this.loading = true;
     const request = axios.get("/api/decks").then(response => {
-      this.decks = response.data;
+      this.decks = response.data.data;
       this.loading = false;
     });
   }

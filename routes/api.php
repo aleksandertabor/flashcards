@@ -1,6 +1,5 @@
 <?php
 
-use App\FlashcardDeck;
 use Illuminate\Http\Request;
 
 /*
@@ -18,10 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('decks', function (Request $request) {
-    return FlashcardDeck::all();
-});
+// Route::get('decks', 'Api\DeckController@index');
+// Route::get('decks/{id}', 'Api\DeckController@show');
 
-Route::get('decks/{deckId}', function (Request $request, $id) {
-    return FlashcardDeck::findOrFail($id);
-});
+Route::apiResource('decks', 'Api\DeckController')->only(['index', 'show']);

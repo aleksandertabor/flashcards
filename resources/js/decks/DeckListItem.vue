@@ -4,14 +4,21 @@
       <router-link :to="{name: 'deck', params: {id}}">
         <h5 class="card-title">{{ title }}</h5>
       </router-link>
+      <img src="https://source.unsplash.com/random/100x100" class="card-img-top" alt />
       <p class="card-text">{{ description }}</p>
+      <p class="card-text">Cards: ({{ cards_count }})</p>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: { title: String, description: String, id: Number },
+  props: {
+    title: String,
+    description: String,
+    cards_count: Number,
+    id: Number
+  },
   mounted() {
     console.log("Deck List Item");
   }
