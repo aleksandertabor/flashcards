@@ -13,4 +13,10 @@ composer require laravel/ui --dev
 php artisan ui vue
 npm install vue-router
 composer require barryvdh/laravel-debugbar --dev
+composer require laravel/passport
+php artisan passport:install
+php artisan vendor:publish --tag=passport-components
+npm install browser-sync
+npm install browser-sync-webpack-plugin
+npm install vuex --save
 ```

@@ -21,3 +21,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Route::get('decks/{id}', 'Api\DeckController@show');
 
 Route::apiResource('decks', 'Api\DeckController')->only(['index', 'show']);
+
+Route::post('login', 'AuthController@login');
+Route::post('register', 'AuthController@register');
+Route::post('logout', 'AuthController@logout');
+
+// Auth::routes();
