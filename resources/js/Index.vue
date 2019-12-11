@@ -4,6 +4,7 @@
       <router-link class="navbar-brand mr-auto" :to="{ name: 'home'}">Fiszkomat</router-link>
       <router-link class="btn nav-button" :to="{ name: 'login'}">Login</router-link>
       <router-link class="btn nav-button" :to="{ name: 'register'}">Register</router-link>
+      <router-link class="btn nav-button" :to="{ name: 'deck-editor'}">Deck Editor</router-link>
     </nav>
 
     <main id="content" class="w-100 pl-4 pr-4 pt-3">

@@ -17,13 +17,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::get('decks', 'Api\DeckController@index');
-// Route::get('decks/{id}', 'Api\DeckController@show');
-
 Route::apiResource('decks', 'Api\DeckController')->only(['index', 'show']);
 
 Route::post('login', 'AuthController@login');
 Route::post('register', 'AuthController@register');
 Route::post('logout', 'AuthController@logout');
+
+Route::post('translate', 'TranslationController');
+Route::post('detect', 'DetectionController');
 
 // Auth::routes();

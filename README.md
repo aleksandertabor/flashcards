@@ -19,4 +19,5 @@ php artisan vendor:publish --tag=passport-components
 npm install browser-sync
 npm install browser-sync-webpack-plugin
 npm install vuex --save
+composer require google/cloud-translate
 ```

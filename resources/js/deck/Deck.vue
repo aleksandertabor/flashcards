@@ -37,10 +37,12 @@ export default {
   },
   created() {
     this.loading = true;
-    axios.get(`/api/decks/${this.$route.params.id}`).then(response => {
-      this.deck = response.data.data;
-      this.loading = false;
-    });
+    axios
+      .get(`/api/decks/${this.$route.params.id}`)
+      .then(response => {
+        this.deck = response.data.data;
+      })
+      .then(() => (this.loading = false));
   }
 };
 </script>

@@ -3,6 +3,7 @@ import Decks from "./decks/Decks";
 import Deck from "./deck/Deck";
 import Login from "./auth/Login"
 import Register from "./auth/Register"
+import DeckEditor from "./deck/DeckEditor"
 
 const routes = [{
         path: "/",
@@ -18,6 +19,11 @@ const routes = [{
         path: "/register",
         component: Register,
         name: "register",
+    },
+    {
+        path: "/deck/editor",
+        component: DeckEditor,
+        name: "deck-editor",
     },
     {
         path: "/deck/:id",

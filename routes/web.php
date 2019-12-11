@@ -13,7 +13,7 @@
 
 Route::get('/{any?}', function () {
     return view('spa');
-})->where('any', '^(?!api|oauth\/)[\/\w\.-]*');
+})->where('any', '^(?!api\/)[\/\w\.-]*');
 // })->where('any', '^(?!api\/)[\/\w\.-]*');
 
 Route::get('/home', 'HomeController@index')->name('home');
