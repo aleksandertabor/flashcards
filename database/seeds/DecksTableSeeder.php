@@ -3,7 +3,7 @@
 use App\Deck;
 use Illuminate\Database\Seeder;
 
-class DeckSeeder extends Seeder
+class DecksTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,9 +12,13 @@ class DeckSeeder extends Seeder
      */
     public function run()
     {
-        factory(Deck::class, 100)->create()->each(function ($deck) {
+
+        $users = App\User::all();
+        factory(Deck::class, 100)->create()->each(function ($deck) use ($users) {
+            $deck->user_id = $users->random()->id;
             $cards = factory(App\Card::class, random_int(20, 50))->make();
             $deck->cards()->saveMany($cards);
+            $deck->save();
         });
 
     }

@@ -3,7 +3,7 @@ import Decks from "./decks/Decks";
 import Deck from "./deck/Deck";
 import Login from "./auth/Login"
 import Register from "./auth/Register"
-import DeckEditor from "./deck/DeckEditor"
+import DeckEditor from "./editor/DeckEditor"
 
 const routes = [{
         path: "/",
@@ -20,15 +20,28 @@ const routes = [{
         component: Register,
         name: "register",
     },
+    // {
+    //     path: '/user/:id',
+    //     component: User,
+    //     children: [{
+    //             path: 'profile',
+    //             component: UserProfile
+    //         },
+    //         {
+    //             path: 'decks',
+    //             component: UserPosts
+    //         }
+    //     ]
+    // },
     {
         path: "/deck/editor",
         component: DeckEditor,
         name: "deck-editor",
     },
     {
-        path: "/deck/:id",
+        path: "/deck/:slug",
         component: Deck,
-        name: "deck"
+        name: "deck",
     },
 ];
 

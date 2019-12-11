@@ -9,5 +9,7 @@ $factory->define(Card::class, function (Faker $faker) {
     return [
         'question' => $faker->word(),
         'answer' => $faker->word(),
+        'example_question' => $faker->text(240),
+        'example_answer' => $faker->text(240),
     ];
 });

@@ -1,5 +1,10 @@
 <template>
   <div class="row">
+    <div class="col-md-12">
+      <div class="back fa-2x" @click="$router.back()">
+        <i class="fas fa-arrow-circle-left"></i>
+      </div>
+    </div>
     <div class="col-md-8 pb-4">
       <div class="card">
         <div class="card-body">
@@ -38,7 +43,7 @@ export default {
   created() {
     this.loading = true;
     axios
-      .get(`/api/decks/${this.$route.params.id}`)
+      .get(`/api/decks/${this.$route.params.slug}`)
       .then(response => {
         this.deck = response.data.data;
       })
@@ -46,3 +51,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.back {
+  cursor: pointer;
+}
+</style>

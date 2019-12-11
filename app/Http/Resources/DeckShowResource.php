@@ -18,6 +18,9 @@ class DeckShowResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
+            'lang_source' => $this->lang_source,
+            'lang_target' => $this->lang_source,
+            'slug' => $this->slug,
             'cards' => CardResource::collection($this->cards),
         ];
     }

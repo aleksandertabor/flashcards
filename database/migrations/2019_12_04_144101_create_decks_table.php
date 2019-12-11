@@ -15,8 +15,13 @@ class CreateDecksTable extends Migration
     {
         Schema::create('decks', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title');
-            $table->text('description');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('title', 80);
+            $table->text('description', 320);
+            $table->string('lang_source');
+            $table->string('lang_target');
+            $table->string('visibility');
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }

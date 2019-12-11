@@ -16,8 +16,8 @@ class DeckController extends Controller
         );
     }
 
-    public function show($id)
+    public function show(Deck $deck)
     {
-        return new DeckShowResource(Deck::findOrFail($id));
+        return new DeckShowResource($deck);
     }
 }

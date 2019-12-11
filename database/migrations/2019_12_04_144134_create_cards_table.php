@@ -17,6 +17,8 @@ class CreateCardsTable extends Migration
             $table->bigIncrements('id');
             $table->string('question');
             $table->string('answer');
+            $table->string('example_question', 255);
+            $table->string('example_answer', 255);
             $table->timestamps();
         });
     }
