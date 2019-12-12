@@ -17268,3 +17268,18 @@ a.text-dark:focus {
   }
 }
 
+html::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: -webkit-gradient(linear, left top, left bottom, from(#87cfff), to(#1274e4));
+  background: linear-gradient(to bottom, #87cfff 0%, #1274e4 100%);
+}
+
+html::-webkit-scrollbar-track {
+  background: -webkit-gradient(linear, left top, left bottom, from(#cacaca), to(#ffffff));
+  background: linear-gradient(to bottom, #cacaca 0%, #ffffff 100%);
+}
+

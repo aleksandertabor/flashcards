@@ -11,6 +11,12 @@
           <div v-if="!loading">
             <h2>{{ deck.title }}</h2>
             <hr />
+            <img
+              data-src="https://source.unsplash.com/random/200x200"
+              class="card-img-top lazy"
+              alt
+            />
+            <hr />
             <article>{{ deck.description }}</article>
           </div>
           <div v-else>Loading ...</div>

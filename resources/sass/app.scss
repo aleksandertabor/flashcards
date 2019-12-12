@@ -11,3 +11,18 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+html::-webkit-scrollbar {
+    width: 10px;
+    height: 10px
+}
+
+html::-webkit-scrollbar-thumb {
+    background: -moz-linear-gradient(top, #87cfff 0%, #1274e4 100%);
+    background: -webkit-linear-gradient(top, #87cfff 0%, #1274e4 100%);
+    background: linear-gradient(to bottom, #87cfff 0%, #1274e4 100%);
+}
+
+html::-webkit-scrollbar-track {
+    background: linear-gradient(to bottom, #cacaca 0%, #ffffff 100%);
+}

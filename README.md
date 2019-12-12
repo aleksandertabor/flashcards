@@ -21,4 +21,5 @@ npm install browser-sync-webpack-plugin
 npm install vuex --save
 composer require google/cloud-translate
 npm install --save-dev @fortawesome/fontawesome-free
+npm install vanilla-lazyload
 ```

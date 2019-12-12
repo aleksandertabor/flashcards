@@ -4,7 +4,7 @@
       <i class="fas fa-sync-alt"></i>
       <small class="text-muted">Last updated 3 mins ago</small>
     </div>
-    <img src="https://source.unsplash.com/random/200x200" class="card-img-top" alt />
+    <img data-src="https://source.unsplash.com/random/200x200" class="card-img-top lazy" alt />
     <div class="card-body">
       <h5 class="card-title">{{ question }}</h5>
       <p class="card-text">{{ answer }}</p>
@@ -23,9 +23,6 @@
 <script>
 export default {
   props: { question: String, answer: String, id: Number },
-  mounted() {
-    console.log("Card List Item");
-  },
   filters: {
     reverse: value => {
       return [...value].reverse().join("");
