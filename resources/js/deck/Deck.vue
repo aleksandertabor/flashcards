@@ -1,15 +1,23 @@
 <template>
   <div class="row">
-    <div class="col-md-12">
+    <!-- <div class="col-md-12">
       <div class="back fa-2x" @click="$router.back()">
         <i class="fas fa-arrow-circle-left"></i>
       </div>
-    </div>
+    </div>-->
     <div class="col-md-8 pb-4">
       <div class="card">
         <div class="card-body">
           <div v-if="!loading">
             <h2>{{ deck.title }}</h2>
+            <router-link
+              v-if="isAuthenticated"
+              class="btn nav-button"
+              :to="{ name: 'profile', params: {username: deck.username}}"
+            >
+              <i class="fas fa-user"></i>
+              <h3>{{ deck.username }}</h3>
+            </router-link>
             <hr />
             <img
               data-src="https://source.unsplash.com/random/200x200"

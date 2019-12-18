@@ -1,7 +1,7 @@
 <template>
   <div>
     <h6 class="text-uppercase text-secondary font-weight-bolder">Register</h6>
-    <div class="form-row">
+    <div class="form-row" :class="[{'bg-success': this.loggedIn}]">
       <div class="form-group col-md-12">
         <label for="email">E-mail</label>
         <input
@@ -9,21 +9,41 @@
           name="email"
           class="form-control form-control-sm"
           placeholder="test@example.com"
-          v-model="email"
-          @keyup.enter="login"
+          v-model="user.email"
+          @keyup.enter="register"
+          :class="[{'is-invalid': this.errorFor('email')}]"
         />
+        <div
+          class="invalid-tooltip"
+          v-for="(error, index) in this.errorFor('email')"
+          :key="'email' + index"
+        >{{ error }}</div>
+      </div>
+
+      <div class="form-group col-md-12">
         <label for="password">Password</label>
         <input
           type="password"
           name="password"
           class="form-control form-control-sm"
-          v-model="password"
-          @keyup.enter="login"
+          v-model="user.password"
+          @keyup.enter="register"
+          :class="[{'is-invalid': this.errorFor('password')}]"
         />
+        <div
+          class="invalid-tooltip"
+          v-for="(error, index) in this.errorFor('password')"
+          :key="'password' + index"
+        >{{ error }}</div>
       </div>
     </div>
 
-    <button class="btn btn-secondary btn-block" @click="login" :disabled="loading">Login</button>
+    <div
+      class="bg-danger"
+      v-for="(error, index) in this.errorFor('register')"
+      :key="'register' + index"
+    >{{ error }}</div>
+    <button class="btn btn-secondary btn-block" @click="register" :disabled="loading">Register</button>
   </div>
 </template>
 
@@ -31,21 +51,46 @@
 export default {
   data() {
     return {
-      email: null,
-      password: null,
+      user: {
+        email: null,
+        password: null
+      },
       loading: false,
-      status: null
+      status: null,
+      errors: null
     };
   },
+  created() {
+    //   this.loading = true;
+  },
   methods: {
-    search() {
+    register() {
       this.loading = true;
-      axios
-        .get(``)
+      this.errors = null;
+
+      this.$store
+        .dispatch("register", this.user)
         .then(response => {
-          this.status = response.status;
+          this.$router.push({ name: "home" });
         })
-        .catch(error => {});
+        .catch(error => {
+          if (401 === error.response.status) {
+            this.errors = error.response.data.errors;
+          }
+          this.status = error.response.status;
+        })
+        .then(() => (this.loading = false));
+    },
+    errorFor(field) {
+      return this.hasErrors && this.errors[field] ? this.errors[field] : null;
+    }
+  },
+  computed: {
+    hasErrors() {
+      return 401 === this.status && this.errors !== null;
+    },
+    loggedIn() {
+      return 200 === this.status;
     }
   }
 };
@@ -53,9 +98,8 @@ export default {
 
 <style scoped>
 label {
-  font-size: 0.7em;
+  font-size: 1.2em;
   text-transform: uppercase;
-  color: green;
   font-weight: bolder;
 }
 </style>

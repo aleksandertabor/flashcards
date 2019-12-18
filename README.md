@@ -4,6 +4,7 @@
 ```bash
 composer update
 npm install
+php artisan passport:client --personal
 ```
 
 ## My steps to create this project (from zero):

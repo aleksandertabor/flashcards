@@ -8,6 +8,6 @@ class Card extends Model
 {
     public function decks()
     {
-        return $this->belongsToMany('App\Card');
+        return $this->belongsTo('App\Card');
     }
 }

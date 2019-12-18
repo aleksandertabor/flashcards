@@ -12,8 +12,13 @@ class Deck extends Model
         return 'slug';
     }
 
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
     public function cards()
     {
-        return $this->belongsToMany('App\Card');
+        return $this->hasMany('App\Card');
     }
 }

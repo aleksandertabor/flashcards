@@ -9,35 +9,40 @@
           name="email"
           class="form-control form-control-sm"
           placeholder="test@example.com"
-          v-model="email"
+          v-model="user.email"
           @keyup.enter="login"
           :class="[{'is-invalid': this.errorFor('email')}]"
         />
-        <div class="invalid-tooltip" v-for="(error, index) in this.errorFor('email')" :key="'email' + index">
-            {{ error }}
-        </div>
+        <div
+          class="invalid-tooltip"
+          v-for="(error, index) in this.errorFor('email')"
+          :key="'email' + index"
+        >{{ error }}</div>
+      </div>
 
-        </div>
-
-        <div class="form-group col-md-12">
+      <div class="form-group col-md-12">
         <label for="password">Password</label>
         <input
           type="password"
           name="password"
           class="form-control form-control-sm"
-          v-model="password"
+          v-model="user.password"
           @keyup.enter="login"
           :class="[{'is-invalid': this.errorFor('password')}]"
         />
-        <div class="invalid-tooltip" v-for="(error, index) in this.errorFor('password')" :key="'password' + index">
-            {{ error }}
-        </div>
+        <div
+          class="invalid-tooltip"
+          v-for="(error, index) in this.errorFor('password')"
+          :key="'password' + index"
+        >{{ error }}</div>
       </div>
     </div>
 
-<div class="bg-danger" v-for="(error, index) in this.errorFor('login')" :key="'login' + index">
-            {{ error }}
-        </div>
+    <div
+      class="bg-danger"
+      v-for="(error, index) in this.errorFor('login')"
+      :key="'login' + index"
+    >{{ error }}</div>
     <button class="btn btn-secondary btn-block" @click="login" :disabled="loading">Login</button>
   </div>
 </template>
@@ -46,11 +51,12 @@
 export default {
   data() {
     return {
-      email: null,
-      password: null,
+      user: {
+        email: null,
+        password: null
+      },
       loading: false,
       status: null,
-      access_token: null,
       errors: null
     };
   },
@@ -62,34 +68,47 @@ export default {
       this.loading = true;
       this.errors = null;
 
-      axios
-        .post("/api/login", {email: this.email, password: this.password})
+      this.$store
+        .dispatch("login", this.user)
         .then(response => {
-          this.status = response.status;
-          this.access_token = response.data.access_token;
-          localStorage.setItem('access_token',response.data.access_token)
-          this.loading = false;
+          this.$router.push({ name: "home" });
         })
         .catch(error => {
-            console.log(error.response);
-            if (401 === error.response.status) {
-                this.errors = error.response.data.errors;
-            }
-            this.status = error.response.status;
-        }).then(() => this.loading = false);
+          if (401 === error.response.status) {
+            this.errors = error.response.data.errors;
+          }
+          this.status = error.response.status;
+        })
+        .then(() => (this.loading = false));
+
+      //   axios
+      //     .post("/api/login", { email: this.email, password: this.password })
+      //     .then(response => {
+      //       this.status = response.status;
+      //       this.access_token = response.data.access_token;
+      //       this.$store.dispatch("login", this.access_token);
+      //     })
+      //     .catch(error => {
+      //       console.log(error.response);
+      //       if (401 === error.response.status) {
+      //         this.errors = error.response.data.errors;
+      //       }
+      //       this.status = error.response.status;
+      //     })
+      //     .then(() => (this.loading = false));
     },
     errorFor(field) {
-        return this.hasErrors && this.errors[field] ? this.errors[field] : null;
+      return this.hasErrors && this.errors[field] ? this.errors[field] : null;
     }
   },
   computed: {
-      hasErrors() {
-          return 401 === this.status && this.errors !== null;
-      },
-      loggedIn() {
-          return 200 === this.status;
-      }
-  },
+    hasErrors() {
+      return 401 === this.status && this.errors !== null;
+    },
+    loggedIn() {
+      return 200 === this.status;
+    }
+  }
 };
 </script>
 

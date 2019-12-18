@@ -16,6 +16,7 @@ class DeckShowResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'username' => $this->user->username,
             'title' => $this->title,
             'description' => $this->description,
             'lang_source' => $this->lang_source,

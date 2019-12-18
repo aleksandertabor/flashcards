@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'username', 'email', 'password',
     ];
 
     /**
@@ -36,6 +36,21 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'username';
+    }
+
+    public function setUsernameAttribute($value)
+    {
+        $this->attributes['username'] = strtolower($value);
+    }
+
+    public function cards()
+    {
+        return $this->hasManyThrough('App\Card', 'App\Deck');
+    }
 
     public function decks()
     {
