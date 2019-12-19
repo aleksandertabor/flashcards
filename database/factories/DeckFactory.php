@@ -17,6 +17,6 @@ $factory->define(Deck::class, function (Faker $faker) use ($languages) {
         'lang_source' => $languages[0],
         'lang_target' => $languages[1],
         'visibility' => 'public',
-        'slug' => $faker->slug(3),
+        // 'slug' => $faker->slug(3),
     ];
 });

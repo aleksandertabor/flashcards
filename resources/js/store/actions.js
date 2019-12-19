@@ -74,6 +74,38 @@ const actions = {
 
 
     },
+    decks(context, payload) {
+        return new Promise((resolve, reject) => {
+            axios
+                .get(`/api/decks`)
+                .then(response => {
+                    const decks = response.data.data;
+                    context.commit('search', decks);
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+    },
+    search(context, payload) {
+        return new Promise((resolve, reject) => {
+            axios
+                .post(`/api/search`, {
+                    query: payload
+                })
+                .then(response => {
+                    const decks = response.data.data;
+                    context.commit('search', decks);
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+
+
+    },
 }
 
 export default actions;

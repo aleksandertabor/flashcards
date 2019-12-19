@@ -1,14 +1,9 @@
 <template>
-  <div class="row">
-    <!-- <div class="col-md-12">
-      <div class="back fa-2x" @click="$router.back()">
-        <i class="fas fa-arrow-circle-left"></i>
-      </div>
-    </div>-->
-    <div class="col-md-8 pb-4">
-      <div class="card">
-        <div class="card-body">
-          <div v-if="!loading">
+  <div>
+    <div v-if="!loading" class="row">
+      <div class="col-md-8 pb-4">
+        <div class="card">
+          <div class="card-body">
             <h2>{{ deck.title }}</h2>
             <router-link
               v-if="isAuthenticated"
@@ -27,16 +22,16 @@
             <hr />
             <article>{{ deck.description }}</article>
           </div>
-          <div v-else>Loading ...</div>
         </div>
       </div>
-    </div>
-    <div class="col-md-4 pb-4">
-      <deck-actions></deck-actions>
+      <div class="col-md-4 pb-4">
+        <deck-actions></deck-actions>
+      </div>
     </div>
     <div class="col-md-12" v-if="!loading">
       <cards :cards="this.deck.cards"></cards>
     </div>
+    <div v-else>Loading ...</div>
   </div>
 </template>
 

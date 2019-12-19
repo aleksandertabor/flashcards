@@ -22,7 +22,7 @@ class DeckShowResource extends JsonResource
             'lang_source' => $this->lang_source,
             'lang_target' => $this->lang_source,
             'slug' => $this->slug,
-            'cards' => CardResource::collection($this->cards),
+            'cards' => CardResource::collection($this->whenLoaded('cards')),
         ];
     }
 }

@@ -21,6 +21,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // });
 
 Route::apiResource('decks', 'Api\DeckController')->only(['index', 'show']);
+
+Route::post('search', 'SearchController@index');
+
 Route::post('login', 'AuthController@login');
 
 Route::post('register', 'AuthController@register');
@@ -32,3 +35,9 @@ Route::post('translate', 'TranslationController');
 Route::post('detect', 'DetectionController');
 
 // Auth::routes();
+
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Error 404 - not found.',
+    ], 404);
+})->name('api.fallback');

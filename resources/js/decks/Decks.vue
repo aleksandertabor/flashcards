@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      decks: null,
+      //   decks: null,
       loading: false,
       columns: 3
     };
@@ -33,6 +33,9 @@ export default {
       return this.decks === null
         ? 0
         : Math.ceil(this.decks.length / this.columns);
+    },
+    decks() {
+      return this.$store.state.decks;
     }
   },
   methods: {
@@ -42,10 +45,13 @@ export default {
   },
   created() {
     this.loading = true;
-    const request = axios.get("/api/decks").then(response => {
-      this.decks = response.data.data;
-      this.loading = false;
-    });
+    this.$store
+      .dispatch("decks", this.user)
+      .then(response => {})
+      .catch(error => {
+        console.log(error);
+      })
+      .then(() => (this.loading = false));
   }
 };
 </script>

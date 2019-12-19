@@ -18,6 +18,6 @@ class DeckController extends Controller
 
     public function show(Deck $deck)
     {
-        return new DeckShowResource($deck);
+        return new DeckShowResource($deck->load('cards'));
     }
 }

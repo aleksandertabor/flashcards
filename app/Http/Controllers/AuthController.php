@@ -37,7 +37,7 @@ class AuthController extends Controller
             ])->cookie('token', $token, 30, null, null, null, true);
         }
 
-        return response()->json(['errors' => ['login' => [0 => 'Unauthorized']]], 401);
+        return response()->json(['errors' => ['login' => [0 => 'Unauthorized']]], 403);
     }
 
     public function register(Request $request)
@@ -82,14 +82,11 @@ class AuthController extends Controller
 
         // dd($request->user('api'));
 
-        $request->user('api')->token()->revoke();
+        if ($request->user('api')) {
+            $request->user('api')->token()->revoke();
+            return response()->json('Logged out', 200);
+        }
 
-        // all devices
-        //         auth()->user()->tokens->each(function ($token, $key) {
-        //     $token->delete();
-        // });
-
-        return response()->json('Logged out', 200);
-
+        return response()->json(['errors' => ['Unauthorized']], 403);
     }
 }

@@ -7,6 +7,9 @@ const mutations = {
         state.user.token = null;
         // state.user.isAuthenticated = false;
     },
+    search(state, payload) {
+        state.decks = payload;
+    },
 }
 
 export default mutations;
