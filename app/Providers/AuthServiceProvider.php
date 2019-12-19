@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Providers\UsernameEmailAuthServiceProvider;
+use App\User;
+use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
@@ -24,6 +28,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        Auth::provider('username_email', function ($app) {
+            return new UsernameEmailAuthServiceProvider($app->make(HasherContract::class), User::class);
+        });
 
         Passport::routes(function ($router) {
             $router->forAccessTokens();

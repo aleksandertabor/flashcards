@@ -14,7 +14,7 @@ class SearchController extends Controller
         ]);
 
         // $decks = Deck::search($data['query'])->get();
-        $deck = Deck::withCount(['cards']);
+        $deck = Deck::withCount(['cards'])->public();
         $decks = Deck::search($data['query'])->constrain($deck)->get();
 
         return DeckIndexResource::collection(

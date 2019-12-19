@@ -11,19 +11,27 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
+        $field = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $validator = Validator::make($request->all(), [
-            'email' => ['required', 'string', 'email', 'exists:users'],
+        $input = [
+            $field => $request->login,
+            'password' => $request->password,
+        ];
+
+        // $messages = [
+        //     'required_without' => 'The :attribute field or :attribute2 is required.',
+        // ];
+
+        $validator = Validator::make($input, [
+            'username' => ['required_without:email', 'string', 'nullable', 'exists:users'],
+            'email' => ['required_without:username', 'string', 'nullable', 'exists:users'],
             'password' => ['required', 'string'],
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 401);
         } else {
-            $credentials = $request->validate([
-                'email' => 'required|string|email|exists:users',
-                'password' => 'required|string',
-            ]);
+            $credentials = $input;
         }
 
         if (Auth::attempt($credentials)) {
@@ -37,7 +45,7 @@ class AuthController extends Controller
             ])->cookie('token', $token, 30, null, null, null, true);
         }
 
-        return response()->json(['errors' => ['login' => [0 => 'Unauthorized']]], 403);
+        return response()->json(['errors' => ['login' => [0 => 'Credentials are not valid.']]], 401);
     }
 
     public function register(Request $request)

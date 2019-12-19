@@ -10,6 +10,15 @@ class Deck extends Model
 {
     use Sluggable, Searchable;
 
+    public const PUBLIC_VISIBILITY = 'public';
+    public const UNLISTED_VISIBILITY = 'unlisted';
+    public const PRIVATE_VISIBILITY = 'private';
+
+    public static function visibilities(): array
+    {
+        return [self::PUBLIC_VISIBILITY, self::UNLISTED_VISIBILITY, self::PRIVATE_VISIBILITY];
+    }
+
     public function sluggable()
     {
         return [
@@ -31,6 +40,11 @@ class Deck extends Model
             'title' => $this->title,
             'description' => $this->description,
         ];
+    }
+
+    public function scopePublic($query)
+    {
+        $query->where('visibility', self::PUBLIC_VISIBILITY);
     }
 
     public function user()

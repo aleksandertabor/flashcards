@@ -2,6 +2,7 @@
   <div>
     <div v-if="loading">Decks are loading ...</div>
     <div v-else>
+      <h2>Decks</h2>
       <div class="row mb-4" :class="'row-cols-' + columns" v-for="row in rows" :key="'row' + row">
         <div
           class="col d-flex align-items-stretch"

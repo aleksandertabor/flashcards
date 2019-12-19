@@ -14,9 +14,9 @@ $factory->define(Deck::class, function (Faker $faker) use ($languages) {
     return [
         'title' => $faker->catchPhrase,
         'description' => $faker->text(300),
-        'lang_source' => $languages[0],
-        'lang_target' => $languages[1],
-        'visibility' => 'public',
+        'lang_source' => array_rand(array_flip($languages)),
+        'lang_target' => array_rand(array_flip($languages)),
+        'visibility' => Deck::visibilities()[mt_rand(0, count(Deck::visibilities()) - 1)],
         // 'slug' => $faker->slug(3),
     ];
 });

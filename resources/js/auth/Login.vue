@@ -3,20 +3,20 @@
     <h6 class="text-uppercase text-secondary font-weight-bolder">Login</h6>
     <div class="form-row" :class="[{'bg-success': this.loggedIn}]">
       <div class="form-group col-md-12">
-        <label for="email">E-mail</label>
+        <label for="login">Username/E-mail</label>
         <input
-          type="email"
-          name="email"
+          type="input"
+          name="login"
           class="form-control form-control-sm"
-          placeholder="test@example.com"
-          v-model="user.email"
+          placeholder="Username/test@example.com"
+          v-model="user.login"
           @keyup.enter="login"
-          :class="[{'is-invalid': this.errorFor('email')}]"
+          :class="[{'is-invalid': this.errorFor('email') || this.errorFor('username')}]"
         />
         <div
           class="invalid-tooltip"
-          v-for="(error, index) in this.errorFor('email')"
-          :key="'email' + index"
+          v-for="(error, index) in this.errorFor('email') || this.errorFor('username')"
+          :key="'login' + index"
         >{{ error }}</div>
       </div>
 
@@ -36,13 +36,14 @@
           :key="'password' + index"
         >{{ error }}</div>
       </div>
+      <div class="form-group col-md-12">
+        <div
+          class="alert alert-danger"
+          v-for="(error, index) in this.errorFor('login')"
+          :key="'login' + index"
+        >{{ error }}</div>
+      </div>
     </div>
-
-    <div
-      class="bg-danger"
-      v-for="(error, index) in this.errorFor('login')"
-      :key="'login' + index"
-    >{{ error }}</div>
     <button class="btn btn-secondary btn-block" @click="login" :disabled="loading">Login</button>
   </div>
 </template>
@@ -52,7 +53,7 @@ export default {
   data() {
     return {
       user: {
-        email: null,
+        login: null,
         password: null
       },
       loading: false,
