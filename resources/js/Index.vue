@@ -7,7 +7,7 @@
         </router-link>
         <router-link
           v-if="isAuthenticated"
-          class="btn nav-button"
+          class="btn nav-button nick"
           :to="{ name: 'profile', params: {username: user.username}}"
         >
           <i class="fas fa-user-edit"></i>
@@ -33,15 +33,13 @@
     </nav>
 
     <main id="content" class="w-100 pl-4 pr-4 pt-3">
-      <div class="d-flex align-items-stretch justify-content-between border-bottom">
-        <div>
-          <div class="back fa-2x" @click="$router.back()">
-            <i class="fas fa-arrow-circle-left"></i>
-          </div>
+      <nav class="navbar sticky-top navbar-light bg-light border-bottom">
+        <div class="back fa-2x" @click="$router.back()">
+          <i class="fas fa-arrow-circle-left"></i>
         </div>
         <p>Flashcards - Decks</p>
         <search-bar></search-bar>
-      </div>
+      </nav>
       <div class="mt-4 mb-4">
         <router-view></router-view>
       </div>
@@ -76,6 +74,14 @@ export default {
   bottom: 0;
   min-width: 250px;
   max-width: 250px;
+}
+
+.nick {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  overflow: hidden;
+  max-width: 220px;
 }
 
 main {

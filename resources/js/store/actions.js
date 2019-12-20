@@ -40,7 +40,6 @@ const actions = {
         }
     },
     logout(context) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${context.state.user.token}`;
 
         if (context.getters.isAuthenticated) {
             return new Promise((resolve, reject) => {
@@ -64,6 +63,20 @@ const actions = {
         return new Promise((resolve, reject) => {
             axios
                 .get(`/api/users/${payload}`, )
+                .then(response => {
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+
+
+    },
+    editProfile(context, payload) {
+        return new Promise((resolve, reject) => {
+            axios
+                .get(`/api/users/${payload}/edit`, )
                 .then(response => {
                     resolve(response)
                 })

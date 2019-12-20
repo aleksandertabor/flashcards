@@ -6,6 +6,8 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use \Cviebrock\EloquentSluggable\Services\SlugService;
 
 class AuthController extends Controller
 {
@@ -17,10 +19,6 @@ class AuthController extends Controller
             $field => $request->login,
             'password' => $request->password,
         ];
-
-        // $messages = [
-        //     'required_without' => 'The :attribute field or :attribute2 is required.',
-        // ];
 
         $validator = Validator::make($input, [
             'username' => ['required_without:email', 'string', 'nullable', 'exists:users'],
@@ -61,8 +59,18 @@ class AuthController extends Controller
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        preg_match('/([^@]+)/m', $input['email'], $matches);
-        $input['username'] = $matches[0];
+        preg_match('/([^@]{1,50}+)/m', $input['email'], $matches);
+
+        // username - max 50 characters length, if too short, randoms
+        $username = Str::limit(Str::before($input['email'], '@'), 50, '');
+        $usernameSize = mb_strlen($username);
+        if ($usernameSize < 3) {
+            $username .= Str::random(3);
+        }
+        $username = SlugService::createSlug(User::class, 'username', $username);
+
+        $input['username'] = $username;
+
         $user = User::create($input);
         $token = $user->createToken('FlashcardsUserToken')->accessToken;
 

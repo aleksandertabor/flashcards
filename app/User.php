@@ -2,13 +2,14 @@
 
 namespace App;
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, Sluggable;
 
     /**
      * The attributes that are mass assignable.
@@ -36,6 +37,17 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function sluggable()
+    {
+        return [
+            'username' => [
+                'unique' => true,
+                'separator' => '',
+                'onUpdate' => false,
+            ],
+        ];
+    }
 
     public function getRouteKeyName()
     {

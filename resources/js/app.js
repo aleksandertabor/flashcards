@@ -23,9 +23,11 @@ const store = new Vuex.Store({
     getters
 });
 
+
 Vue.mixin({
     computed: {
         isAuthenticated() {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${state.user.token}`;
             return this.$store.getters.isAuthenticated;
         },
         user() {

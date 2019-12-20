@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
 |
  */
 
+Route::group(['middleware' => ['auth:api']], function () {
+    Route::apiResource('users', 'UserController')->only(['edit', 'update', 'destroy']);
+});
+
+Route::apiResource('users', 'UserController')->only(['show']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -28,8 +33,6 @@ Route::post('login', 'AuthController@login');
 
 Route::post('register', 'AuthController@register');
 Route::post('logout', 'AuthController@logout');
-
-Route::apiResource('users', 'UserController')->only(['show']);
 
 Route::post('translate', 'TranslationController');
 Route::post('detect', 'DetectionController');
