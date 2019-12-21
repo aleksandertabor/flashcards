@@ -8,6 +8,7 @@
       <!-- <img data-src="/img/placeholder.png" class="card-img-top lazy" alt /> -->
       <p class="card-text">{{ description }}</p>
       <p class="card-text">Cards: ({{ cards_count }})</p>
+      <p class="card-text">Created at: ({{ created_at }})</p>
     </div>
   </div>
 </template>
@@ -21,7 +22,8 @@ export default {
     id: Number,
     lang_source: String,
     lang_target: String,
-    slug: String
+    slug: String,
+    created_at: String
   }
 };
 </script>

@@ -114,7 +114,8 @@ export default {
         cards_finished: 0,
         cards_amount: 0,
         cards: [],
-        visibility: ""
+        visibility: "",
+        visibilitity_options: ""
       },
       query: null,
       loading: false,
@@ -131,7 +132,7 @@ export default {
     this.loading = true;
     axios
       //   .get(`/api/decks/et-autem-laborum`)
-      .get(`/api/decks/dsadsa`)
+      .get(`/api/decks/programmable-global-help-desk`)
       .then(response => {
         this.deck = response.data.data;
         this.edit = true;

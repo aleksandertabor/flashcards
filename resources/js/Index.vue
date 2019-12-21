@@ -33,26 +33,13 @@
     </nav>
 
     <main id="content" class="w-100 pl-4 pr-4 pt-3">
-      <nav class="navbar sticky-top navbar-light bg-light border-bottom">
-        <div class="back fa-2x" @click="$router.back()">
-          <i class="fas fa-arrow-circle-left"></i>
-        </div>
-        <p>Flashcards - Decks</p>
-        <search-bar></search-bar>
-      </nav>
-      <div class="mt-4 mb-4">
-        <router-view></router-view>
-      </div>
+      <router-view></router-view>
     </main>
   </div>
 </template>
 
 <script>
-import SearchBar from "./components/SearchBar";
 export default {
-  components: {
-    SearchBar
-  },
   computed: {},
   created() {}
   //   computed: {

@@ -1,5 +1,17 @@
 <template>
   <div>
+    <nav class="navbar sticky-top navbar-light bg-light border-bottom mb-4">
+      <div class="back fa-2x" @click="$router.back()">
+        <i class="fas fa-arrow-circle-left"></i>
+      </div>
+      <select v-model="decksType" @change="changeType" class>
+        <option value="latest">Latest</option>
+        <option value="oldest">Oldest</option>
+        <option value="random">Random</option>
+        <option value="cards">Filter by cards</option>
+      </select>
+      <search-bar @change-type="changeType"></search-bar>
+    </nav>
     <div v-if="loading">Decks are loading ...</div>
     <div v-else>
       <div class="row mb-4" :class="'row-cols-' + columns" v-for="row in rows" :key="'row' + row">
@@ -12,20 +24,31 @@
         </div>
       </div>
     </div>
+    <infinite-loading :identifier="infiniteId" @infinite="infiniteHandler">
+      <div slot="spinner">Loading...</div>
+      <div slot="no-more">No more decks</div>
+      <div slot="no-results">No decks</div>
+    </infinite-loading>
   </div>
 </template>
 
 <script>
+import SearchBar from "../components/SearchBar";
+import InfiniteLoading from "vue-infinite-loading";
 import DeckListItem from "./DeckListItem";
 export default {
   components: {
-    DeckListItem
+    InfiniteLoading,
+    DeckListItem,
+    SearchBar
   },
   data() {
     return {
       //   decks: null,
       loading: false,
-      columns: 3
+      columns: 3,
+      decksType: "latest",
+      infiniteId: +new Date()
     };
   },
   computed: {
@@ -36,22 +59,57 @@ export default {
     },
     decks() {
       return this.$store.state.decks;
+    },
+    page() {
+      return this.$store.state.decksPage;
+    },
+    query() {
+      return this.$store.state.query;
     }
   },
   methods: {
     decksInRow(row) {
       return this.decks.slice((row - 1) * this.columns, row * this.columns);
+    },
+    infiniteHandler($state) {
+      console.log(this.page);
+      this.$store
+        .dispatch("decks", {
+          page: this.page,
+          decksType: this.decksType,
+          query: this.query
+        })
+        .then(response => {
+          if (response.data && this.page < response.meta.last_page) {
+            this.$store.commit("decksPageIncrement");
+            $state.loaded();
+          } else {
+            $state.complete();
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .then(() => (this.loading = false));
+    },
+    changeType() {
+      this.$store.commit("resetDecks");
+      this.$store.commit("resetDecksPage");
+      this.infiniteId += 1;
     }
   },
   created() {
-    this.loading = true;
-    this.$store
-      .dispatch("decks", this.user)
-      .then(response => {})
-      .catch(error => {
-        console.log(error);
-      })
-      .then(() => (this.loading = false));
+    // this.loading = true;
+    // this.$store
+    //   .dispatch("decks", this.user)
+    //   .then(response => {})
+    //   .catch(error => {
+    //     console.log(error);
+    //   })
+    //   .then(() => (this.loading = false));
   }
 };
 </script>
+
+<style>
+</style>

@@ -27,7 +27,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::apiResource('decks', 'Api\DeckController')->only(['index', 'show']);
 
-Route::post('search', 'SearchController@index');
+Route::get('search', 'SearchDeckController@index');
 
 Route::post('login', 'AuthController@login');
 

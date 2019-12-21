@@ -48,6 +48,7 @@ const actions = {
                     .then(response => {
                         localStorage.removeItem('user');
                         context.commit('logout');
+                        delete axios.defaults.headers.common['Authorization']
                         resolve(response)
                     })
                     .catch(error => {
@@ -90,35 +91,37 @@ const actions = {
     decks(context, payload) {
         return new Promise((resolve, reject) => {
             axios
-                .get(`/api/decks`)
+                .get(`/api/search/?page=${payload.page}&decks_type=${payload.decksType}&query=${payload.query}`)
                 .then(response => {
                     const decks = response.data.data;
-                    context.commit('search', decks);
-                    resolve(response)
+                    if (decks.length) {
+                        context.commit('decks', decks);
+                    }
+                    resolve(response.data)
                 })
                 .catch(error => {
                     reject(error)
                 })
         })
     },
-    search(context, payload) {
-        return new Promise((resolve, reject) => {
-            axios
-                .post(`/api/search`, {
-                    query: payload
-                })
-                .then(response => {
-                    const decks = response.data.data;
-                    context.commit('search', decks);
-                    resolve(response)
-                })
-                .catch(error => {
-                    reject(error)
-                })
-        })
+    // search(context, payload) {
+    //     return new Promise((resolve, reject) => {
+    //         axios
+    //             .get(`/api/search/?page=${payload.page}&decks_type=${payload.decksType}`)
+    //             .then(response => {
+    //                 const decks = response.data.data;
+    //                 if (decks.length) {
+    //                     context.commit('decks', decks);
+    //                 }
+    //                 resolve(decks.length)
+    //             })
+    //             .catch(error => {
+    //                 reject(error)
+    //             })
+    //     })
 
 
-    },
+    // },
 }
 
 export default actions;

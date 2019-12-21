@@ -22,6 +22,7 @@ class DeckIndexResource extends JsonResource
             'lang_target' => $this->lang_target,
             'slug' => $this->slug,
             'cards_count' => $this->cards_count,
+            'created_at' => $this->created_at,
         ];
     }
 }

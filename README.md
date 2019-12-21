@@ -27,4 +27,5 @@ composer require cviebrock/eloquent-sluggable
 composer require laravel/scout
 composer require teamtnt/laravel-scout-tntsearch-driver
 php artisan scout:import "App\Deck"
+npm install vue-infinite-loading -S
 ```

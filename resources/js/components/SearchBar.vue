@@ -22,20 +22,9 @@ export default {
   },
   methods: {
     search: _.debounce(function() {
-      if (this.query !== "") {
-        this.$store
-          .dispatch("search", this.query)
-          .then(response => {
-            // store decks all
-            console.log(response);
-          })
-          .catch(error => {
-            console.log(error);
-          })
-          .then(() => (this.loading = false));
-      } else {
-        this.$store.dispatch("decks");
-      }
+      console.log("searchuje");
+      this.$store.commit("query", this.query);
+      this.$emit("change-type");
     }, 300)
   }
 };

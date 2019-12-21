@@ -1,5 +1,7 @@
 const state = {
     decks: [],
+    decksPage: 1,
+    query: "",
     cards: [],
     errors: [],
     hasPrevious: false,

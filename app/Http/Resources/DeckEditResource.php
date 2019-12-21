@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Deck;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DeckEditResource extends JsonResource
@@ -22,6 +23,7 @@ class DeckEditResource extends JsonResource
             'lang_target' => $this->lang_target,
             'slug' => $this->slug,
             'visibility' => $this->visibility,
+            'visibilitity_options' => Deck::visibilities(),
             'cards_count' => $this->cards_count,
         ];
 

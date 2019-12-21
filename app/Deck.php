@@ -42,6 +42,11 @@ class Deck extends Model
         ];
     }
 
+    public function shouldBeSearchable()
+    {
+        return $this->public();
+    }
+
     public function scopePublic($query)
     {
         $query->where('visibility', self::PUBLIC_VISIBILITY);

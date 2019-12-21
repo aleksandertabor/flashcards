@@ -4,15 +4,11 @@
     <div v-else>
       <div v-if="editable">
         <nav class="navbar navbar-light bg-light">
-          <button
-            class="btn btn-outline-success"
-            href="#"
-            @click="additionalView = 'EditProfile'"
-          >Edit</button>
+          <button class="btn btn-outline-success" href="#" @click="changeView('EditProfile')">Edit</button>
           <button
             class="btn btn-outline-danger"
             href="#"
-            @click="additionalView = 'RemoveProfile'"
+            @click="changeView('RemoveProfile')"
           >Remove</button>
         </nav>
       </div>
@@ -66,6 +62,8 @@ export default {
   created() {
     this.loading = true;
 
+    console.log(this.additionalView.length);
+
     const profile = this.$store
       .dispatch("profile", this.$route.params.username)
       .then(response => {
@@ -92,6 +90,13 @@ export default {
     });
   },
   methods: {
+    changeView(view) {
+      if (view === this.additionalView) {
+        this.additionalView = "";
+      } else {
+        this.additionalView = view;
+      }
+    },
     save() {
       return 0;
     }
