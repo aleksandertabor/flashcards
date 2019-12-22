@@ -5,16 +5,23 @@ import router from "./routes";
 import VueRouter from "vue-router";
 import LazyLoad from "./lazyload";
 import Index from "./Index";
+import VueApollo from "vue-apollo";
+import apolloClient from "./apollo";
 
 window.Vue = require('vue');
 
 Vue.use(VueRouter);
 Vue.use(LazyLoad);
 Vue.use(Vuex);
+Vue.use(VueApollo);
 import mutations from './store/mutations';
 import actions from './store/actions';
 import getters from './store/getters';
 import state from "./store/state";
+
+const apolloProvider = new VueApollo({
+    defaultClient: apolloClient,
+})
 
 const store = new Vuex.Store({
     state,
@@ -63,6 +70,7 @@ const app = new Vue({
     el: '#app',
     store,
     router,
+    apolloProvider,
     components: {
         "index": Index
     },

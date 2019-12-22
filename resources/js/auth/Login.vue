@@ -72,9 +72,12 @@ export default {
       this.$store
         .dispatch("login", this.user)
         .then(response => {
+          console.log(response);
+          console.log("logged");
           this.$router.push({ name: "home" });
         })
         .catch(error => {
+          console.log(error);
           if (401 === error.response.status) {
             this.errors = error.response.data.errors;
           }

@@ -39,7 +39,17 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 export default {
+  //   apollo: {
+  //     user: gql`
+  //       query {
+  //         user(id: 1) {
+  //           email
+  //         }
+  //       }
+  //     `
+  //   },
   computed: {},
   created() {}
   //   computed: {

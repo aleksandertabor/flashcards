@@ -13,10 +13,10 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $field = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $loginType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         $input = [
-            $field => $request->login,
+            $loginType => $request->login,
             'password' => $request->password,
         ];
 
@@ -59,7 +59,7 @@ class AuthController extends Controller
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        preg_match('/([^@]{1,50}+)/m', $input['email'], $matches);
+        // preg_match('/([^@]{1,50}+)/m', $input['email'], $matches);
 
         // username - max 50 characters length, if too short, randoms
         $username = Str::limit(Str::before($input['email'], '@'), 50, '');

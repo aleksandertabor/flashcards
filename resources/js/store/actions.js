@@ -1,18 +1,36 @@
+import gql from "graphql-tag";
+import apolloClient from "../apollo";
 const actions = {
     login(context, payload) {
         return new Promise((resolve, reject) => {
-            axios
-                .post("/api/login", payload)
-                .then(response => {
-                    const user = response.data;
-                    context.commit('login', user);
-                    localStorage.setItem('user', JSON.stringify(user))
-                    resolve(response)
-                })
-                .catch(error => {
-                    reject(error)
-                })
+            // axios
+            //     .post("/api/login", payload)
+            //     .then(response => {
+            //         const user = response.data;
+            //         context.commit('login', user);
+            //         localStorage.setItem('user', JSON.stringify(user))
+            //         resolve(response)
+            //     })
+            //     .catch(error => {
+            //         reject(error)
+            //     })
+            console.log(payload);
+            resolve(
+                apolloClient.mutate({
+                    mutation: gql `mutation login($data: LoginInput) {
+  login(data: $data)
+}`,
+                    variables: {
+                        data: payload
+                    }
+                }))
+
+
+
         })
+
+
+
 
 
     },
