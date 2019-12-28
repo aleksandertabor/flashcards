@@ -13,13 +13,18 @@ import {
 import {
     InMemoryCache
 } from 'apollo-cache-inmemory'
+import {
+    app
+} from "./app.js";
 
 // HTTP connection to the API
 const httpLink = createHttpLink({
     // You should use an absolute URL here
     uri: 'http://localhost:3000/api/graphql',
     headers: {
+        // 'X-CSRF-TOKEN': Cookies.get('csrftoken'),
         'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json',
         'Accept': 'application/json',
     }
 })
@@ -32,9 +37,14 @@ const errorLink = onError(({
         for (let err of graphQLErrors) {
             switch (err.extensions.category) {
                 case 'authentication':
-                    vm.$router.push({
-                        name: 'auth.login'
-                    })
+                    // app.$router.push({
+                    //     name: 'login'
+                    // })
+                    // graphQLErrors.validationErrors['password'] = err.message;
+                    console.log("No authenticated.");
+                case 'validation':
+                    graphQLErrors.validationErrors = err.extensions.validation;
+                    // console.log('validation errors', err.extensions.validation);
             }
         }
     if (networkError) console.log(`[Network error]: ${networkError}`);

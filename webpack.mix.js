@@ -11,6 +11,16 @@ const mix = require('laravel-mix');
  |
  */
 
+mix.webpackConfig({
+    module: {
+        rules: [{
+            test: /\.(graphql|gql)$/,
+            exclude: /node_modules/,
+            loader: 'graphql-tag/loader',
+        }]
+    }
+})
+
 mix.browserSync({
     proxy: 'localhost:8000'
 });

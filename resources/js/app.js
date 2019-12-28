@@ -66,7 +66,7 @@ router.beforeEach((to, from, next) => {
 })
 
 
-const app = new Vue({
+export const app = new Vue({
     el: '#app',
     store,
     router,

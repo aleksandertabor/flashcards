@@ -72,16 +72,24 @@ export default {
       this.$store
         .dispatch("login", this.user)
         .then(response => {
-          console.log(response);
-          console.log("logged");
+          //   console.log(response);
+          //   console.log("logged");
+          console.log({ response });
           this.$router.push({ name: "home" });
         })
         .catch(error => {
-          console.log(error);
-          if (401 === error.response.status) {
-            this.errors = error.response.data.errors;
+          console.log(error.message);
+          if (error.graphQLErrors.validationErrors !== undefined) {
+            this.errors = error.graphQLErrors.validationErrors;
           }
-          this.status = error.response.status;
+
+          //   if (error.message !== null) {
+          //     this.errors["login"] = error.message;
+          //   }
+          //   if (401 === error.response.status) {
+          //     this.errors = error.response.data.errors;
+          //   }
+          //   this.status = error.response.status;
         })
         .then(() => (this.loading = false));
 
@@ -107,7 +115,8 @@ export default {
   },
   computed: {
     hasErrors() {
-      return 401 === this.status && this.errors !== null;
+      // return 401 === this.status && this.errors !== null;
+      return this.errors !== null;
     },
     loggedIn() {
       return 200 === this.status;

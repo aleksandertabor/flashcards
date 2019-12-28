@@ -34,8 +34,8 @@ type Query {
 # }
 
 input LoginInput {
-      login: String!
-      password: String! @rules(apply: ["required", "string"])
+      login: String
+      password: String
 }
 
 input RegisterInput {
@@ -51,10 +51,12 @@ type LogoutResponse {
 }
 
 type Mutation {
-    login(data: LoginInput @spread): String!
-    @field(resolver: "AuthMutator@login")
+    login(data: LoginInput @spread): Boolean!
+    @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@login")
 
-  register(data: RegisterInput!): Boolean! @field(resolver: "AuthMutator@register")
+  register(data: RegisterInput!): Boolean!
+  @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@register")
 
-  logout: LogoutResponse! @protect(guards: ["api"]) @field(resolver: "AuthMutator@logout")
+  logout: LogoutResponse! @protect(guards: ["api"])
+  @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@logout")
 }

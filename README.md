@@ -28,7 +28,7 @@ composer require laravel/scout
 composer require teamtnt/laravel-scout-tntsearch-driver
 php artisan scout:import "App\Deck"
 npm install vue-infinite-loading -S
-composer require rebing/graphql-laravel
+composer require nuwave/lighthouse
 composer require mll-lab/laravel-graphql-playground
 npm install --save vue-apollo graphql apollo-client apollo-link apollo-link-http apollo-cache-inmemory graphql-tag
 npm i apollo-link-error

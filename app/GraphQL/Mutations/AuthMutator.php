@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Nuwave\Lighthouse\Exceptions\AuthenticationException;
+use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class AuthMutator
@@ -42,8 +44,7 @@ class AuthMutator
         ]);
 
         if ($validator->fails()) {
-            // return ['errors' => $validator->errors()];
-            return 'zla walidacja';
+            throw new ValidationException($validator);
         }
 
         if (Auth::attempt($credentials)) {
@@ -51,11 +52,10 @@ class AuthMutator
             $token = $user->createToken('FlashcardsUserToken')->accessToken;
             Cookie::queue('_token', $token, 1800, '/', $context->request->getHost(), false, true);
             Cookie::queue(Cookie::make('name', 'value', 15));
-            return 'zalogowano';
+            return true;
         }
 
-        return 'niezalogowano';
-        // return ['errors' => $validator->errors()];
+        throw new AuthenticationException('Authentication Failed');
     }
 
     public function register($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
@@ -88,8 +88,8 @@ class AuthMutator
         Cookie::forget('_token');
 
         return [
-            'status' => 'TOKEN_REVOKED',
-            'message' => 'Your session has been terminated',
+            'status' => 'LOGOUT',
+            'message' => 'Logout.',
         ];
 
     }
