@@ -9,29 +9,24 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
 #Think of queries as REST resources which can take arguments and return a fixed result.
+
+type User {
+    id: Int!,
+    username: String!
+    email: String!
+    cards_count: Int! @count(relation: "cards")
+    decks: [Deck!]! @hasMany
+    cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])
+}
+
 type Query {
     users: [User!]! @paginate(defaultCount: 10)
-    user(id: ID @eq): User @find
+    profile(username: String! @eq): User @find
     deck(id: ID @eq): Deck @find
+    me: User! @middleware(checks:["auth:api"]) @auth(guard: "api")
+    user(username: String! @eq): User @find
 }
-#In contrast to the Query type, the fields of the Mutation type are allowed to change data on the server.
-# type Mutation {
-#   createUser(name: String!, email: String!, password: String!): User
-#   updateUser(id: ID, email: String, password: String): User
-#   deleteUser(id: ID): User
-# }
 
-
-#Rather than providing a single response, the fields of the Subscription type return a stream of responses, with real-time updates.
-# type Subscription {
-#   newUser: User
-# }
-
-# input LoginInput {
-#       username: String @rules(apply: ["required_without:data.email", "string", "nullable", "exists:users,username"])
-#       email: String @rules(apply: ["required_without:data.username", "string", "nullable", "exists:users,email"])
-#       password: String! @rules(apply: ["required", "string"])
-# }
 
 input LoginInput {
       login: String
@@ -50,13 +45,26 @@ type LogoutResponse {
     message: String
 }
 
-type Mutation {
+type Mutation @middleware(checks: ["auth:api"]) {
+      logout: LogoutResponse!
+      @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@logout")
+
+      editProfile(
+          id: Int!
+          username: String
+          email: String
+          password: String
+          ): User @update @editProfile
+
+          removeProfile(
+          id: Int!
+          ): User @delete
+}
+
+extend type Mutation {
     login(data: LoginInput @spread): Boolean!
     @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@login")
 
   register(data: RegisterInput!): Boolean!
   @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@register")
-
-  logout: LogoutResponse! @protect(guards: ["api"])
-  @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@logout")
 }

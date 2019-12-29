@@ -1,0 +1,32 @@
+query profile($username: String!) {
+  profile(username: $username) {
+    id
+    username
+    email
+    cards_count
+    decks {
+      title
+      description
+      slug
+      created_at
+      cards_count
+    }
+  }
+}
+mutation editProfile($id: Int!, $username: String, $email: String, $password: String) {
+  editProfile(
+      id: $id, username: $username, email: $email, password: $password
+  ) {
+      username
+      email
+  }
+}
+
+mutation removeProfile($id: Int!) {
+  removeProfile(
+      id: $id
+  ) {
+      username
+      email
+  }
+}

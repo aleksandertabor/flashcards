@@ -62,23 +62,22 @@ export default {
   created() {
     this.loading = true;
 
-    console.log(this.additionalView.length);
-
     const profile = this.$store
       .dispatch("profile", this.$route.params.username)
       .then(response => {
-        this.userData = response.data.data;
+        this.userData = response.data.profile;
       })
       .catch(error => {
         this.$router.push({ name: "home" });
-      });
+      })
+      .then(() => (this.loading = false));
 
     profile.then(() => {
       if (this.$route.params.username === this.$store.getters.user.username) {
         this.$store
-          .dispatch("editProfile", this.$route.params.username)
+          .dispatch("me")
           .then(response => {
-            this.editable = response.data.data.editable;
+            this.editable = true;
           })
           .catch(error => {
             this.editable = false;
@@ -96,9 +95,6 @@ export default {
       } else {
         this.additionalView = view;
       }
-    },
-    save() {
-      return 0;
     }
   }
 };

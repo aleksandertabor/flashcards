@@ -9,7 +9,7 @@ const getters = {
         return state.user
     },
     isAuthenticated: state => {
-        return state.user.token !== null
+        return state.user.email
     }
 }
 

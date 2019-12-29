@@ -12,3 +12,10 @@ mutation logout {
 mutation register($data: RegisterInput!) {
   register(data: $data)
 }
+
+query me {
+    me {
+        username
+        email
+    }
+}

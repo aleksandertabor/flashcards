@@ -8,7 +8,6 @@ const state = {
     user: JSON.parse(localStorage.getItem('user')) || {
         username: null,
         email: null,
-        token: null
     }
 }
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\GraphQL\Resolvers;
 
+use App\Exceptions\LoginException;
 use App\User;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -8,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Nuwave\Lighthouse\Exceptions\AuthenticationException;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
@@ -49,11 +49,13 @@ class AuthResolver
             $user = Auth::user();
             $token = $user->createToken('FlashcardsUserToken')->accessToken;
             Cookie::queue('_token', $token, 1800, '/', $context->request->getHost(), false, true);
-            Cookie::queue(Cookie::make('name', 'value', 15));
             return true;
         }
 
-        throw new AuthenticationException('Authentication Failed');
+        throw new LoginException(
+            'Check your password or connection.',
+            'Wrong password or server problems.'
+        );
     }
 
     public function register($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
@@ -83,7 +85,7 @@ class AuthResolver
     {
 
         Auth::guard('api')->user()->token()->revoke();
-        Cookie::forget('_token');
+        Cookie::queue(Cookie::forget('_token'));
 
         return [
             'status' => 'LOGOUT',

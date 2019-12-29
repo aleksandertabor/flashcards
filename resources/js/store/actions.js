@@ -1,34 +1,16 @@
 import apolloClient from "../apollo";
 import {
-    login
+    login,
+    me,
+    logout
 } from "../queries/auth.gql";
+import {
+    profile,
+    editProfile,
+    removeProfile
+} from "../queries/profile.gql";
 const actions = {
     login(context, payload) {
-        // return new Promise((resolve, reject) => {
-        // axios
-        //     .post("/api/login", payload)
-        //     .then(response => {
-        //         const user = response.data;
-        //         context.commit('login', user);
-        //         localStorage.setItem('user', JSON.stringify(user))
-        //         resolve(response)
-        //     })
-        //     .catch(error => {
-        //         reject(error)
-        //     })
-        // console.log(payload);
-        // resolve(
-        //                 apolloClient.mutate({
-        //                     mutation: gql `mutation login($data: LoginInput) {
-        //   login(data: $data)
-        // }`,
-        //                     variables: {
-        //                         data: payload
-        //                     }
-        //                 }
-
-
-        //                 )
         return new Promise((resolve, reject) => {
             apolloClient.mutate({
                     mutation: login,
@@ -37,34 +19,13 @@ const actions = {
                     }
                 })
                 .then(response => {
-                    const user = response.data;
-                    context.commit('login', user);
-                    localStorage.setItem('user', JSON.stringify(user))
-                    console.log("graphql response", response);
                     resolve(response)
                 })
                 .catch(error => {
-                    console.log("graphql error", {
-                        error
-                    });
                     reject(error)
                 })
 
         });
-
-        // )
-
-
-
-        // }
-
-
-        // )
-
-
-
-
-
     },
     register(context, payload) {
         return new Promise((resolve, reject) => {
@@ -80,63 +41,112 @@ const actions = {
                     reject(error)
                 })
         })
-
-
     },
-    checkUser(context) {
-        const user = localStorage.getItem('user');
-        if (user) {
-            context.commit('login', JSON.parse(user));
-        }
+    me(context) {
+        return new Promise((resolve, reject) => {
+            apolloClient.query({
+                    query: me,
+                })
+                .then(response => {
+                    const user = response.data.me;
+                    context.commit('login', user);
+                    localStorage.setItem('user', JSON.stringify(user))
+                    console.log("graphql response", response);
+                    resolve(response)
+                })
+                .catch(error => {
+                    console.log("graphql error", {
+                        error
+                    });
+                    reject(error)
+                })
+
+        });
     },
     logout(context) {
 
         if (context.getters.isAuthenticated) {
             return new Promise((resolve, reject) => {
-                axios
-                    .post("/api/logout")
+                apolloClient.mutate({
+                        mutation: logout,
+                    })
                     .then(response => {
+                        console.log({
+                            response
+                        });
                         localStorage.removeItem('user');
                         context.commit('logout');
-                        delete axios.defaults.headers.common['Authorization']
                         resolve(response)
                     })
                     .catch(error => {
-                        localStorage.removeItem('user');
-                        context.commit('logout');
                         reject(error)
                     })
-            })
+
+            });
         }
 
     },
     profile(context, payload) {
         return new Promise((resolve, reject) => {
-            axios
-                .get(`/api/users/${payload}`, )
+            console.log(payload);
+            apolloClient.query({
+                    query: profile,
+                    variables: {
+                        username: payload
+                    }
+                })
                 .then(response => {
                     resolve(response)
                 })
                 .catch(error => {
+                    console.log("graphql error", {
+                        error
+                    });
                     reject(error)
                 })
-        })
 
-
+        });
     },
     editProfile(context, payload) {
+        console.log("edtProfile payload", payload);
         return new Promise((resolve, reject) => {
-            axios
-                .get(`/api/users/${payload}/edit`, )
+            apolloClient.mutate({
+                    mutation: editProfile,
+                    variables: {
+                        id: payload.id,
+                        username: payload.username,
+                        email: payload.email,
+                        password: payload.password,
+                    }
+                })
                 .then(response => {
+                    console.log("editProfile", response);
                     resolve(response)
                 })
                 .catch(error => {
                     reject(error)
                 })
-        })
 
+        });
+    },
+    removeProfile(context, payload) {
+        return new Promise((resolve, reject) => {
+            apolloClient.mutate({
+                    mutation: removeProfile,
+                    variables: {
+                        id: payload.id,
+                    }
+                })
+                .then(response => {
+                    console.log("removeProfile res", response);
+                    resolve(response)
+                })
+                .catch(error => {
+                    console.log("removeProfile err", error);
+                    reject(error)
+                })
 
+        });
     },
     decks(context, payload) {
         return new Promise((resolve, reject) => {

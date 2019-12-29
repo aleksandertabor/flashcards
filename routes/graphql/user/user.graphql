@@ -1,7 +1,0 @@
-type User {
-    id: ID!
-    email: String!
-    created_at: DateTime!
-    updated_at: DateTime!
-    decks: [Deck!]! @hasMany
-}

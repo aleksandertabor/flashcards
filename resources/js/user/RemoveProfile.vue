@@ -22,7 +22,15 @@ export default {
   },
   methods: {
     remove() {
-      return 0;
+      this.loading = true;
+
+      this.$store
+        .dispatch("removeProfile", this.userData)
+        .then(response => {
+          this.$router.push({ name: "home" });
+        })
+        .catch(error => {})
+        .then(() => (this.loading = false));
     }
   }
 };

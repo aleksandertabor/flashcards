@@ -4,7 +4,7 @@ const mutations = {
         // state.user.isAuthenticated = true;
     },
     logout(state) {
-        state.user.token = null;
+        state.user.email = null;
         // state.user.isAuthenticated = false;
     },
     decks(state, payload) {

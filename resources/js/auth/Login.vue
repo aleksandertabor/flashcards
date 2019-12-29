@@ -37,11 +37,7 @@
         >{{ error }}</div>
       </div>
       <div class="form-group col-md-12">
-        <div
-          class="alert alert-danger"
-          v-for="(error, index) in this.errorFor('login')"
-          :key="'login' + index"
-        >{{ error }}</div>
+        <div class="alert alert-danger" v-if="error">{{ error }}</div>
       </div>
     </div>
     <button class="btn btn-secondary btn-block" @click="login" :disabled="loading">Login</button>
@@ -58,7 +54,8 @@ export default {
       },
       loading: false,
       status: null,
-      errors: null
+      errors: null,
+      error: null
     };
   },
   created() {
@@ -72,9 +69,7 @@ export default {
       this.$store
         .dispatch("login", this.user)
         .then(response => {
-          //   console.log(response);
-          //   console.log("logged");
-          console.log({ response });
+          this.$store.dispatch("me");
           this.$router.push({ name: "home" });
         })
         .catch(error => {
@@ -83,9 +78,9 @@ export default {
             this.errors = error.graphQLErrors.validationErrors;
           }
 
-          //   if (error.message !== null) {
-          //     this.errors["login"] = error.message;
-          //   }
+          if (error.message !== null) {
+            this.error = error.message;
+          }
           //   if (401 === error.response.status) {
           //     this.errors = error.response.data.errors;
           //   }

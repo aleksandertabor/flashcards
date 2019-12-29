@@ -35,15 +35,17 @@ const errorLink = onError(({
 }) => {
     if (graphQLErrors)
         for (let err of graphQLErrors) {
+            console.log(err);
             switch (err.extensions.category) {
                 case 'authentication':
-                    // app.$router.push({
-                    //     name: 'login'
-                    // })
+                    app.$router.push({
+                        name: 'login'
+                    })
                     // graphQLErrors.validationErrors['password'] = err.message;
                     console.log("No authenticated.");
                 case 'validation':
                     graphQLErrors.validationErrors = err.extensions.validation;
+                    // return err.extensions.validation;
                     // console.log('validation errors', err.extensions.validation);
             }
         }
