@@ -1,14 +1,20 @@
 const mutations = {
     login(state, payload) {
+        state.isAuthenticated = true;
+    },
+    saveToken(state, payload) {
+        state.token = payload.token;
+        state.expiry = payload.expiry;
+    },
+    me(state, payload) {
         state.user = payload;
-        // state.user.isAuthenticated = true;
     },
     logout(state) {
+        state.user.username = null;
         state.user.email = null;
-        // state.user.isAuthenticated = false;
+        state.isAuthenticated = false;
     },
     decks(state, payload) {
-        console.log(payload);
         state.decks.push.apply(state.decks, payload)
     },
     resetDecks(state) {

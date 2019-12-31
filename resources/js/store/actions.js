@@ -1,6 +1,8 @@
 import apolloClient from "../apollo";
 import {
     login,
+    refresh_token,
+    register,
     me,
     logout
 } from "../queries/auth.gql";
@@ -19,6 +21,15 @@ const actions = {
                     }
                 })
                 .then(response => {
+                    const app_token = response.data.login.access_token;
+                    const app_token_expiry = response.data.login.expires_in;
+                    context.commit('login');
+                    context.commit('saveToken', {
+                        token: app_token,
+                        expiry: app_token_expiry
+                    });
+                    // localStorage.setItem('app_token', app_token)
+                    // localStorage.setItem('app_token_expiry', app_token_expiry)
                     resolve(response)
                 })
                 .catch(error => {
@@ -27,14 +38,46 @@ const actions = {
 
         });
     },
+    refresh_token(context) {
+        console.log("execution refresh token");
+        return new Promise((resolve, reject) => {
+            apolloClient.mutate({
+                    mutation: refresh_token,
+                    variables: {
+                        refresh: true
+                    }
+                })
+                .then(response => {
+                    const app_token = response.data.refresh_token.access_token;
+                    const app_token_expiry = response.data.refresh_token.expires_in;
+                    console.log(app_token);
+                    console.log(app_token_expiry);
+                    console.log("refrest token response", {
+                        response
+                    });
+                    context.commit('login');
+                    context.commit('saveToken', {
+                        token: app_token,
+                        expiry: app_token_expiry
+                    });
+                    resolve(response)
+                })
+                .catch(error => {
+                    console.log("refrest token error", error);
+                    reject(error)
+                })
+
+        });
+    },
     register(context, payload) {
         return new Promise((resolve, reject) => {
-            axios
-                .post("/api/register", payload)
+            apolloClient.mutate({
+                    mutation: register,
+                    variables: {
+                        data: payload
+                    }
+                })
                 .then(response => {
-                    const user = response.data;
-                    context.commit('login', user);
-                    localStorage.setItem('user', JSON.stringify(user))
                     resolve(response)
                 })
                 .catch(error => {
@@ -49,7 +92,7 @@ const actions = {
                 })
                 .then(response => {
                     const user = response.data.me;
-                    context.commit('login', user);
+                    context.commit('me', user);
                     localStorage.setItem('user', JSON.stringify(user))
                     console.log("graphql response", response);
                     resolve(response)
@@ -74,7 +117,6 @@ const actions = {
                         console.log({
                             response
                         });
-                        localStorage.removeItem('user');
                         context.commit('logout');
                         resolve(response)
                     })
@@ -117,7 +159,7 @@ const actions = {
                         username: payload.username,
                         email: payload.email,
                         password: payload.password,
-                    }
+                    },
                 })
                 .then(response => {
                     console.log("editProfile", response);
@@ -135,7 +177,7 @@ const actions = {
                     mutation: removeProfile,
                     variables: {
                         id: payload.id,
-                    }
+                    },
                 })
                 .then(response => {
                     console.log("removeProfile res", response);

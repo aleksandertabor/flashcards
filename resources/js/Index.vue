@@ -29,6 +29,7 @@
         <router-link class="btn nav-button" :to="{ name: 'deck-editor'}">
           <i class="fas fa-border-style"></i> Deck Editor
         </router-link>
+        <button class="btn btn-secondary btn-block" @click="refresh">Refresh</button>
       </div>
     </nav>
 
@@ -51,7 +52,22 @@ export default {
   //     `
   //   },
   computed: {},
-  created() {}
+  created() {},
+  methods: {
+    refresh() {
+      this.$store
+        .dispatch("refresh_token")
+        .then(response => {
+          console.log("refresh token index response", response);
+          this.$store.dispatch("me");
+          //   this.$router.push({ name: "home" });
+        })
+        .catch(error => {
+          console.log("refresh token index error", error);
+          this.$router.push({ name: "login" });
+        });
+    }
+  }
   //   computed: {
   //     isAuthenticated() {
   //       return this.$store.getters.isAuthenticated;

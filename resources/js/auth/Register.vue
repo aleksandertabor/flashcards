@@ -1,7 +1,7 @@
 <template>
   <div>
     <h6 class="text-uppercase text-secondary font-weight-bolder">Register</h6>
-    <div class="form-row" :class="[{'bg-success': this.loggedIn}]">
+    <div class="form-row" :class="[{'bg-success': this.registered}]">
       <div class="form-group col-md-12">
         <label for="email">E-mail</label>
         <input
@@ -9,7 +9,7 @@
           name="email"
           class="form-control form-control-sm"
           placeholder="test@example.com"
-          v-model="user.email"
+          v-model="userData.email"
           @keyup.enter="register"
           :class="[{'is-invalid': this.errorFor('email')}]"
         />
@@ -26,7 +26,7 @@
           type="password"
           name="password"
           class="form-control form-control-sm"
-          v-model="user.password"
+          v-model="userData.password"
           @keyup.enter="register"
           :class="[{'is-invalid': this.errorFor('password')}]"
         />
@@ -34,6 +34,23 @@
           class="invalid-tooltip"
           v-for="(error, index) in this.errorFor('password')"
           :key="'password' + index"
+        >{{ error }}</div>
+      </div>
+
+      <div class="form-group col-md-12">
+        <label for="password_confirmation">Password Confirmation</label>
+        <input
+          type="password"
+          name="password_confirmation"
+          class="form-control form-control-sm"
+          v-model="userData.password_confirmation"
+          @keyup.enter="register"
+          :class="[{'is-invalid': this.errorFor('password_confirmation')}]"
+        />
+        <div
+          class="invalid-tooltip"
+          v-for="(error, index) in this.errorFor('password_confirmation')"
+          :key="'password_confirmation' + index"
         >{{ error }}</div>
       </div>
     </div>
@@ -51,9 +68,10 @@
 export default {
   data() {
     return {
-      user: {
+      userData: {
         email: null,
-        password: null
+        password: null,
+        password_confirmation: null
       },
       loading: false,
       status: null,
@@ -69,15 +87,15 @@ export default {
       this.errors = null;
 
       this.$store
-        .dispatch("register", this.user)
+        .dispatch("register", this.userData)
         .then(response => {
+          this.status = 201;
           this.$router.push({ name: "home" });
         })
         .catch(error => {
-          if (401 === error.response.status) {
-            this.errors = error.response.data.errors;
+          if (error.graphQLErrors.validationErrors !== undefined) {
+            this.errors = error.graphQLErrors.validationErrors;
           }
-          this.status = error.response.status;
         })
         .then(() => (this.loading = false));
     },
@@ -87,10 +105,10 @@ export default {
   },
   computed: {
     hasErrors() {
-      return 401 === this.status && this.errors !== null;
+      return this.errors !== null;
     },
-    loggedIn() {
-      return 200 === this.status;
+    registered() {
+      return 201 === this.status;
     }
   }
 };

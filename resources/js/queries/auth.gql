@@ -1,15 +1,25 @@
 mutation login($data: LoginInput) {
-  login(data: $data)
+  login(data: $data) {
+      access_token
+      expires_in
+  }
+}
+
+mutation refresh_token($refresh: Boolean) {
+  refresh_token(refresh: $refresh) {
+      access_token
+      expires_in
+  }
 }
 
 mutation logout {
-  logout {
+logout {
     status
     message
   }
 }
 
-mutation register($data: RegisterInput!) {
+mutation register($data: RegisterInput) {
   register(data: $data)
 }
 

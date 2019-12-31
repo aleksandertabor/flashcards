@@ -9,7 +9,7 @@
           name="login"
           class="form-control form-control-sm"
           placeholder="Username/test@example.com"
-          v-model="user.login"
+          v-model="userData.login"
           @keyup.enter="login"
           :class="[{'is-invalid': this.errorFor('email') || this.errorFor('username')}]"
         />
@@ -26,7 +26,7 @@
           type="password"
           name="password"
           class="form-control form-control-sm"
-          v-model="user.password"
+          v-model="userData.password"
           @keyup.enter="login"
           :class="[{'is-invalid': this.errorFor('password')}]"
         />
@@ -48,7 +48,7 @@
 export default {
   data() {
     return {
-      user: {
+      userData: {
         login: null,
         password: null
       },
@@ -67,7 +67,7 @@ export default {
       this.errors = null;
 
       this.$store
-        .dispatch("login", this.user)
+        .dispatch("login", this.userData)
         .then(response => {
           this.$store.dispatch("me");
           this.$router.push({ name: "home" });

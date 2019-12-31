@@ -34,16 +34,22 @@ input LoginInput {
 }
 
 input RegisterInput {
-    email: String! @rules(apply: ["required", "string", "email", "max:255", "unique:users,email"])
-    password: String! @rules(apply: ["required", "string", "min:6"]) @bcrypt
+    email: String
+    password: String
+    password_confirmation: String
 }
 
-# type LoginResponse {}
+type LoginResponse {
+     access_token: String!
+     refresh_token: String!
+     expires_in: Int!
+}
 
 type LogoutResponse {
     status: String!
     message: String
 }
+
 
 type Mutation @middleware(checks: ["auth:api"]) {
       logout: LogoutResponse!
@@ -59,12 +65,21 @@ type Mutation @middleware(checks: ["auth:api"]) {
           removeProfile(
           id: Int!
           ): User @delete
+
+
+
+
 }
 
 extend type Mutation {
-    login(data: LoginInput @spread): Boolean!
+    login(data: LoginInput @spread): LoginResponse!
     @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@login")
 
-  register(data: RegisterInput!): Boolean!
-  @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@register")
+refresh_token(refresh: Boolean): LoginResponse!
+    @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@refresh_token")
+
+    register(data:
+        RegisterInput @spread
+    ): Boolean!
+    @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@register")
 }

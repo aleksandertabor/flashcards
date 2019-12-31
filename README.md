@@ -4,7 +4,7 @@
 ```bash
 composer update
 npm install
-php artisan passport:client --personal
+php artisan passport:client --password
 ```
 
 ## My steps to create this project (from zero):
@@ -32,4 +32,5 @@ composer require nuwave/lighthouse
 composer require mll-lab/laravel-graphql-playground
 npm install --save vue-apollo graphql apollo-client apollo-link apollo-link-http apollo-cache-inmemory graphql-tag
 npm i apollo-link-error
+npm i apollo-link-context
 ```

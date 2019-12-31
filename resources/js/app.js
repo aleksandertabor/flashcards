@@ -19,16 +19,16 @@ import actions from './store/actions';
 import getters from './store/getters';
 import state from "./store/state";
 
-const apolloProvider = new VueApollo({
-    defaultClient: apolloClient,
-})
-
 const store = new Vuex.Store({
     state,
     mutations,
     actions,
     getters
 });
+
+const apolloProvider = new VueApollo({
+    defaultClient: apolloClient,
+})
 
 
 Vue.mixin({

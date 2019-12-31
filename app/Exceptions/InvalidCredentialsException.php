@@ -5,7 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Nuwave\Lighthouse\Exceptions\RendersErrorsExtensions;
 
-class LoginException extends Exception implements RendersErrorsExtensions
+class InvalidCredentialsException extends Exception implements RendersErrorsExtensions
 {
     /**
      * @var @string
@@ -47,7 +47,7 @@ class LoginException extends Exception implements RendersErrorsExtensions
      */
     public function getCategory(): string
     {
-        return 'login';
+        return 'credentials';
     }
 
     /**
@@ -59,7 +59,7 @@ class LoginException extends Exception implements RendersErrorsExtensions
     public function extensionsContent(): array
     {
         return [
-            'some' => 'Login Error.',
+            'some' => 'Credentials Error.',
             'reason' => $this->reason,
         ];
     }

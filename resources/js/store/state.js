@@ -5,10 +5,13 @@ const state = {
     cards: [],
     errors: [],
     hasPrevious: false,
+    isAuthenticated: false,
     user: JSON.parse(localStorage.getItem('user')) || {
         username: null,
         email: null,
-    }
+    },
+    token: null,
+    expiry: null,
 }
 
 export default state;
