@@ -26,10 +26,24 @@
         >
           <i class="fas fa-sign-out-alt"></i> Logout
         </router-link>
-        <router-link class="btn nav-button" :to="{ name: 'deck-editor'}">
+        <router-link v-if="isAuthenticated" class="btn nav-button" :to="{ name: 'deck-editor'}">
           <i class="fas fa-border-style"></i> Deck Editor
         </router-link>
-        <button class="btn btn-secondary btn-block" @click="refresh">Refresh</button>
+        <!-- <ApolloQuery v-if="isAuthenticated" :query="require('./queries/me.gql')"> -->
+        <!-- <template v-slot="{ result: { error, data }, isLoading }"> -->
+        <!-- Loading -->
+        <!-- <div v-if="isLoading" class="loading apollo">Loading...</div> -->
+
+        <!-- Error -->
+        <!-- <div v-else-if="error" class="error apollo">An error occurred</div> -->
+
+        <!-- Result -->
+        <!-- <div v-else-if="data" class="result apollo">{{ data.me.username }}</div> -->
+
+        <!-- No result -->
+        <!-- <div v-else class="no-result apollo">No result :(</div> -->
+        <!-- </template> -->
+        <!-- </ApolloQuery> -->
       </div>
     </nav>
 
@@ -40,7 +54,6 @@
 </template>
 
 <script>
-import gql from "graphql-tag";
 export default {
   //   apollo: {
   //     user: gql`
@@ -51,23 +64,13 @@ export default {
   //       }
   //     `
   //   },
+  data() {
+    return {
+      loading: true
+    };
+  },
   computed: {},
-  created() {},
-  methods: {
-    refresh() {
-      this.$store
-        .dispatch("refresh_token")
-        .then(response => {
-          console.log("refresh token index response", response);
-          this.$store.dispatch("me");
-          //   this.$router.push({ name: "home" });
-        })
-        .catch(error => {
-          console.log("refresh token index error", error);
-          this.$router.push({ name: "login" });
-        });
-    }
-  }
+  created() {}
   //   computed: {
   //     isAuthenticated() {
   //       return this.$store.getters.isAuthenticated;

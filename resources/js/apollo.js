@@ -23,7 +23,7 @@ import {
 // HTTP connection to the API
 const httpLink = createHttpLink({
     // You should use an absolute URL here
-    uri: 'http://localhost:3000/api/graphql',
+    uri: 'http://localhost:8000/api/graphql',
     headers: {
         // 'X-CSRF-TOKEN': Cookies.get('csrftoken'),
         // 'Authorization': `Bearer ${app.$store.getters.token}`,
@@ -42,9 +42,9 @@ const errorLink = onError(({
             console.log(err);
             switch (err.extensions.category) {
                 case 'authentication':
-                    app.$router.push({
-                        name: 'login'
-                    })
+                    // app.$router.push({
+                    //     name: 'login'
+                    // })
                     // graphQLErrors.validationErrors['password'] = err.message;
                     console.log("No authenticated.");
                 case 'validation':
@@ -60,7 +60,14 @@ const authLink = setContext((_, {
     headers
 }) => {
     // get the authentication token from local storage if it exists
-    const token = app.$store.getters.token;
+    let storageUser = JSON.parse(localStorage.getItem('user')) || {};
+    let token = "";
+    if (Object.entries(storageUser).length !== 0 && storageUser.constructor === Object) {
+        token = storageUser.access_token;
+    } else {
+        token = app.$store.getters.token;
+    }
+    console.log("wysylam ten token do bearera: ", token);
     // return the headers to the context so httpLink can read them
     return {
         headers: {

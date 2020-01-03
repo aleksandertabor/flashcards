@@ -4,7 +4,9 @@
 export default {
   created() {
     this.$store.dispatch("logout").then(response => {
-      this.$router.push({ name: "home" });
+      this.$router.push({
+        name: "login"
+      });
     });
   }
 };

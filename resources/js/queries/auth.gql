@@ -2,6 +2,10 @@ mutation login($data: LoginInput) {
   login(data: $data) {
       access_token
       expires_in
+      user {
+          username
+          email
+      }
   }
 }
 
@@ -20,7 +24,14 @@ logout {
 }
 
 mutation register($data: RegisterInput) {
-  register(data: $data)
+  register(data: $data) {
+      access_token
+      expires_in
+      user {
+          username
+          email
+      }
+  }
 }
 
 query me {

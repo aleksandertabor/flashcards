@@ -1,7 +1,7 @@
 <template>
   <div>
     <h6 class="text-uppercase text-secondary font-weight-bolder">Login</h6>
-    <div class="form-row" :class="[{'bg-success': this.loggedIn}]">
+    <div class="form-row">
       <div class="form-group col-md-12">
         <label for="login">Username/E-mail</label>
         <input
@@ -58,9 +58,6 @@ export default {
       error: null
     };
   },
-  created() {
-    //   this.loading = true;
-  },
   methods: {
     login() {
       this.loading = true;
@@ -69,40 +66,25 @@ export default {
       this.$store
         .dispatch("login", this.userData)
         .then(response => {
-          this.$store.dispatch("me");
           this.$router.push({ name: "home" });
         })
         .catch(error => {
-          console.log(error.message);
-          if (error.graphQLErrors.validationErrors !== undefined) {
-            this.errors = error.graphQLErrors.validationErrors;
+          const {
+            graphQLErrors: { validationErrors }
+          } = error;
+          const {
+            graphQLErrors: {
+              0: { message }
+            }
+          } = error;
+          if (validationErrors) {
+            this.errors = validationErrors;
           }
-
-          if (error.message !== null) {
-            this.error = error.message;
+          if (message) {
+            this.error = message;
           }
-          //   if (401 === error.response.status) {
-          //     this.errors = error.response.data.errors;
-          //   }
-          //   this.status = error.response.status;
         })
         .then(() => (this.loading = false));
-
-      //   axios
-      //     .post("/api/login", { email: this.email, password: this.password })
-      //     .then(response => {
-      //       this.status = response.status;
-      //       this.access_token = response.data.access_token;
-      //       this.$store.dispatch("login", this.access_token);
-      //     })
-      //     .catch(error => {
-      //       console.log(error.response);
-      //       if (401 === error.response.status) {
-      //         this.errors = error.response.data.errors;
-      //       }
-      //       this.status = error.response.status;
-      //     })
-      //     .then(() => (this.loading = false));
     },
     errorFor(field) {
       return this.hasErrors && this.errors[field] ? this.errors[field] : null;
@@ -110,11 +92,7 @@ export default {
   },
   computed: {
     hasErrors() {
-      // return 401 === this.status && this.errors !== null;
       return this.errors !== null;
-    },
-    loggedIn() {
-      return 200 === this.status;
     }
   }
 };

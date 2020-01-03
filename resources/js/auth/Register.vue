@@ -1,7 +1,7 @@
 <template>
   <div>
     <h6 class="text-uppercase text-secondary font-weight-bolder">Register</h6>
-    <div class="form-row" :class="[{'bg-success': this.registered}]">
+    <div class="form-row">
       <div class="form-group col-md-12">
         <label for="email">E-mail</label>
         <input
@@ -53,13 +53,10 @@
           :key="'password_confirmation' + index"
         >{{ error }}</div>
       </div>
+      <div class="form-group col-md-12">
+        <div class="alert alert-danger" v-if="error">{{ error }}</div>
+      </div>
     </div>
-
-    <div
-      class="bg-danger"
-      v-for="(error, index) in this.errorFor('register')"
-      :key="'register' + index"
-    >{{ error }}</div>
     <button class="btn btn-secondary btn-block" @click="register" :disabled="loading">Register</button>
   </div>
 </template>
@@ -75,11 +72,9 @@ export default {
       },
       loading: false,
       status: null,
-      errors: null
+      errors: null,
+      error: null
     };
-  },
-  created() {
-    //   this.loading = true;
   },
   methods: {
     register() {
@@ -89,12 +84,22 @@ export default {
       this.$store
         .dispatch("register", this.userData)
         .then(response => {
-          this.status = 201;
           this.$router.push({ name: "home" });
         })
         .catch(error => {
-          if (error.graphQLErrors.validationErrors !== undefined) {
-            this.errors = error.graphQLErrors.validationErrors;
+          const {
+            graphQLErrors: { validationErrors }
+          } = error;
+          const {
+            graphQLErrors: {
+              0: { message }
+            }
+          } = error;
+          if (validationErrors) {
+            this.errors = validationErrors;
+          }
+          if (message) {
+            this.error = message;
           }
         })
         .then(() => (this.loading = false));
@@ -106,9 +111,6 @@ export default {
   computed: {
     hasErrors() {
       return this.errors !== null;
-    },
-    registered() {
-      return 201 === this.status;
     }
   }
 };

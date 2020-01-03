@@ -42,7 +42,14 @@ input RegisterInput {
 type LoginResponse {
      access_token: String!
      refresh_token: String!
-     expires_in: Int!
+     expires_in: DateTime!
+     user: User!
+}
+
+type RefreshResponse {
+     access_token: String!
+     refresh_token: String!
+     expires_in: DateTime!
 }
 
 type LogoutResponse {
@@ -52,8 +59,6 @@ type LogoutResponse {
 
 
 type Mutation @middleware(checks: ["auth:api"]) {
-      logout: LogoutResponse!
-      @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@logout")
 
       editProfile(
           id: Int!
@@ -72,14 +77,18 @@ type Mutation @middleware(checks: ["auth:api"]) {
 }
 
 extend type Mutation {
+
+          logout: LogoutResponse!
+      @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@logout")
+
     login(data: LoginInput @spread): LoginResponse!
     @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@login")
 
-refresh_token(refresh: Boolean): LoginResponse!
+refresh_token(refresh: Boolean): RefreshResponse!
     @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@refresh_token")
 
     register(data:
         RegisterInput @spread
-    ): Boolean!
+    ): LoginResponse!
     @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@register")
 }

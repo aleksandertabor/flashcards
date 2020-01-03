@@ -9,10 +9,13 @@ const getters = {
         return state.user
     },
     isAuthenticated: state => {
-        return state.token !== null
+        return !!state.user.access_token
     },
     token: state => {
-        return state.token
+        return state.user.access_token
+    },
+    expiry: state => {
+        return state.user.expires_in
     }
 }
 

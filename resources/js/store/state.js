@@ -4,14 +4,7 @@ const state = {
     query: "",
     cards: [],
     errors: [],
-    hasPrevious: false,
-    isAuthenticated: false,
-    user: JSON.parse(localStorage.getItem('user')) || {
-        username: null,
-        email: null,
-    },
-    token: null,
-    expiry: null,
+    user: JSON.parse(localStorage.getItem('user')) || {},
 }
 
 export default state;

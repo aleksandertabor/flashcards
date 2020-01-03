@@ -21,15 +21,15 @@ const actions = {
                     }
                 })
                 .then(response => {
-                    const app_token = response.data.login.access_token;
-                    const app_token_expiry = response.data.login.expires_in;
-                    context.commit('login');
-                    context.commit('saveToken', {
-                        token: app_token,
-                        expiry: app_token_expiry
-                    });
-                    // localStorage.setItem('app_token', app_token)
-                    // localStorage.setItem('app_token_expiry', app_token_expiry)
+                    let user = {
+                        username: response.data.login.user.username,
+                        email: response.data.login.user.email,
+                        access_token: response.data.login.access_token,
+                        expires_in: response.data.login.expires_in,
+                    }
+                    console.log("user:", user);
+                    context.commit('login', user);
+                    localStorage.setItem('user', JSON.stringify(user))
                     resolve(response)
                 })
                 .catch(error => {
@@ -39,7 +39,6 @@ const actions = {
         });
     },
     refresh_token(context) {
-        console.log("execution refresh token");
         return new Promise((resolve, reject) => {
             apolloClient.mutate({
                     mutation: refresh_token,
@@ -48,22 +47,19 @@ const actions = {
                     }
                 })
                 .then(response => {
-                    const app_token = response.data.refresh_token.access_token;
-                    const app_token_expiry = response.data.refresh_token.expires_in;
-                    console.log(app_token);
-                    console.log(app_token_expiry);
-                    console.log("refrest token response", {
-                        response
-                    });
-                    context.commit('login');
-                    context.commit('saveToken', {
-                        token: app_token,
-                        expiry: app_token_expiry
-                    });
+                    let user = {
+                        access_token: response.data.refresh_token.access_token,
+                        expires_in: response.data.refresh_token.expires_in,
+                    }
+                    let currentUser = JSON.parse(localStorage.getItem('user'))
+                    currentUser.access_token = user.access_token;
+                    currentUser.expires_in = user.expires_in;
+                    localStorage.setItem('user', JSON.stringify(currentUser))
+                    context.commit('refresh', currentUser);
                     resolve(response)
                 })
                 .catch(error => {
-                    console.log("refrest token error", error);
+                    // console.log("refrest token error", error);
                     reject(error)
                 })
 
@@ -78,6 +74,14 @@ const actions = {
                     }
                 })
                 .then(response => {
+                    let user = {
+                        username: response.data.register.user.username,
+                        email: response.data.register.user.email,
+                        access_token: response.data.register.access_token,
+                        expires_in: response.data.register.expires_in,
+                    }
+                    context.commit('login', user);
+                    localStorage.setItem('user', JSON.stringify(user))
                     resolve(response)
                 })
                 .catch(error => {
@@ -91,10 +95,9 @@ const actions = {
                     query: me,
                 })
                 .then(response => {
-                    const user = response.data.me;
-                    context.commit('me', user);
-                    localStorage.setItem('user', JSON.stringify(user))
-                    console.log("graphql response", response);
+                    // const user = response.data.me;
+                    // context.commit('me', user);
+                    // localStorage.setItem('user', JSON.stringify(user))
                     resolve(response)
                 })
                 .catch(error => {
@@ -108,25 +111,30 @@ const actions = {
     },
     logout(context) {
 
-        if (context.getters.isAuthenticated) {
-            return new Promise((resolve, reject) => {
-                apolloClient.mutate({
-                        mutation: logout,
-                    })
-                    .then(response => {
-                        console.log({
-                            response
-                        });
-                        context.commit('logout');
-                        resolve(response)
-                    })
-                    .catch(error => {
-                        reject(error)
-                    })
+        return new Promise((resolve, reject) => {
+            apolloClient.mutate({
+                    mutation: logout,
+                })
+                .then(response => {
+                    console.log({
+                        response
+                    });
+                    context.commit('logout');
+                    localStorage.removeItem('user')
+                    localStorage.setItem('logout', Date.now())
+                    resolve(response)
+                })
+                .catch(error => {
+                    reject(error)
+                })
 
-            });
-        }
+        });
 
+    },
+    forceLogout(context) {
+        context.commit('logout');
+        localStorage.removeItem('user')
+        // localStorage.setItem('logout', Date.now())
     },
     profile(context, payload) {
         return new Promise((resolve, reject) => {

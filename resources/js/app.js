@@ -65,16 +65,84 @@ router.beforeEach((to, from, next) => {
 })
 
 
+
 export const app = new Vue({
     el: '#app',
     store,
     router,
     apolloProvider,
+    // components: {
+    //     "index": Index
+    // },
     components: {
         "index": Index
     },
     // //? add to mixins?
-    // beforeCreate() {
-    //     this.$store.dispatch("checkUser");
-    // },
+    methods: {
+        onStorageUpdate(event) {
+            if (event.key === "user") {
+                // if someone removes elsewhere user item
+                if (event.newValue === null) {
+                    this.logout();
+                }
+            }
+            if (event.key === "logout") {
+                console.log("Logout");
+                this.logout();
+            }
+        },
+        auth() {
+            return new Promise((resolve, reject) => {
+                if (this.$store.getters.token) {
+                    const expiry = this.$store.getters.expiry;
+                    // if expired - lesser than minute
+                    if (new Date(new Date(expiry) - 1 * 60000) <= new Date(expiry)) {
+                        this.$store
+                            .dispatch("refresh_token")
+                            .then(response => {
+                                // this.$store.dispatch("me");
+                            })
+                            .catch(error => {
+                                this.logout();
+                            })
+                    }
+                } else {
+                    // if no token
+                    this.$store
+                        .dispatch("refresh_token")
+                        .then(response => {
+                            // this.$store.dispatch("me");
+                        }).catch(error => {
+                            // what if no token and no refresh_token??
+                            console.log("You are guest.");
+                        })
+
+
+                }
+                resolve(true)
+            });
+        },
+        logout() {
+            this.$store.dispatch('forceLogout');
+            this.$router.push({
+                name: "login"
+            });
+        }
+    },
+    created() {
+
+    },
+    mounted() {
+        this.auth().then(res => {
+            this.authInterval = setInterval(() => this.auth(), 60000);
+        });
+
+        window.addEventListener("storage", this.onStorageUpdate);
+
+    },
+    beforeDestroy() {
+        clearInterval(this.authInterval)
+        window.removeEventListener('storage', this.onStorageUpdate)
+        window.localStorage.removeItem('logout')
+    },
 });

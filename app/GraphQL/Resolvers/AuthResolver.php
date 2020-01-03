@@ -2,7 +2,9 @@
 namespace App\GraphQL\Resolvers;
 
 use App\Exceptions\InvalidCredentialsException;
+use App\Exceptions\RefreshTokenException;
 use App\User;
+use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Arr;
@@ -27,7 +29,6 @@ class AuthResolver
      */
     public function login($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        // $login = $args['username'] ?? $args['email'];
         $login = $args['login'];
 
         $loginType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
@@ -62,7 +63,11 @@ class AuthResolver
         $decodedResponse = json_decode($response->getContent(), true);
 
         if ($response->getStatusCode() === 200) {
-            Cookie::queue('_refresh_token', $decodedResponse['refresh_token'], 1800, '/', $context->request->getHost(), false, true);
+            $dt = Carbon::now();
+            $decodedResponse['expires_in'] = $dt->seconds($decodedResponse['expires_in'])->toDateTimeString();
+            Cookie::queue('_refresh_token', $decodedResponse['refresh_token'], $dt->diffInMinutes($dt->copy()->addDays(30)), '/', $context->request->getHost(), false, true);
+            $user = User::where($loginType, $credentials['username'])->firstOrFail();
+            $decodedResponse['user'] = $user->toArray();
             return $decodedResponse;
         }
 
@@ -70,21 +75,6 @@ class AuthResolver
             'Check your password or connection.',
             'Wrong password or server problems.'
         );
-
-        // throw new CredentialsException(
-        //     'Check your password or connection.',
-        //     'Wrong password or server problems.'
-        // );
-
-// if (Auth::attempt($credentials)) {
-        // }
-
-        // $user = Auth::user();
-        // $token = $user->createToken('FlashcardsUserToken')->accessToken;
-        // $refreshToken = $user->createRefreshToken('FlashcardsUserToken')->accessToken;
-        // Cookie::queue('_token', $token, 1800, '/', $context->request->getHost(), false, true);
-        // Cookie::queue('_refreshToken', $refreshToken, 1800, '/', $context->request->getHost(), false, true);
-        // return true;
     }
 
     public function register($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
@@ -113,14 +103,41 @@ class AuthResolver
         $input['username'] = $username;
 
         $user = User::create($input);
-        $token = $user->createToken('FlashcardsUserToken')->accessToken;
-        Cookie::queue('_token', $token, 1800, '/', $context->request->getHost(), false, true);
 
-        return true;
+        // Login part
+
+        $credentials = [
+            'username' => $input['username'],
+            'password' => $args['password'],
+        ];
+
+        $credentials['grant_type'] = 'password';
+        $credentials['client_id'] = env("PASSPORT_CLIENT_ID");
+        $credentials['client_secret'] = env("PASSPORT_CLIENT_SECRET");
+
+        $request = Request::create('api/token', 'POST', $credentials, [], [], [
+            'HTTP_Accept' => 'application/json',
+        ]);
+        $response = app()->handle($request);
+        $decodedResponse = json_decode($response->getContent(), true);
+
+        if ($response->getStatusCode() === 200) {
+            $dt = Carbon::now();
+            $decodedResponse['expires_in'] = $dt->seconds($decodedResponse['expires_in'])->toDateTimeString();
+            Cookie::queue('_refresh_token', $decodedResponse['refresh_token'], $dt->diffInMinutes($dt->copy()->addDays(30)), '/', $context->request->getHost(), false, true);
+            $decodedResponse['user'] = $user;
+            return $decodedResponse;
+        }
+
+        throw new InvalidCredentialsException(
+            'Check your connection.',
+            'Wrong credentials or server problems.'
+        );
     }
 
     public function refresh_token($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
+
         $credentials['grant_type'] = 'refresh_token';
         $credentials['client_id'] = env("PASSPORT_CLIENT_ID");
         $credentials['client_secret'] = env("PASSPORT_CLIENT_SECRET");
@@ -134,11 +151,13 @@ class AuthResolver
         $decodedResponse = json_decode($response->getContent(), true);
 
         if ($response->getStatusCode() === 200) {
-            Cookie::queue('_refresh_token', $decodedResponse['refresh_token'], 1800, '/', $context->request->getHost(), false, true);
+            $dt = Carbon::now();
+            $decodedResponse['expires_in'] = $dt->seconds($decodedResponse['expires_in'])->toDateTimeString();
+            Cookie::queue('_refresh_token', $decodedResponse['refresh_token'], $dt->diffInMinutes($dt->copy()->addDays(30)), '/', $context->request->getHost(), false, true);
             return $decodedResponse;
         }
 
-        throw new AuthenticationException($decodedResponse['message']);
+        throw new RefreshTokenException('So you are guest.', $decodedResponse['message']);
 
     }
 
