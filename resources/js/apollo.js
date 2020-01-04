@@ -93,7 +93,7 @@ const apolloClient = new ApolloClient({
     link,
     cache,
     defaultHttpLink: false,
-    onnectToDevTools: true,
+    connectToDevTools: true,
 })
 
 export default apolloClient;

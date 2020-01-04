@@ -15,7 +15,7 @@ type User {
     username: String!
     email: String!
     cards_count: Int! @count(relation: "cards")
-    decks: [Deck!]! @hasMany
+    decks: [Deck!]! @hasMany @lazyLoad(relations: ["decks"])
     cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])
 }
 
@@ -25,6 +25,24 @@ type Query {
     deck(id: ID @eq): Deck @find
     me: User! @middleware(checks:["auth:api"]) @auth(guard: "api")
     user(username: String! @eq): User @find
+    decks(search: String @search, filter: [FilterClause!] @filter): [Deck!]! @paginate(model: "App\\Deck",defaultCount: 12)
+}
+
+input FilterClause{
+    field: String!
+    order: FilterOrder!
+    orderByCount: CountInput
+}
+
+enum FilterOrder {
+    ASC
+    DESC
+    RAND
+}
+
+input CountInput {
+    model: String!
+    relation: String!
 }
 
 

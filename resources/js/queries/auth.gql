@@ -1,42 +1,45 @@
+fragment UserDetails on User {
+	username
+	email
+	__typename
+}
+
 mutation login($data: LoginInput) {
-  login(data: $data) {
-      access_token
-      expires_in
-      user {
-          username
-          email
-      }
-  }
+	login(data: $data) {
+		access_token
+		expires_in
+		user {
+			...UserDetails
+		}
+	}
 }
 
 mutation refresh_token($refresh: Boolean) {
-  refresh_token(refresh: $refresh) {
-      access_token
-      expires_in
-  }
+	refresh_token(refresh: $refresh) {
+		access_token
+		expires_in
+	}
 }
 
 mutation logout {
-logout {
-    status
-    message
-  }
+	logout {
+		status
+		message
+	}
 }
 
 mutation register($data: RegisterInput) {
-  register(data: $data) {
-      access_token
-      expires_in
-      user {
-          username
-          email
-      }
-  }
+	register(data: $data) {
+		access_token
+		expires_in
+		user {
+			...UserDetails
+		}
+	}
 }
 
 query me {
-    me {
-        username
-        email
-    }
+	me {
+		...UserDetails
+	}
 }

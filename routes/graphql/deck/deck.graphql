@@ -1,4 +1,5 @@
 type Deck {
+    id: Int!
     title: String!
     description: String!
     lang_source: String!
@@ -6,6 +7,7 @@ type Deck {
     slug: String!
     cards_count: Int! @count(relation: "cards")
     created_at: DateTime!
+    visibility: String!
     cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])
     user: User! @belongsTo
 }
