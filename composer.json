@@ -15,6 +15,7 @@
         "laravel/framework": "^6.2",
         "laravel/passport": "^8.0",
         "laravel/scout": "^7.2",
+        "laravel/telescope": "^2.1",
         "laravel/tinker": "^1.0",
         "mll-lab/laravel-graphql-playground": "^2.0",
         "nuwave/lighthouse": "^4.7",

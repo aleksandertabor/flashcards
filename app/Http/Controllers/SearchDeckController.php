@@ -4,27 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Deck;
 use App\Http\Resources\DeckCollection;
-use Barryvdh\Debugbar\Facade as Debugbar;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SearchDeckController extends Controller
 {
     public function index(Request $request)
     {
-        Debugbar::info($request);
-        Debugbar::info($request->page);
-        Debugbar::info($request->decksType);
+        // Debugbar::info($request);
+        // Debugbar::info($request->page);
+        // Debugbar::info($request->decksType);
 
-        $decks = Deck::withCount(['cards'])->public();
+        $decks = Deck::withCount(['cards'])->where('visibility', 'public');
 
-        Debugbar::info($decks);
+        // Debugbar::info($decks);
+
+        // dd($decks);
+
+        $decksType = 'latest';
+
+        $query = '';
 
         if ($request->filled('query')) {
-            Debugbar::info('jest query');
+            // Debugbar::info('jest query');
             $query = $request->query('query');
             $constraints = $decks;
+
+            // return new DeckCollection(
+            //     $constraints->paginate(12)
+            // );
             $decks = Deck::search($query)->constrain($constraints);
+            // $decks = Deck::search($query);
         } else {
             $query = '';
         }
@@ -49,9 +58,21 @@ class SearchDeckController extends Controller
 
         }
 
-        Debugbar::info($decks);
+        // Debugbar::info($decks);
 
         // $decks = Deck::constrain($decks);
+
+        // return [$decks->where('visibility', )];
+
+        // return $decks->get();
+
+        // $paginator = $decks->paginate(12);
+        // $posts = $paginator->getCollection();
+
+        // return $posts;
+        // $paginator = $decks->paginate(10);
+
+        // $decks = $decks->getCollection();
 
         return new DeckCollection(
             $decks->paginate(12)->appends(

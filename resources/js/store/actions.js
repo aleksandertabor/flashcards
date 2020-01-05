@@ -11,6 +11,9 @@ import {
     editProfile,
     removeProfile
 } from "../queries/profile.gql";
+import {
+    decks
+} from "../queries/deck.gql"
 const actions = {
     login(context, payload) {
         return new Promise((resolve, reject) => {
@@ -200,19 +203,46 @@ const actions = {
     },
     decks(context, payload) {
         return new Promise((resolve, reject) => {
-            axios
-                .get(`/api/search/?page=${payload.page}&decks_type=${payload.decksType}&query=${payload.query}`)
+            console.log(payload);
+            apolloClient.query({
+                    query: decks,
+                    variables: {
+                        amount: payload.amount,
+                        page: payload.page,
+                        query: payload.query,
+                        filter: payload.filter,
+                    }
+                })
                 .then(response => {
-                    const decks = response.data.data;
+                    const decks = response.data.decks.data;
                     if (decks.length) {
                         context.commit('decks', decks);
                     }
-                    resolve(response.data)
+                    console.log(response);
+                    resolve(response)
                 })
                 .catch(error => {
+                    console.log("graphql error", {
+                        error
+                    });
                     reject(error)
                 })
-        })
+
+        });
+        // return new Promise((resolve, reject) => {
+        //     axios
+        //         .get(`/api/search/?page=${payload.page}&decks_type=${payload.decksType}&query=${payload.query}`)
+        //         .then(response => {
+        //             const decks = response.data.data;
+        //             if (decks.length) {
+        //                 context.commit('decks', decks);
+        //             }
+        //             resolve(response.data)
+        //         })
+        //         .catch(error => {
+        //             reject(error)
+        //         })
+        // })
     },
     // search(context, payload) {
     //     return new Promise((resolve, reject) => {

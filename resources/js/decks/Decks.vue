@@ -4,11 +4,13 @@
       <div class="back fa-2x" @click="$router.back()">
         <i class="fas fa-arrow-circle-left"></i>
       </div>
-      <select v-model="decksType" @change="changeType" class>
-        <option value="latest">Latest</option>
-        <option value="oldest">Oldest</option>
-        <option value="random">Random</option>
-        <option value="cards">Filter by cards</option>
+      <select v-model="filter" @change="changeType" class>
+        <option :value="{field: 'created_at', order: 'DESC'}">Latest</option>
+        <option :value="{field: 'created_at', order: 'ASC'}">Oldest</option>
+        <option :value="{field: 'created_at', order: 'RAND'}">Random</option>
+        <option
+          :value="{field: 'cards_count', order: 'DESC', orderByCount: {model: 'Deck', relation: 'cards'}}"
+        >Cards amount</option>
       </select>
       <search-bar @change-type="changeType"></search-bar>
     </nav>
@@ -24,8 +26,7 @@
         </div>
       </div>
     </div>
-    <infinite-loading :identifier="infiniteId" @infinite="infiniteHandler">
-      <div slot="spinner">Loading...</div>
+    <infinite-loading :identifier="infiniteId" @infinite="infiniteHandler" spinner="spiral">
       <div slot="no-more">No more decks</div>
       <div slot="no-results">No decks</div>
     </infinite-loading>
@@ -44,10 +45,12 @@ export default {
   },
   data() {
     return {
-      //   decks: null,
       loading: false,
       columns: 3,
-      decksType: "latest",
+      filter: {
+        field: "created_at",
+        order: "DESC"
+      },
       infiniteId: +new Date()
     };
   },
@@ -73,17 +76,29 @@ export default {
     },
     infiniteHandler($state) {
       console.log(this.page);
+      let toFind = {
+        page: this.page,
+        filter: this.filter,
+        query: this.query
+      };
+      this.clean(toFind);
       this.$store
-        .dispatch("decks", {
-          page: this.page,
-          decksType: this.decksType,
-          query: this.query
-        })
+        .dispatch("decks", toFind)
         .then(response => {
-          if (response.data && this.page < response.meta.last_page) {
+          if (
+            response.data.decks.data.length &&
+            this.page < response.data.decks.paginatorInfo.lastPage
+          ) {
+            console.log("loaded");
             this.$store.commit("decksPageIncrement");
             $state.loaded();
+          } else if (
+            response.data.decks.data.length === 0 &&
+            this.page === response.data.decks.paginatorInfo.lastPage
+          ) {
+            $state.complete();
           } else {
+            $state.loaded();
             $state.complete();
           }
         })
@@ -93,20 +108,22 @@ export default {
         .then(() => (this.loading = false));
     },
     changeType() {
+      console.log("zmienia typ");
       this.$store.commit("resetDecks");
       this.$store.commit("resetDecksPage");
       this.infiniteId += 1;
+    },
+    clean(obj) {
+      for (var propName in obj) {
+        if (
+          obj[propName] === null ||
+          obj[propName] === undefined ||
+          obj[propName] === ""
+        ) {
+          delete obj[propName];
+        }
+      }
     }
-  },
-  created() {
-    // this.loading = true;
-    // this.$store
-    //   .dispatch("decks", this.user)
-    //   .then(response => {})
-    //   .catch(error => {
-    //     console.log(error);
-    //   })
-    //   .then(() => (this.loading = false));
   }
 };
 </script>

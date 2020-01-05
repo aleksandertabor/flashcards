@@ -47,29 +47,30 @@ SDL;
      */
     public function handleBuilder($builder, $value)
     {
-
         foreach ($value as $FilterClause) {
 
-            $relation = "";
+            $builder->where('visibility', 'public');
 
-            if (isset($FilterClause['count']['model']) && isset($FilterClause['count']['relation'])) {
-                $className = "\\App\\" . $FilterClause['count']['model'];
+            $relation = $FilterClause['orderByCount']['relation'] ?? null;
+            $model = $FilterClause['orderByCount']['model'] ?? null;
+            $constraints = null;
+
+            if (isset($model) && isset($relation)) {
+                $className = "\\App\\" . $model;
                 $model = new $className();
-                $relation = $FilterClause['count']['relation'];
                 $constraints = function (?Model $model, $relation) {
-                    return $model->withCount([$relation])->published();
+                    return $model->withCount([$relation]);
                 };
             }
 
-            if (isset($builder->query)) {
+            if (isset($builder->query) && $constraints) {
                 $builder->constrain($constraints($model, $relation));
-            } elseif ($relation !== "") {
-                $builder->withCount([$relation])->published();
-            } else {
-                $builder->published();
             }
-
-            // $builder->published();
+            if (!isset($builder->query) && $constraints !== null) {
+                $builder->withCount([$relation]);
+            } elseif (!isset($builder->query) && $relation === null) {
+                // $builder->where('visibility', 'public');
+            }
 
             if ($FilterClause['order'] === 'RAND') {
                 $builder->orderBy(
@@ -81,7 +82,10 @@ SDL;
                     $FilterClause['order']
                 );
             }
+
         }
+
+        // dump('FilterDirective', now());
 
         return $builder;
     }

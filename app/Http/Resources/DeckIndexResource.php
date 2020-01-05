@@ -21,6 +21,7 @@ class DeckIndexResource extends JsonResource
             'lang_source' => $this->lang_source,
             'lang_target' => $this->lang_target,
             'slug' => $this->slug,
+            'visibility' => $this->visibility,
             'cards_count' => $this->cards_count,
             'created_at' => $this->created_at,
         ];

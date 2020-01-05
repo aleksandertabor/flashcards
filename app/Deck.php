@@ -42,27 +42,10 @@ class Deck extends Model
         ];
     }
 
-    public function shouldBeSearchable()
-    {
-        return $this->isPublished();
-    }
-
-    public function isPublished()
-    {
-        return $this->visibility === self::PUBLIC_VISIBILITY;
-    }
-
     public function scopePublished($query)
     {
         return $query->where('visibility', self::PUBLIC_VISIBILITY);
     }
-
-    // public function countDecks($root, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): Builder
-    // {
-    //     // return $this->where('lang_source', 'pl');
-    //     return $this->withCount('cards');
-    //     // return 'cyce';
-    // }
 
     public function user()
     {

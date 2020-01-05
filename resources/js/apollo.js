@@ -88,12 +88,25 @@ const cache = new InMemoryCache({
     addTypename: false
 })
 
+// Disable caching
+const defaultOptions = {
+    watchQuery: {
+        fetchPolicy: 'no-cache',
+        errorPolicy: 'ignore',
+    },
+    query: {
+        fetchPolicy: 'no-cache',
+        errorPolicy: 'all',
+    },
+}
+
 // Create the apollo client
 const apolloClient = new ApolloClient({
     link,
     cache,
     defaultHttpLink: false,
     connectToDevTools: true,
+    defaultOptions
 })
 
 export default apolloClient;

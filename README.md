@@ -33,4 +33,6 @@ composer require mll-lab/laravel-graphql-playground
 npm install --save vue-apollo graphql apollo-client apollo-link apollo-link-http apollo-cache-inmemory graphql-tag
 npm i apollo-link-error
 npm i apollo-link-context
+composer require laravel/telescope
+php artisan telescope:install
 ```

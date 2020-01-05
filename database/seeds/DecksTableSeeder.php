@@ -14,7 +14,7 @@ class DecksTableSeeder extends Seeder
     {
 
         $users = App\User::all();
-        factory(Deck::class, 100)->create()->each(function ($deck) use ($users) {
+        factory(Deck::class, 200)->create()->each(function ($deck) use ($users) {
             $deck->user_id = $users->random()->id;
             $cards = factory(App\Card::class, random_int(20, 50))->make();
             $deck->cards()->saveMany($cards);

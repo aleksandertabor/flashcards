@@ -5,7 +5,7 @@ type Deck {
     lang_source: String!
     lang_target: String!
     slug: String!
-    cards_count: Int! @count(relation: "cards")
+    cards_count: Int! @field(resolver: "App\\GraphQL\\Types\\DeckType@cardsCount")
     created_at: DateTime!
     visibility: String!
     cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])

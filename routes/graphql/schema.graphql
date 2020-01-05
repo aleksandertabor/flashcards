@@ -28,6 +28,16 @@ type Query {
     decks(search: String @search, filter: [FilterClause!] @filter): [Deck!]! @paginate(model: "App\\Deck",defaultCount: 12)
 }
 
+input OrderByClause{
+    field: String!
+    order: SortOrder!
+}
+
+enum SortOrder {
+    ASC
+    DESC
+}
+
 input FilterClause{
     field: String!
     order: FilterOrder!

@@ -1,0 +1,20 @@
+query decks($amount: Int, $page: Int!, $query: String, $filter: FilterClause!) {
+  decks (first: $amount, page: $page, search: $query ,filter: [$filter]) {
+    paginatorInfo {
+      total
+      lastPage
+      hasMorePages
+    }
+    data {
+      id
+      title
+      created_at
+      cards_count
+      visibility
+      slug
+      user {
+        username
+      }
+    }
+  }
+}
