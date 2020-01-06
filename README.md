@@ -35,4 +35,5 @@ npm i apollo-link-error
 npm i apollo-link-context
 composer require laravel/telescope
 php artisan telescope:install
+npm install vue-multiselect --save
 ```

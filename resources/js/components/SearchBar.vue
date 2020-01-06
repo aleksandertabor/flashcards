@@ -6,7 +6,7 @@
       placeholder="Deck"
       aria-label="Search"
       v-model="query"
-      @input="search"
+      @input="searching"
     />
   </div>
 </template>
@@ -20,12 +20,18 @@ export default {
       loading: null
     };
   },
+  mounted() {
+    this.query = this.$route.query.q;
+    this.search();
+  },
   methods: {
-    search: _.debounce(function() {
-      console.log("searchuje");
+    searching: _.debounce(function() {
+      this.search();
+    }, 300),
+    search: function() {
       this.$store.commit("query", this.query);
-      this.$emit("change-type");
-    }, 300)
+      this.$emit("change-filter");
+    }
   }
 };
 </script>

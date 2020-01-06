@@ -4,15 +4,27 @@
       <div class="back fa-2x" @click="$router.back()">
         <i class="fas fa-arrow-circle-left"></i>
       </div>
-      <select v-model="filter" @change="changeType" class>
-        <option :value="{field: 'created_at', order: 'DESC'}">Latest</option>
-        <option :value="{field: 'created_at', order: 'ASC'}">Oldest</option>
-        <option :value="{field: 'created_at', order: 'RAND'}">Random</option>
-        <option
-          :value="{field: 'cards_count', order: 'DESC', orderByCount: {model: 'Deck', relation: 'cards'}}"
-        >Cards amount</option>
-      </select>
-      <search-bar @change-type="changeType"></search-bar>
+      <div>
+        <label class="typo__label">Decks filters</label>
+        <multiselect
+          v-model="filter"
+          deselect-label="Can't remove this value"
+          track-by="name"
+          label="name"
+          placeholder="Select one"
+          :options="filters"
+          :searchable="false"
+          :allow-empty="false"
+          @select="changeFilter"
+        >
+          <template slot="filters" slot-scope="{ filter }">
+            <strong>{{ filter.name }}</strong> is written in
+            <strong>{{ filter.field }}</strong>
+          </template>
+        </multiselect>
+      </div>
+
+      <search-bar @change-filter="changeFilter"></search-bar>
     </nav>
     <div v-if="loading">Decks are loading ...</div>
     <div v-else>
@@ -36,10 +48,12 @@
 <script>
 import SearchBar from "../components/SearchBar";
 import InfiniteLoading from "vue-infinite-loading";
+import Multiselect from "vue-multiselect";
 import DeckListItem from "./DeckListItem";
 export default {
   components: {
     InfiniteLoading,
+    Multiselect,
     DeckListItem,
     SearchBar
   },
@@ -48,9 +62,21 @@ export default {
       loading: false,
       columns: 3,
       filter: {
+        name: "Latest",
         field: "created_at",
         order: "DESC"
       },
+      filters: [
+        { name: "Latest", field: "created_at", order: "DESC" },
+        { name: "Oldest", field: "created_at", order: "ASC" },
+        { name: "Random", field: "created_at", order: "RAND" },
+        {
+          name: "Cards",
+          field: "cards_count",
+          order: "DESC",
+          orderByCount: { model: "Deck", relation: "cards" }
+        }
+      ],
       infiniteId: +new Date()
     };
   },
@@ -70,15 +96,33 @@ export default {
       return this.$store.state.query;
     }
   },
+  mounted() {
+    if (this.$route.query.filter) {
+      this.filter = this.filters.find(obj => {
+        return obj.name === this.$route.query.filter;
+      });
+    }
+  },
+  watch: {
+    query: function() {
+      if (this.$route.query.q !== this.query) {
+        this.changeRoute();
+      }
+    },
+    filter: function() {
+      if (this.$route.query.filter !== this.filter.name) {
+        this.changeRoute();
+      }
+    }
+  },
   methods: {
     decksInRow(row) {
       return this.decks.slice((row - 1) * this.columns, row * this.columns);
     },
     infiniteHandler($state) {
-      console.log(this.page);
       let toFind = {
         page: this.page,
-        filter: this.filter,
+        filter: { ...this.filter },
         query: this.query
       };
       this.clean(toFind);
@@ -107,13 +151,13 @@ export default {
         })
         .then(() => (this.loading = false));
     },
-    changeType() {
-      console.log("zmienia typ");
+    changeFilter() {
       this.$store.commit("resetDecks");
       this.$store.commit("resetDecksPage");
       this.infiniteId += 1;
     },
     clean(obj) {
+      delete obj.filter.name;
       for (var propName in obj) {
         if (
           obj[propName] === null ||
@@ -123,10 +167,17 @@ export default {
           delete obj[propName];
         }
       }
+    },
+    changeRoute() {
+      this.$router.replace({
+        query: { q: this.query, filter: this.filter.name }
+      });
     }
   }
 };
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style>
 </style>

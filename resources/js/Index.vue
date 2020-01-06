@@ -2,8 +2,12 @@
   <div class="d-flex align-items-stretch">
     <nav id="sidebar" class="navbar bg-info border-right navbar-light d-flex align-content-start">
       <div class="left-navigation d-flex flex-column align-items-baseline">
-        <router-link class="navbar-brand mr-auto" :to="{ name: 'home'}">
-          <i class="fas fa-home"></i> Fiszkomat
+        <router-link
+          class="btn nav-button"
+          :to="{ name: 'home'}"
+          :class="{homeactive: this.$route.name === 'home'}"
+        >
+          <i class="fas fa-home"></i> Homepage
         </router-link>
         <router-link
           v-if="isAuthenticated"
@@ -90,6 +94,14 @@ export default {
   bottom: 0;
   min-width: 250px;
   max-width: 250px;
+}
+
+a.homeactive {
+  border: 2px solid greenyellow;
+}
+
+a.router-link-active.router-link-exact-active {
+  border: 2px solid greenyellow;
 }
 
 .nick {
