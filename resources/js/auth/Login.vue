@@ -1,46 +1,36 @@
 <template>
   <div>
-    <h6 class="text-uppercase text-secondary font-weight-bolder">Login</h6>
-    <div class="form-row">
-      <div class="form-group col-md-12">
-        <label for="login">Username/E-mail</label>
-        <input
-          type="input"
-          name="login"
-          class="form-control form-control-sm"
-          placeholder="Username/test@example.com"
-          v-model="userData.login"
-          @keyup.enter="login"
-          :class="[{'is-invalid': this.errorFor('email') || this.errorFor('username')}]"
-        />
-        <div
-          class="invalid-tooltip"
-          v-for="(error, index) in this.errorFor('email') || this.errorFor('username')"
-          :key="'login' + index"
-        >{{ error }}</div>
-      </div>
+    <v-toolbar-title>Login</v-toolbar-title>
+    <v-form ref="form" lazy-validation>
+      <v-text-field
+        v-model="userData.login"
+        prepend-icon="mdi-account"
+        label="E-mail/username"
+        :rules="[rules.required]"
+        :error-messages="errorFor('username') || errorFor('email')"
+        required
+        @keyup.enter="login"
+        clearable
+        :loading="loading"
+      ></v-text-field>
 
-      <div class="form-group col-md-12">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          name="password"
-          class="form-control form-control-sm"
-          v-model="userData.password"
-          @keyup.enter="login"
-          :class="[{'is-invalid': this.errorFor('password')}]"
-        />
-        <div
-          class="invalid-tooltip"
-          v-for="(error, index) in this.errorFor('password')"
-          :key="'password' + index"
-        >{{ error }}</div>
-      </div>
-      <div class="form-group col-md-12">
-        <div class="alert alert-danger" v-if="error">{{ error }}</div>
-      </div>
-    </div>
-    <button class="btn btn-secondary btn-block" @click="login" :disabled="loading">Login</button>
+      <v-text-field
+        v-model="userData.password"
+        prepend-icon="mdi-lock"
+        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+        :rules="[rules.required, rules.min]"
+        :error-messages="errorFor('password')"
+        :type="show1 ? 'text' : 'password'"
+        name="input-10-1"
+        label="Password"
+        counter
+        :loading="loading"
+        @click:append="show1 = !show1"
+        @keyup.enter="login"
+      ></v-text-field>
+    </v-form>
+    <v-alert type="error" v-if="error" dismissible>{{ error }}</v-alert>
+    <v-btn :disabled="loading" color="success" class="mr-4" @click="login">Login</v-btn>
   </div>
 </template>
 
@@ -49,13 +39,18 @@ export default {
   data() {
     return {
       userData: {
-        login: null,
-        password: null
+        login: "",
+        password: ""
       },
       loading: false,
       status: null,
       errors: null,
-      error: null
+      error: null,
+      show1: false,
+      rules: {
+        required: v => !!v || "Required.",
+        min: v => (v && v.length) >= 6 || "Min 6 characters"
+      }
     };
   },
   methods: {
@@ -97,11 +92,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-label {
-  font-size: 1.2em;
-  text-transform: uppercase;
-  font-weight: bolder;
-}
-</style>

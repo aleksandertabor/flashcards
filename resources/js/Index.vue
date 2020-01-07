@@ -1,79 +1,157 @@
 <template>
-  <div class="d-flex align-items-stretch">
-    <nav id="sidebar" class="navbar bg-info border-right navbar-light d-flex align-content-start">
-      <div class="left-navigation d-flex flex-column align-items-baseline">
-        <router-link
-          class="btn nav-button"
-          :to="{ name: 'home'}"
-          :class="{homeactive: this.$route.name === 'home'}"
-        >
-          <i class="fas fa-home"></i> Homepage
-        </router-link>
-        <router-link
+  <v-app v-cloak>
+    <v-app-bar app color="blue darken-3" dark clipped-left>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
+      <router-link class="homepage" :to="{name: 'home'}">
+        <v-toolbar-title>Flashcards</v-toolbar-title>
+      </router-link>
+
+      <v-spacer></v-spacer>
+
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-heart</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-dots-vertical</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-navigation-drawer
+      v-model="drawer"
+      :color="color"
+      :expand-on-hover="expandOnHover"
+      :mini-variant="miniVariant"
+      :src="bg"
+      :clipped="$vuetify.breakpoint.lgAndUp"
+      fixed
+      hide-overlay
+      app
+    >
+      <v-list dense nav class="py-0">
+        <v-list-item
+          two-line
           v-if="isAuthenticated"
-          class="btn nav-button nick"
-          :to="{ name: 'profile', params: {username: user.username}}"
+          :to="{ name: 'profile', params: { username: user.username } }"
+          link
         >
-          <i class="fas fa-user-edit"></i>
-          Profile ({{ user.username }})
-        </router-link>
-        <router-link v-if="!isAuthenticated" class="btn nav-button" :to="{ name: 'login'}">
-          <i class="fas fa-sign-in-alt"></i> Login
-        </router-link>
-        <router-link v-if="!isAuthenticated" class="btn nav-button" :to="{ name: 'register'}">
-          <i class="fas fa-user-plus"></i> Register
-        </router-link>
-        <router-link
-          v-if="isAuthenticated"
-          class="btn nav-button btn-danger"
-          :to="{ name: 'logout'}"
+          <v-list-item-avatar>
+            <img src="https://randomuser.me/api/portraits/men/81.jpg" />
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>My profile</v-list-item-title>
+            <v-list-item-subtitle>{{ user.username }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider></v-divider>
+
+        <v-list-item
+          v-for="link in links"
+          :key="link.title"
+          :to="link.to"
+          :class="link.class"
+          v-if="link.authenticated === isAuthenticated || link.isHomePage"
+          link
+          exact
         >
-          <i class="fas fa-sign-out-alt"></i> Logout
-        </router-link>
-        <router-link v-if="isAuthenticated" class="btn nav-button" :to="{ name: 'deck-editor'}">
-          <i class="fas fa-border-style"></i> Deck Editor
-        </router-link>
-        <!-- <ApolloQuery v-if="isAuthenticated" :query="require('./queries/me.gql')"> -->
-        <!-- <template v-slot="{ result: { error, data }, isLoading }"> -->
-        <!-- Loading -->
-        <!-- <div v-if="isLoading" class="loading apollo">Loading...</div> -->
+          <v-list-item-icon>
+            <v-icon>{{ link.icon }}</v-icon>
+          </v-list-item-icon>
 
-        <!-- Error -->
-        <!-- <div v-else-if="error" class="error apollo">An error occurred</div> -->
+          <v-list-item-content>
+            <v-list-item-title>{{ link.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
 
-        <!-- Result -->
-        <!-- <div v-else-if="data" class="result apollo">{{ data.me.username }}</div> -->
+    <v-content>
+      <v-container fill-height fluid>
+        <v-layout justify-center align-center row wrap>
+          <v-flex xs6>
+            <router-view></router-view>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <v-btn
+        v-if="isAuthenticated"
+        fixed
+        dark
+        fab
+        bottom
+        right
+        color="pink"
+        :to="{ name: 'deck-editor' }"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-content>
 
-        <!-- No result -->
-        <!-- <div v-else class="no-result apollo">No result :(</div> -->
-        <!-- </template> -->
-        <!-- </ApolloQuery> -->
-      </div>
-    </nav>
-
-    <main id="content" class="w-100 pl-4 pr-4 pt-3">
-      <router-view></router-view>
-    </main>
-  </div>
+    <v-footer app>
+      <!-- -->
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
 export default {
-  //   apollo: {
-  //     user: gql`
-  //       query {
-  //         user(id: 1) {
-  //           email
-  //         }
-  //       }
-  //     `
-  //   },
   data() {
     return {
+      drawer: true,
+      links: [
+        // {
+        //   title: "Homepage",
+        //   icon: "mdi-view-dashboard",
+        //   to: { name: "home" },
+        //   isHomePage: true
+        // },
+        {
+          title: "Login",
+          icon: "mdi-account-arrow-left",
+          to: { name: "login" },
+          authenticated: false
+        },
+        {
+          title: "Register",
+          icon: "mdi-account-plus",
+          to: { name: "register" },
+          authenticated: false
+        },
+        {
+          title: "Editor",
+          icon: "mdi-image-edit",
+          to: { name: "deck-editor" },
+          authenticated: true
+        },
+        {
+          title: "Logout",
+          icon: "mdi-logout",
+          to: { name: "logout" },
+          authenticated: true
+        }
+      ],
+      color: "primary",
+      colors: ["primary", "blue", "success", "red", "teal"],
+      miniVariant: true,
+      expandOnHover: true,
+      background: false,
       loading: true
     };
   },
-  computed: {},
+  computed: {
+    bg() {
+      return this.background
+        ? "https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
+        : undefined;
+    }
+  },
   created() {}
   //   computed: {
   //     isAuthenticated() {
@@ -86,22 +164,9 @@ export default {
 };
 </script>
 
-<style scoped>
-#sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  min-width: 250px;
-  max-width: 250px;
-}
-
-a.homeactive {
-  border: 2px solid greenyellow;
-}
-
-a.router-link-active.router-link-exact-active {
-  border: 2px solid greenyellow;
+<style>
+a.homepage {
+  color: #fff !important;
 }
 
 .nick {
@@ -110,10 +175,6 @@ a.router-link-active.router-link-exact-active {
   display: block;
   overflow: hidden;
   max-width: 220px;
-}
-
-main {
-  margin-left: 250px;
 }
 
 .back {

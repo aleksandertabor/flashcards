@@ -17,13 +17,18 @@ mix.webpackConfig({
             test: /\.(graphql|gql)$/,
             exclude: /node_modules/,
             loader: 'graphql-tag/loader',
-        }]
+        }, ]
     }
 })
 
 mix.browserSync({
     proxy: 'localhost:8000'
 });
+
+mix.options({
+    extractVueStyles: true,
+});
+
 
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')

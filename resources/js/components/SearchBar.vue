@@ -1,13 +1,22 @@
 <template>
   <div>
-    <input
+    <v-text-field
+      flat
+      solo-inverted
+      hide-details
+      prepend-inner-icon="mdi-magnify"
+      label="Search for a deck"
+      v-model="query"
+      @input="searching"
+    ></v-text-field>
+    <!-- <input
       class="form-control mr-sm-2"
       type="search"
       placeholder="Deck"
       aria-label="Search"
       v-model="query"
       @input="searching"
-    />
+    />-->
   </div>
 </template>
 

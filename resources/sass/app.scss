@@ -1,5 +1,5 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
 
 // Variables
 @import 'variables';
@@ -9,8 +9,10 @@
 @import "~@fortawesome/fontawesome-free/scss/regular";
 @import "~@fortawesome/fontawesome-free/scss/solid";
 
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+// Vuetify
+// @import '@mdi/font/css/materialdesignicons.css';
+// @import 'vuetify/dist/vuetify.min.css';
+// @import '~vuetify/src/styles/styles.sass';
 
 html::-webkit-scrollbar {
     width: 10px;

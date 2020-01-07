@@ -54,6 +54,7 @@ class AuthResolver
         ]);
         $response = app()->handle($request);
         $decodedResponse = json_decode($response->getContent(), true);
+
         if ($response->getStatusCode() === 200) {
             $dt = Carbon::now();
             $decodedResponse['expires_in'] = $dt->seconds($decodedResponse['expires_in'])->toDateTimeString();

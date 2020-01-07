@@ -23,7 +23,7 @@ import {
 // HTTP connection to the API
 const httpLink = createHttpLink({
     // You should use an absolute URL here
-    uri: 'http://localhost:8000/api/graphql',
+    uri: 'http://localhost:3000/api/graphql',
     headers: {
         // 'X-CSRF-TOKEN': Cookies.get('csrftoken'),
         // 'Authorization': `Bearer ${app.$store.getters.token}`,

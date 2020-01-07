@@ -4,12 +4,36 @@
     <div v-else>
       <div v-if="editable">
         <nav class="navbar navbar-light bg-light">
-          <button class="btn btn-outline-success" href="#" @click="changeView('EditProfile')">Edit</button>
-          <button
-            class="btn btn-outline-danger"
-            href="#"
-            @click="changeView('RemoveProfile')"
-          >Remove</button>
+          <v-badge
+        bordered
+        color="success"
+        icon="mdi-account-edit"
+        overlap
+      >
+        <v-btn
+          class="white--text"
+          color="success"
+          depressed
+          @click="changeView('EditProfile')"
+        >
+          Edit
+        </v-btn>
+      </v-badge>
+          <v-badge
+        bordered
+        color="error"
+        icon="mdi-account-remove"
+        overlap
+      >
+        <v-btn
+          class="white--text"
+          color="error"
+          depressed
+          @click="changeView('RemoveProfile')"
+        >
+          Remove
+        </v-btn>
+      </v-badge>
         </nav>
       </div>
       <div class="form-row">

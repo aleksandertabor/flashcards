@@ -36,4 +36,13 @@ npm i apollo-link-context
 composer require laravel/telescope
 php artisan telescope:install
 npm install vue-multiselect --save
+npm install vuetify
+npm install @mdi/font -D
+npm install sass sass-loader fibers deepmerge -D
+npm install -D css-loader
+npm install -D vue-style-loader
+npm install -D node-sass
+npm uninstall jquery
+npm uninstall popper.js
+npm uninstall bootstrap
 ```

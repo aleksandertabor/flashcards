@@ -1,9 +1,6 @@
 <template>
   <div>
     <nav class="navbar sticky-top navbar-light bg-light border-bottom mb-4">
-      <div class="back fa-2x" @click="$router.back()">
-        <i class="fas fa-arrow-circle-left"></i>
-      </div>
       <div>
         <label class="typo__label">Decks filters</label>
         <multiselect

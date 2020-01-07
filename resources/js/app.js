@@ -1,5 +1,4 @@
 require('./bootstrap');
-
 import Vuex from "vuex";
 import router from "./routes";
 import VueRouter from "vue-router";
@@ -7,9 +6,12 @@ import LazyLoad from "./lazyload";
 import Index from "./Index";
 import VueApollo from "vue-apollo";
 import apolloClient from "./apollo";
+import Vuetify from 'vuetify'
+import vuetify from "./vuetify";
 
 window.Vue = require('vue');
 
+Vue.use(Vuetify)
 Vue.use(VueRouter);
 Vue.use(LazyLoad);
 Vue.use(Vuex);
@@ -18,6 +20,8 @@ import mutations from './store/mutations';
 import actions from './store/actions';
 import getters from './store/getters';
 import state from "./store/state";
+
+
 
 const store = new Vuex.Store({
     state,
@@ -71,6 +75,7 @@ export const app = new Vue({
     store,
     router,
     apolloProvider,
+    vuetify,
     // components: {
     //     "index": Index
     // },
