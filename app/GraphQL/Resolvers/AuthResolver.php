@@ -3,6 +3,7 @@ namespace App\GraphQL\Resolvers;
 
 use App\Exceptions\InvalidCredentialsException;
 use App\Exceptions\RefreshTokenException;
+use App\Traits\PassportTokenTrait;
 use App\User;
 use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Services\SlugService;
@@ -13,12 +14,23 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Laravel\Passport\Client;
 use Nuwave\Lighthouse\Exceptions\AuthenticationException;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class AuthResolver
 {
+
+    use PassportTokenTrait;
+
+    private $client;
+
+    public function __construct()
+    {
+        $this->client = Client::first();
+    }
+
     /**
      * @param $rootValue
      * @param array $args
@@ -27,6 +39,7 @@ class AuthResolver
      * @return array
      * @throws \Exception
      */
+
     public function login($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
         $login = $args['login'];
@@ -46,13 +59,9 @@ class AuthResolver
         if (Arr::has($credentials, 'email')) {
             $credentials['username'] = $credentials['email'];
         }
-        $credentials['grant_type'] = 'password';
-        $credentials['client_id'] = env("PASSPORT_CLIENT_ID");
-        $credentials['client_secret'] = env("PASSPORT_CLIENT_SECRET");
-        $request = Request::create('api/token', 'POST', $credentials, [], [], [
-            'HTTP_Accept' => 'application/json',
-        ]);
-        $response = app()->handle($request);
+
+        $response = $this->issueToken($credentials, 'password');
+
         $decodedResponse = json_decode($response->getContent(), true);
 
         if ($response->getStatusCode() === 200) {
@@ -88,19 +97,15 @@ class AuthResolver
         $username = SlugService::createSlug(User::class, 'username', $username);
         $input['username'] = $username;
         $user = User::create($input);
-        // Login part
         $credentials = [
             'username' => $input['username'],
             'password' => $args['password'],
         ];
-        $credentials['grant_type'] = 'password';
-        $credentials['client_id'] = env("PASSPORT_CLIENT_ID");
-        $credentials['client_secret'] = env("PASSPORT_CLIENT_SECRET");
-        $request = Request::create('api/token', 'POST', $credentials, [], [], [
-            'HTTP_Accept' => 'application/json',
-        ]);
-        $response = app()->handle($request);
+
+        $response = $this->issueToken($credentials, 'password');
+
         $decodedResponse = json_decode($response->getContent(), true);
+
         if ($response->getStatusCode() === 200) {
             $dt = Carbon::now();
             $decodedResponse['expires_in'] = $dt->seconds($decodedResponse['expires_in'])->toDateTimeString();
@@ -115,16 +120,12 @@ class AuthResolver
     }
     public function refresh_token($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        $credentials['grant_type'] = 'refresh_token';
-        $credentials['client_id'] = env("PASSPORT_CLIENT_ID");
-        $credentials['client_secret'] = env("PASSPORT_CLIENT_SECRET");
-        $credentials['scope'] = '';
         $credentials['refresh_token'] = Cookie::get('_refresh_token');
-        $request = Request::create('api/token', 'POST', $credentials, [], [], [
-            'HTTP_Accept' => 'application/json',
-        ]);
-        $response = app()->handle($request);
+
+        $response = $this->issueToken($credentials, 'refresh_token', '');
+
         $decodedResponse = json_decode($response->getContent(), true);
+
         if ($response->getStatusCode() === 200) {
             $dt = Carbon::now();
             $decodedResponse['expires_in'] = $dt->seconds($decodedResponse['expires_in'])->toDateTimeString();

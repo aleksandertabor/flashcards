@@ -137,6 +137,9 @@ export const app = new Vue({
     created() {
 
     },
+    // beforeCreate() {
+    //     window.localStorage.removeItem('logout')
+    // },
     mounted() {
         this.auth().then(res => {
             this.authInterval = setInterval(() => this.auth(), 60000);
