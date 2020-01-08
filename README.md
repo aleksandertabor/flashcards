@@ -1,5 +1,10 @@
 # Flashcards
 
+## Required
+```bash
+PHP > 7.4
+```
+
 ## Installation
 ```bash
 composer update
@@ -45,4 +50,5 @@ npm install -D node-sass
 npm uninstall jquery
 npm uninstall popper.js
 npm uninstall bootstrap
+composer require "spatie/laravel-medialibrary:^7.0.0"
 ```

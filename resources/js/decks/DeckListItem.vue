@@ -20,8 +20,8 @@ export default {
     description: String,
     cards_count: Number,
     id: Number,
-    lang_source: String,
-    lang_target: String,
+    lang_source: Object,
+    lang_target: Object,
     slug: String,
     created_at: String
   }

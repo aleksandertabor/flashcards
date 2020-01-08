@@ -11,6 +11,14 @@ query decks($amount: Int, $page: Int!, $query: String, $filter: FilterClause!) {
       created_at
       cards_count
       visibility
+      lang_source {
+          locale
+          name
+      }
+      lang_target {
+          locale
+          name
+      }
       slug
       user {
         username

@@ -1,97 +1,122 @@
 <template>
   <div>
-    <h1 class="text-uppercase text-secondary font-weight-bolder">Deck Editor</h1>
     <div v-if="loading">Loading ...</div>
     <div v-else>
-      <h3 v-if="this.edit">Editing {{ deck.title }}</h3>
-      <h3 v-else>Creating</h3>
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input
-          type="text"
-          name="title"
-          class="form-control form-control-sm"
-          autocomplete="off"
-          placeholder="Deck Title"
-          v-model="deck.title"
-          @keyup.enter="save"
-        />
-        <label for="description">Description</label>
-        <textarea
-          name="description"
-          cols="50"
-          rows="5"
-          class="form-control form-control-sm"
-          placeholder="Deck Description"
-          v-model="deck.description"
-          @keyup.enter="create"
-        ></textarea>
-        <img src="https://source.unsplash.com/random/200x200" class="rounded mx-auto d-block mt-3" />
-        <div class="form-group">
-          <label for="deck-image-url">Deck Image URL</label>
-          <input
-            type="text"
-            name="deck-image-url"
-            class="form-control"
-            placeholder="Image URL"
-            v-model="deck.image_url"
-          />
-          <label for="deck-image-file">Deck Image File</label>
-          <input type="file" name="deck-image-file" class="form-control-file" />
-        </div>
-      </div>
+      <v-form ref="form" lazy-validation>
+        <v-card>
+          <v-toolbar flat color="blue-grey" dark>
+            <v-toolbar-title>
+              Deck editor / mode:
+              <p v-if="this.edit">Editing {{ deck.title }}</p>
+              <p v-else>Creating</p>
+            </v-toolbar-title>
+          </v-toolbar>
 
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="lang_source">Source language</label>
-        </div>
-        <select class="custom-select" name="lang_source" v-model="deck.lang_source">
-          <option disabled value>Choose...</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="lang_target">Target language</label>
-        </div>
-        <select class="custom-select" name="lang_target" v-model="deck.lang_target">
-          <option disabled value>Choose...</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
+          <v-card-text>
+            <v-text-field
+              v-model="deck.title"
+              label="Title"
+              :rules="[rules.required, rules.maxTitle]"
+              :error-messages="errorFor('title')"
+              required
+              clearable
+              filled
+              :loading="loading"
+              counter
+            ></v-text-field>
 
-      <h1
-        class="text-uppercase text-secondary font-weight-bolder"
-      >Flashcards ({{ deck.cards_finished }}/{{ deck.cards_amount }})</h1>
-      <!-- <cards-editor v-on:add-finished-card="deck.cards_finished += $event"></cards-editor> -->
+            <v-textarea
+              v-model="deck.description"
+              label="Description"
+              :rules="[rules.required, rules.maxDescription]"
+              :error-messages="errorFor('description')"
+              required
+              clearable
+              filled
+              :loading="loading"
+              counter
+            ></v-textarea>
 
-      <transition-group name="answers-list" class="flashcards" tag="div">
-        <card-editor v-for="(card, index) in deck.cards" :cardToEdit="card" :key="'card' + index"></card-editor>
-      </transition-group>
+            <v-file-input
+              v-model="deck.image_file"
+              :rules="[rules.required, rules.size]"
+              accept="image/png, image/jpeg"
+              placeholder="Pick an image"
+              prepend-icon="mdi-camera"
+              label="Image"
+              @change="previewImage"
+              filled
+            ></v-file-input>
 
-      <!-- class="col d-flex align-items-stretch"
-          v-for="(card, column) in cardsInRow(row)"
-      :key="'row' + row + column"-->
+            <v-img
+              v-if="deck.image_file"
+              :src="deck.image_url"
+              aspect-ratio="1"
+              class="grey lighten-2"
+              contain
+            ></v-img>
 
-      <button class="btn btn-primary btn-block" :disabled="loading" @click="addCard">Add card</button>
+            <v-select
+              prepend-icon="mdi-home-floor-1"
+              v-model="deck.lang_source"
+              :rules="[rules.required]"
+              :items="languages"
+              filled
+              label="Source language"
+              dense
+              append-outer-icon="mdi-translate"
+            ></v-select>
 
-      <div class="input-group mb-3 mt-3">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="visibility">Visibility</label>
-        </div>
-        <select class="custom-select" name="visibility" v-model="deck.visibility">
-          <option disabled value>Choose...</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
+            <v-select
+              prepend-icon="mdi-home-floor-2"
+              v-model="deck.lang_target"
+              :rules="[rules.required]"
+              :items="languages"
+              filled
+              label="Target language"
+              dense
+              append-outer-icon="mdi-translate"
+            ></v-select>
 
-      <button class="btn btn-success btn-block" @click="create" :disabled="loading">Save deck</button>
+            <v-divider class="my-2"></v-divider>
+
+            <v-item-group multiple>
+              <v-subheader>Cards</v-subheader>
+              <v-item v-for="(card, index) in deck.cards" :key="'card' + index"></v-item>
+            </v-item-group>
+
+            <h1
+              class="text-uppercase text-secondary font-weight-bolder"
+            >Flashcards ({{ deck.cards_finished }}/{{ deck.cards_amount }})</h1>
+            <!-- <cards-editor v-on:add-finished-card="deck.cards_finished += $event"></cards-editor> -->
+
+            <transition-group name="answers-list" class="flashcards" tag="div">
+              <card-editor
+                v-for="(card, index) in deck.cards"
+                :cardToEdit="card"
+                :key="'card' + index"
+              ></card-editor>
+            </transition-group>
+
+            <v-btn color="success" depressed @click="addCard">Add card</v-btn>
+          </v-card-text>
+
+          <v-select
+            prepend-icon="mdi-link"
+            v-model="deck.visibility"
+            :items="visibility_options"
+            filled
+            label="Visibility"
+            dense
+          ></v-select>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="success" depressed @click="create">Add</v-btn>
+            <v-btn color="success" depressed>Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-form>
     </div>
   </div>
 </template>
@@ -107,8 +132,8 @@ export default {
       deck: {
         title: null,
         description: null,
-        image_url: null,
         image_file: null,
+        image_url: "",
         lang_source: "",
         lang_target: "",
         cards_finished: 0,
@@ -117,10 +142,25 @@ export default {
         visibility: "",
         visibilitity_options: ""
       },
+      //! todo get languages and visibility options from database
+      languages: ["pl", "en", "de", "fr"],
+      visibility_options: ["public", "unlisted", "private"],
       query: null,
       loading: false,
       status: null,
-      edit: false
+      edit: false,
+      errors: null,
+      error: null,
+      rules: {
+        required: v => !!v || "Required.",
+        min: v => (v && v.length) >= 6 || "Min 6 characters",
+        maxTitle: v => (v && v.length) <= 50 || "Max 50 characters",
+        maxDescription: v => (v && v.length) <= 100 || "Max 100 characters",
+        size: value =>
+          !value ||
+          value.size < 2000000 ||
+          "File size should be less than 2 MB!"
+      }
     };
   },
   watch: {
@@ -146,7 +186,50 @@ export default {
     addCard() {
       this.deck.cards.push({});
     },
-    create() {}
+    create() {
+      this.loading = true;
+      this.errors = null;
+      this.$store
+        .dispatch("login", this.userData)
+        .then(response => {
+          this.$router.push({ name: "home" });
+        })
+        .catch(error => {
+          const {
+            graphQLErrors: { validationErrors }
+          } = error;
+          const {
+            graphQLErrors: {
+              0: { message }
+            }
+          } = error;
+          if (validationErrors) {
+            this.errors = validationErrors;
+          }
+          if (message) {
+            this.error = message;
+          }
+        })
+        .then(() => (this.loading = false));
+    },
+    errorFor(field) {
+      return this.hasErrors && this.errors[field] ? this.errors[field] : null;
+    },
+    previewImage(file) {
+      if (file) {
+        console.log("File: ", file);
+        let filename = file.name;
+        if (filename.lastIndexOf(".") <= 0) {
+          return;
+        }
+        const fileReader = new FileReader();
+        fileReader.addEventListener("load", () => {
+          this.deck.image_url = fileReader.result;
+        });
+        fileReader.readAsDataURL(file);
+        this.deck.image_file = file;
+      }
+    }
   }
 };
 </script>

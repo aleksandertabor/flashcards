@@ -18,8 +18,8 @@ class CreateDecksTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('title', 80);
             $table->text('description', 320);
-            $table->string('lang_source');
-            $table->string('lang_target');
+            $table->unsignedBigInteger('lang_source_id')->nullable();
+            $table->unsignedBigInteger('lang_target_id')->nullable();
             $table->string('visibility');
             $table->string('slug')->unique();
             $table->timestamps();

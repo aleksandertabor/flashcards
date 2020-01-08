@@ -10,6 +10,12 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
 #Think of queries as REST resources which can take arguments and return a fixed result.
 
+type Language {
+    id: Int!
+    locale: String!
+    name: String!
+}
+
 type User {
     id: Int!,
     username: String!

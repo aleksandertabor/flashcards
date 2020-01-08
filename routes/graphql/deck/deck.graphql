@@ -2,8 +2,8 @@ type Deck {
     id: Int!
     title: String!
     description: String!
-    lang_source: String!
-    lang_target: String!
+    lang_source: Language! @hasOne(relation: "sourceLanguage")
+    lang_target: Language! @hasOne(relation: "targetLanguage")
     slug: String!
     cards_count: Int! @field(resolver: "App\\GraphQL\\Types\\DeckType@cardsCount")
     created_at: DateTime!

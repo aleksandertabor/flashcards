@@ -56,4 +56,14 @@ class Deck extends Model
     {
         return $this->hasMany('App\Card');
     }
+
+    public function sourceLanguage()
+    {
+        return $this->hasOne('App\Language', 'id', 'lang_source_id');
+    }
+
+    public function targetLanguage()
+    {
+        return $this->hasOne('App\Language', 'id', 'lang_target_id');
+    }
 }

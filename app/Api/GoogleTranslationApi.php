@@ -2,6 +2,7 @@
 namespace App\Api;
 
 use Google\Cloud\Translate\V2\TranslateClient;
+use Locale;
 
 class GoogleTranslationApi
 {
@@ -33,4 +34,12 @@ class GoogleTranslationApi
         return $result ? $result : [];
     }
 
+    public function languages(): array
+    {
+        $result = collect($this->client->languages())->map(fn($lang) =>
+            ['locale' => $lang, 'name' => Locale::getDisplayLanguage($lang, 'en')]
+        )->toArray();
+
+        return $result ? $result : [];
+    }
 }

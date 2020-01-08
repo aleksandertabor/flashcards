@@ -19,6 +19,7 @@
         "laravel/tinker": "^1.0",
         "mll-lab/laravel-graphql-playground": "^2.0",
         "nuwave/lighthouse": "^4.7",
+        "spatie/laravel-medialibrary": "^7.0.0",
         "teamtnt/laravel-scout-tntsearch-driver": "^7.2"
     },
     "require-dev": {
