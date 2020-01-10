@@ -4,7 +4,7 @@
       <router-link :to="{name: 'deck', params: {slug}}">
         <h5 class="card-title">{{ title }}</h5>
       </router-link>
-      <img data-src="https://source.unsplash.com/random/200x200" class="card-img-top lazy" alt />
+      <img :data-src="image" class="card-img-top lazy" alt />
       <!-- <img data-src="/img/placeholder.png" class="card-img-top lazy" alt /> -->
       <p class="card-text">{{ description }}</p>
       <p class="card-text">Cards: ({{ cards_count }})</p>
@@ -18,6 +18,7 @@ export default {
   props: {
     title: String,
     description: String,
+    image: String,
     cards_count: Number,
     id: Number,
     lang_source: Object,

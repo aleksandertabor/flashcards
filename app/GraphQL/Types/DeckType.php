@@ -12,7 +12,7 @@ class DeckType
     /**
      * Resolve comment count.
      *
-     * @param Post           $post
+     * @param Deck           $deck
      * @param array          $args
      * @param GraphQLContext $context
      * @param ResolveInfo    $info
@@ -35,4 +35,12 @@ class DeckType
             ['parent' => $deck]
         );
     }
+
+    public function image(Deck $deck, array $args, GraphQLContext $context, ResolveInfo $info)
+    {
+        $url = $deck->getFirstMediaUrl();
+
+        return $url;
+    }
+
 }

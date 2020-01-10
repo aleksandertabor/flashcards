@@ -16,8 +16,8 @@ class CreateCardsTable extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('deck_id')->nullable();
-            $table->string('question');
-            $table->string('answer');
+            $table->string('question', 255);
+            $table->string('answer', 255);
             $table->string('example_question', 255);
             $table->string('example_answer', 255);
             $table->timestamps();

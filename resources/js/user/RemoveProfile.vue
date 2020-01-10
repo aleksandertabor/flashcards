@@ -1,11 +1,19 @@
 <template>
   <div>
-    <h6 class="text-uppercase text-secondary font-weight-bolder">Remove profile</h6>
-    <div class="form-group">
-      <button class="btn btn-danger btn-block mt-3" @click="remove" :disabled="loading">
-        <i class="fas fa-trash-alt"></i> Remove account
-      </button>
-    </div>
+    <v-dialog v-model="dialog" persistent max-width="290">
+      <v-card>
+        <v-card-title class="headline">Do you really want remove your account?</v-card-title>
+        <v-card-text>Your account's data, decks and cards will be deleted.</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="dialog = false">Disagree</v-btn>
+          <v-btn color="green darken-1" text @click="remove">Agree</v-btn>
+        </v-card-actions>
+      </v-card>
+      <template v-slot:activator="{ on }">
+        <v-btn color="primary" dark v-on="on">Remove account</v-btn>
+      </template>
+    </v-dialog>
   </div>
 </template>
 
@@ -17,13 +25,12 @@ export default {
   data() {
     return {
       loading: false,
-      status: null
+      status: null,
+      dialog: false
     };
   },
   methods: {
     remove() {
-      this.loading = true;
-
       this.$store
         .dispatch("removeProfile", this.userData)
         .then(response => {

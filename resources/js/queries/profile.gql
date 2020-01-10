@@ -4,12 +4,20 @@ query profile($username: String!) {
     username
     email
     cards_count
+    cards {
+        question
+    }
     decks {
       title
       description
+      image
       slug
       created_at
       cards_count
+      visibility
+      cards {
+          question
+      }
     }
   }
 }

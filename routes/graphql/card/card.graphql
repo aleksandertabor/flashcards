@@ -3,5 +3,6 @@ type Card {
     answer: String!
     example_answer: String!
     example_question: String!
+    image: String! @field(resolver: "App\\GraphQL\\Types\\CardType@image")
     deck: Deck! @belongsTo
 }

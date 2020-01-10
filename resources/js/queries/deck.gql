@@ -8,6 +8,7 @@ query decks($amount: Int, $page: Int!, $query: String, $filter: FilterClause!) {
     data {
       id
       title
+      image
       created_at
       cards_count
       visibility

@@ -51,4 +51,6 @@ npm uninstall jquery
 npm uninstall popper.js
 npm uninstall bootstrap
 composer require "spatie/laravel-medialibrary:^7.0.0"
+sudo apt install jpegoptim optipng pngquant gifsicle
+sudo apt-get install webp
 ```

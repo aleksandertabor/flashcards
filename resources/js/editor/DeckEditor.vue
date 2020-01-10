@@ -4,7 +4,7 @@
     <div v-else>
       <v-form ref="form" lazy-validation>
         <v-card>
-          <v-toolbar flat color="blue-grey" dark>
+          <v-toolbar flat dark>
             <v-toolbar-title>
               Deck editor / mode:
               <p v-if="this.edit">Editing {{ deck.title }}</p>
@@ -16,31 +16,31 @@
             <v-text-field
               v-model="deck.title"
               label="Title"
-              :rules="[rules.required, rules.maxTitle]"
+              :rules="[rules.required, rules.max(80)]"
               :error-messages="errorFor('title')"
               required
               clearable
               filled
               :loading="loading"
-              counter
+              counter="80"
             ></v-text-field>
 
             <v-textarea
               v-model="deck.description"
               label="Description"
-              :rules="[rules.required, rules.maxDescription]"
+              :rules="[rules.required, rules.max(320)]"
               :error-messages="errorFor('description')"
               required
               clearable
               filled
               :loading="loading"
-              counter
+              counter="320"
             ></v-textarea>
 
             <v-file-input
               v-model="deck.image_file"
-              :rules="[rules.required, rules.size]"
-              accept="image/png, image/jpeg"
+              :rules="[rules.size]"
+              accept="image/png, image/jpeg, image/webp"
               placeholder="Pick an image"
               prepend-icon="mdi-camera"
               label="Image"
@@ -48,9 +48,19 @@
               filled
             ></v-file-input>
 
+            <v-text-field
+              v-if="!deck.image_file"
+              v-model="deck.image"
+              prepend-icon="mdi-image"
+              label="Image URL"
+              :rules="[rules.url]"
+              filled
+              clearable
+            ></v-text-field>
+
             <v-img
-              v-if="deck.image_file"
-              :src="deck.image_url"
+              v-if="deck.image"
+              :src="deck.image"
               aspect-ratio="1"
               class="grey lighten-2"
               contain
@@ -104,10 +114,15 @@
           <v-select
             prepend-icon="mdi-link"
             v-model="deck.visibility"
+            :hint="deck.visibility.description ? deck.visibility.description : 'Select visibility' "
             :items="visibility_options"
+            :rules="[rules.required]"
             filled
             label="Visibility"
             dense
+            persistent-hint
+            return-object
+            no-data-text="no data"
           ></v-select>
 
           <v-card-actions>
@@ -133,14 +148,13 @@ export default {
         title: null,
         description: null,
         image_file: null,
-        image_url: "",
+        image: "",
         lang_source: "",
         lang_target: "",
         cards_finished: 0,
         cards_amount: 0,
         cards: [],
-        visibility: "",
-        visibilitity_options: ""
+        visibility: ""
       },
       //! todo get languages and visibility options from database
       languages: ["pl", "en", "de", "fr"],
@@ -153,9 +167,15 @@ export default {
       error: null,
       rules: {
         required: v => !!v || "Required.",
-        min: v => (v && v.length) >= 6 || "Min 6 characters",
-        maxTitle: v => (v && v.length) <= 50 || "Max 50 characters",
-        maxDescription: v => (v && v.length) <= 100 || "Max 100 characters",
+        min: len => v => (v && v.length) >= len || `Min ${len} characters`,
+        max: len => v => (v && v.length) <= len || `Max ${len} characters`,
+        length: len => v =>
+          (v || "").length >= len ||
+          `Invalid character length, required ${len}`,
+        url: v =>
+          /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(
+            v
+          ) || "Wrong URL.",
         size: value =>
           !value ||
           value.size < 2000000 ||
@@ -163,24 +183,59 @@ export default {
       }
     };
   },
+  computed: {
+    // visibility() {
+    //   return this.visibility_options[0];
+    // }
+  },
   watch: {
     "deck.cards": function(cards) {
       this.deck.cards_amount = cards.length;
     }
   },
-  created() {
+  beforeMount() {
     this.loading = true;
-    axios
-      //   .get(`/api/decks/et-autem-laborum`)
-      .get(`/api/decks/programmable-global-help-desk`)
+    this.$store
+      .dispatch("deckEditor")
       .then(response => {
-        this.deck = response.data.data;
-        this.edit = true;
+        const {
+          data: { languages }
+        } = response;
+        const {
+          data: {
+            __type: { enumValues }
+          }
+        } = response;
+
+        const languages_options = languages.map(({ id, locale, name }) => {
+          return { text: `${name} (${locale})`, value: id };
+        });
+
+        const visibility_options = enumValues.map(({ name, description }) => {
+          return {
+            text: `${name.toLowerCase()}`,
+            value: name,
+            description
+          };
+        });
+        this.visibility_options = visibility_options;
+        this.languages = languages_options;
       })
       .catch(error => {})
-      .then(() => {
-        this.loading = false;
-      });
+      .then(() => (this.loading = false));
+  },
+  created() {
+    // axios
+    //   //   .get(`/api/decks/et-autem-laborum`)
+    //   .get(`/api/decks/programmable-global-help-desk`)
+    //   .then(response => {
+    //     this.deck = response.data.data;
+    //     this.edit = true;
+    //   })
+    //   .catch(error => {})
+    //   .then(() => {
+    //     this.loading = false;
+    //   });
   },
   methods: {
     addCard() {
@@ -190,25 +245,12 @@ export default {
       this.loading = true;
       this.errors = null;
       this.$store
-        .dispatch("login", this.userData)
+        .dispatch("createDeck", this.deck)
         .then(response => {
-          this.$router.push({ name: "home" });
+          console.log("createDeckvue", response);
         })
         .catch(error => {
-          const {
-            graphQLErrors: { validationErrors }
-          } = error;
-          const {
-            graphQLErrors: {
-              0: { message }
-            }
-          } = error;
-          if (validationErrors) {
-            this.errors = validationErrors;
-          }
-          if (message) {
-            this.error = message;
-          }
+          console.log("createDeckvue", error);
         })
         .then(() => (this.loading = false));
     },
@@ -217,17 +259,19 @@ export default {
     },
     previewImage(file) {
       if (file) {
-        console.log("File: ", file);
         let filename = file.name;
         if (filename.lastIndexOf(".") <= 0) {
           return;
         }
         const fileReader = new FileReader();
         fileReader.addEventListener("load", () => {
-          this.deck.image_url = fileReader.result;
+          this.deck.image = fileReader.result;
         });
         fileReader.readAsDataURL(file);
         this.deck.image_file = file;
+      } else {
+        this.deck.image_file = null;
+        this.deck.image = "";
       }
     }
   }

@@ -73,4 +73,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Deck');
     }
+
+    public function publishedCards()
+    {
+        return $this->cards()->published();
+    }
 }

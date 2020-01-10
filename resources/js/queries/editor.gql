@@ -1,0 +1,25 @@
+query deckEditor {
+    languages {
+      id
+      locale
+      name
+    }
+    __type(name: "Visibility") {
+        enumValues {
+            name
+            description
+        }
+    }
+}
+
+mutation createDeck($input: CreateDeckInput!) {
+  createDeck(input: $input) {
+    title
+    description
+    image
+    visibility
+    cards {
+      question
+    }
+  }
+}

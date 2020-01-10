@@ -2,6 +2,10 @@
 #import card/*.graphql
 #import user/*.graphql
 #import auth.graphql
+"Can be used as an argument to upload files"
+scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload")
+
+
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-01-01 13:00:00`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
@@ -20,10 +24,11 @@ type User {
     id: Int!,
     username: String!
     email: String!
-    cards_count: Int! @count(relation: "cards")
-    decks: [Deck!]! @hasMany @lazyLoad(relations: ["decks"])
-    cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])
+    cards_count: Int! @count(relation: "publishedCards")
+    decks: [Deck!]! @hasMany(scopes: ["Published"]) @lazyLoad(relations: ["decks"])
+    cards: [Card!]! @hasMany(scopes: ["Published"]) @lazyLoad(relations: ["cards"])
 }
+
 
 type Query {
     users: [User!]! @paginate(defaultCount: 10)
@@ -32,12 +37,15 @@ type Query {
     me: User! @middleware(checks:["auth:api"]) @auth(guard: "api")
     user(username: String! @eq): User @find
     decks(search: String @search, filter: [FilterClause!] @filter): [Deck!]! @paginate(model: "App\\Deck",defaultCount: 12)
+    languages: [Language!]! @all
 }
+
 
 input OrderByClause{
     field: String!
     order: SortOrder!
 }
+
 
 enum SortOrder {
     ASC
@@ -105,12 +113,17 @@ type Mutation @middleware(checks: ["auth:api"]) {
           id: Int!
           ): User @delete
 
-
-
+  createDeck(input: CreateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\DeckMutator@createDeck")
 
 }
 
+
+
 extend type Mutation {
+
+
+          updateDeck(input: CreateCardInput! @spread): Deck @update
+          removeDeck(input: CreateCardInput! @spread): Deck @delete
 
           logout: LogoutResponse!
       @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@logout")
@@ -125,4 +138,41 @@ refresh_token(refresh: Boolean): RefreshResponse!
         RegisterInput @spread
     ): LoginResponse!
     @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@register")
+}
+
+input CreateDeckInput {
+    title: String!
+    description: String!
+    lang_source_id: Int!
+    lang_target_id: Int!
+    visibility: Visibility!
+    image: String!
+    cards: [CreateCardInput!]
+}
+
+input CreateCardInput {
+    question: String!
+    answer: String!
+    example_question: String!
+    example_answer: String!
+    image: String!
+}
+
+
+input UpdateCardInput {
+    id: ID!
+    question: String!
+    answer: String!
+    example_question: String!
+    example_answer: String!
+    image: String!
+}
+
+input UpsertCardInput {
+    id: ID!
+    question: String!
+    answer: String!
+    example_question: String!
+    example_answer: String!
+    image: String!
 }
