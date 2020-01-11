@@ -12,6 +12,7 @@ import {
     removeProfile
 } from "../queries/profile.gql";
 import {
+    deck,
     decks
 } from "../queries/deck.gql"
 import {
@@ -226,6 +227,27 @@ const actions = {
                         context.commit('decks', decks);
                     }
                     console.log(response);
+                    resolve(response)
+                })
+                .catch(error => {
+                    console.log("graphql error", {
+                        error
+                    });
+                    reject(error)
+                })
+
+        });
+    },
+    deck(context, payload) {
+        return new Promise((resolve, reject) => {
+            console.log(payload);
+            apolloClient.query({
+                    query: deck,
+                    variables: {
+                        slug: payload
+                    }
+                })
+                .then(response => {
                     resolve(response)
                 })
                 .catch(error => {

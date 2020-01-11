@@ -31,9 +31,8 @@ type User {
 
 
 type Query {
-    users: [User!]! @paginate(defaultCount: 10)
     profile(username: String! @eq): User @find
-    deck(id: ID @eq): Deck @find
+    deck(slug: String! @eq): Deck @find  @able(ability: "view", find: "slug")
     me: User! @middleware(checks:["auth:api"]) @auth(guard: "api")
     user(username: String! @eq): User @find
     decks(search: String @search, filter: [FilterClause!] @filter): [Deck!]! @paginate(model: "App\\Deck",defaultCount: 12)
@@ -107,13 +106,13 @@ type Mutation @middleware(checks: ["auth:api"]) {
           username: String
           email: String
           password: String
-          ): User @update @editProfile
+          ): User @update @editProfile @able(ability: "update", find: "id")
 
           removeProfile(
           id: Int!
-          ): User @delete
+          ): User @delete @able(ability: "delete", find: "id")
 
-  createDeck(input: CreateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\DeckMutator@createDeck")
+  createDeck(input: CreateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\DeckMutator@createDeck") @able(ability: "create")
 
 }
 
@@ -122,8 +121,8 @@ type Mutation @middleware(checks: ["auth:api"]) {
 extend type Mutation {
 
 
-          updateDeck(input: CreateCardInput! @spread): Deck @update
-          removeDeck(input: CreateCardInput! @spread): Deck @delete
+          updateDeck(input: CreateCardInput! @spread): Deck @update @able(ability: "update", find: "id")
+          removeDeck(input: CreateCardInput! @spread): Deck @delete @able(ability: "delete", find: "id")
 
           logout: LogoutResponse!
       @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@logout")

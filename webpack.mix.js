@@ -22,7 +22,9 @@ mix.webpackConfig({
 })
 
 mix.browserSync({
-    proxy: 'localhost:8000'
+    proxy: 'localhost:8000',
+    watch: true,
+    // files: "**/*.graphql",
 });
 
 mix.options({

@@ -18,7 +18,7 @@ class DeckPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return false;
     }
 
     /**
@@ -28,9 +28,13 @@ class DeckPolicy
      * @param  \App\Deck  $deck
      * @return mixed
      */
-    public function view(User $user, Deck $deck)
+    public function view(?User $user, Deck $deck)
     {
-        //
+        if ($deck->visibility === 'public') {
+            return true;
+        } else {
+            return optional($user)->id === $deck->user_id;
+        }
     }
 
     /**
@@ -41,7 +45,7 @@ class DeckPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->id > 0;
     }
 
     /**
@@ -53,7 +57,7 @@ class DeckPolicy
      */
     public function update(User $user, Deck $deck)
     {
-        //
+        return $user->id === $deck->user_id;
     }
 
     /**
@@ -65,7 +69,7 @@ class DeckPolicy
      */
     public function delete(User $user, Deck $deck)
     {
-        //
+        return $user->id === $deck->user_id;
     }
 
     /**

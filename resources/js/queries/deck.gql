@@ -27,3 +27,20 @@ query decks($amount: Int, $page: Int!, $query: String, $filter: FilterClause!) {
     }
   }
 }
+
+query deck($slug: String!) {
+    deck (slug: $slug) {
+        title
+        description
+        image
+        cards {
+            id
+            question
+            answer
+            image
+        }
+        user {
+            username
+        }
+    }
+}

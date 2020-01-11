@@ -95,10 +95,14 @@
               <v-item v-for="(card, index) in deck.cards" :key="'card' + index"></v-item>
             </v-item-group>
 
-            <h1
-              class="text-uppercase text-secondary font-weight-bolder"
-            >Flashcards ({{ deck.cards_finished }}/{{ deck.cards_amount }})</h1>
-            <!-- <cards-editor v-on:add-finished-card="deck.cards_finished += $event"></cards-editor> -->
+            <h2 class="display-1 success--text pl-4">
+              Flashcards:&nbsp;
+              <v-fade-transition leave-absolute>
+                <span>{{ deck.cards.length }} / {{ this.cards_limit }}</span>
+              </v-fade-transition>
+            </h2>
+
+            <v-progress-circular :value="progress" class="mr-2"></v-progress-circular>
 
             <transition-group name="answers-list" class="flashcards" tag="div">
               <card-editor
@@ -151,11 +155,10 @@ export default {
         image: "",
         lang_source: "",
         lang_target: "",
-        cards_finished: 0,
-        cards_amount: 0,
         cards: [],
         visibility: ""
       },
+      cards_limit: 50,
       //! todo get languages and visibility options from database
       languages: ["pl", "en", "de", "fr"],
       visibility_options: ["public", "unlisted", "private"],
@@ -184,9 +187,9 @@ export default {
     };
   },
   computed: {
-    // visibility() {
-    //   return this.visibility_options[0];
-    // }
+    progress() {
+      return (this.deck.cards.length / this.cards_limit) * 100;
+    }
   },
   watch: {
     "deck.cards": function(cards) {

@@ -1,4 +1,5 @@
 type Card {
+    id: Int!
     question: String!
     answer: String!
     example_answer: String!

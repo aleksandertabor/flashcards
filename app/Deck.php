@@ -17,7 +17,7 @@ class Deck extends Model implements HasMedia
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'title', 'title', 'description', 'lang_source_id', 'lang_target_id', 'visibility'];
+    protected $fillable = ['user_id', 'title', 'title', 'description', 'lang_source_id', 'lang_target_id', 'visibility', 'slug'];
 
     public const PUBLIC_VISIBILITY = ['public' => "anybody can see"];
     public const UNLISTED_VISIBILITY = ['unlisted' => 'only with link'];
@@ -26,6 +26,11 @@ class Deck extends Model implements HasMedia
     public static function visibilities(): array
     {
         return [self::PUBLIC_VISIBILITY, self::UNLISTED_VISIBILITY, self::PRIVATE_VISIBILITY];
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     public function sluggable()
@@ -42,11 +47,6 @@ class Deck extends Model implements HasMedia
         $this
             ->addMediaCollection('main')
             ->singleFile();
-    }
-
-    public function getRouteKeyName()
-    {
-        return 'slug';
     }
 
     public function toSearchableArray()

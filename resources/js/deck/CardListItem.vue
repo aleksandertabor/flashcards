@@ -1,28 +1,25 @@
 <template>
-  <div class="card w-100 bg-success border-dark">
-    <div class="card-header">
-      <i class="fas fa-sync-alt"></i>
-      <small class="text-muted">Last updated 3 mins ago</small>
-    </div>
-    <img data-src="https://source.unsplash.com/random/200x200" class="card-img-top lazy" alt />
-    <div class="card-body">
-      <h5 class="card-title">{{ question }}</h5>
-      <p class="card-text">{{ answer }}</p>
-    </div>
-    <div class="card-body">
-      <h5 class="card-title">{{ question | reverse }}</h5>
-      <p class="card-text">{{ answer | reverse }}</p>
-    </div>
-    <div class="card-footer">
-      <i class="fas fa-sync-alt"></i>
-      <small class="text-muted">Last updated 3 mins ago</small>
-    </div>
-  </div>
+  <v-item v-slot:default="{ active, toggle }">
+    <v-card
+      :color="active ? 'primary' : ''"
+      class="d-flex align-center"
+      dark
+      height="200"
+      @click="toggle"
+    >
+      <div v-if="!active" class="display-1 flex-grow-1 text-center">
+        <div class="text-no-wrap text-center">{{ question }}</div>
+      </div>
+      <div v-if="active" class="display-1 flex-grow-1 text-center">
+        <div class="text-no-wrap text-center">{{ answer }}</div>
+      </div>
+    </v-card>
+  </v-item>
 </template>
 
 <script>
 export default {
-  props: { question: String, answer: String, id: Number },
+  props: { question: String, answer: String, id: Number, image: String },
   filters: {
     reverse: value => {
       return [...value].reverse().join("");
