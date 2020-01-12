@@ -9,6 +9,7 @@
       <p class="card-text">{{ description }}</p>
       <p class="card-text">Cards: ({{ cards_count }})</p>
       <p class="card-text">Created at: ({{ created_at }})</p>
+      <p class="card-text">Created at: ({{ visibility }})</p>
     </div>
   </div>
 </template>
@@ -24,7 +25,8 @@ export default {
     lang_source: Object,
     lang_target: Object,
     slug: String,
-    created_at: String
+    created_at: String,
+    visibility: String
   }
 };
 </script>

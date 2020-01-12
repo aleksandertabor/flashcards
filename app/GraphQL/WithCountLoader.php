@@ -36,7 +36,7 @@ class WithCountLoader extends BatchLoader
     {
         $parents = collect(Arr::pluck($this->keys, 'parent'));
 
-        return $this->builder->withCount($this->relation)
+        return $this->builder->withoutGlobalScopes()->withCount($this->relation)
             ->findMany($parents->pluck('id'))
             ->mapWithKeys(function ($post) {
                 $property = "{$this->relation}_count";

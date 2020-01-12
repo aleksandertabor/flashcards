@@ -49,7 +49,7 @@ SDL;
     {
         foreach ($value as $FilterClause) {
 
-            $builder->where('visibility', 'public');
+            // $builder->where('visibility', 'public');
 
             $relation = $FilterClause['orderByCount']['relation'] ?? null;
             $model = $FilterClause['orderByCount']['model'] ?? null;
@@ -68,8 +68,6 @@ SDL;
             }
             if (!isset($builder->query) && $constraints !== null) {
                 $builder->withCount([$relation]);
-            } elseif (!isset($builder->query) && $relation === null) {
-                // $builder->where('visibility', 'public');
             }
 
             if ($FilterClause['order'] === 'RAND') {

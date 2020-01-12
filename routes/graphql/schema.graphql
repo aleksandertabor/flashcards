@@ -20,21 +20,34 @@ type Language {
     name: String!
 }
 
+
 type User {
-    id: Int!,
+    id: Int!
     username: String!
     email: String!
     cards_count: Int! @count(relation: "publishedCards")
-    decks: [Deck!]! @hasMany(scopes: ["Published"]) @lazyLoad(relations: ["decks"])
-    cards: [Card!]! @hasMany(scopes: ["Published"]) @lazyLoad(relations: ["cards"])
+    decks: [Deck!]! @hasMany @lazyLoad(relations: ["decks"])
+    cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])
 }
+
+type AuthUser @modelClass(class: "\\App\\User") {
+    id: Int!
+    username: String!
+    email: String!
+    cards_count: Int! @count(relation: "cards")
+    decks: [Deck!]! @hasMany(relation: "userDecks") @lazyLoad(relations: ["userDecks"])
+    cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])
+}
+
+union Person @union(resolveType: "App\\GraphQL\\Unions\\PersonUnion") = AuthUser | User
 
 
 type Query {
-    profile(username: String! @eq): User @find
-    deck(slug: String! @eq): Deck @find  @able(ability: "view", find: "slug")
-    me: User! @middleware(checks:["auth:api"]) @auth(guard: "api")
+    profile(username: String!): Person @field(resolver: "App\\GraphQL\\Queries\\ProfileQuery")
+    allDecks(visibility: String): [Deck!]! @withoutGlobalScope
     user(username: String! @eq): User @find
+    deck(slug: String! @eq): Deck @find  @able(ability: "view", find: "slug")
+    me: User @middleware(checks:["auth:api"]) @auth
     decks(search: String @search, filter: [FilterClause!] @filter): [Deck!]! @paginate(model: "App\\Deck",defaultCount: 12)
     languages: [Language!]! @all
 }
@@ -106,7 +119,8 @@ type Mutation @middleware(checks: ["auth:api"]) {
           username: String
           email: String
           password: String
-          ): User @update @editProfile @able(ability: "update", find: "id")
+          password_confirmation: String
+          ): User @editProfileRules @update @able(ability: "update", find: "id")
 
           removeProfile(
           id: Int!

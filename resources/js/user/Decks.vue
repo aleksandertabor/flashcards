@@ -2,25 +2,33 @@
   <div>
     <v-sheet class="mx-auto" elevation="8">
       <h2>Decks</h2>
-      <v-slide-group v-if="decks" v-model="model" class="pa-4" show-arrows>
+      <v-slide-group v-if="decks" v-model="model" class="pa-4" show-arrows center-active>
         <v-slide-item
           v-for="(deck, index) in decks"
           :key="'deck' + index"
           v-slot:default="{ active, toggle }"
         >
           <v-card
-            :color="active ? 'primary' : 'grey lighten-1'"
+            :color="active ? 'primary' : visibility_colors[deck.visibility]"
             class="ma-4"
             height="200"
             width="100"
             @click="toggle"
           >
-            <h5 class="card-title">{{ deck.title }}</h5>
+            <v-badge
+              :content="deck.cards_count"
+              :value="deck.cards_count"
+              color="brown"
+              overlap
+              bordered
+            >
+              <v-icon large>mdi-cards</v-icon>
+            </v-badge>
+            <h5 class="overline">{{ deck.title }}</h5>
+            <h5 class="card-title">{{ deck.visibility }}</h5>
             <v-row class="fill-height" align="center" justify="center">
               <v-scale-transition>
-                <v-icon v-if="active" color="white" size="48" v-text="'mdi-close-circle-outline'"></v-icon>
-                <v-icon v-if="active" color="white" size="48" v-text="'mdi-circle-edit-outline'"></v-icon>
-                <v-icon v-if="active" color="white" size="48" v-text="'delete-circle-outline'"></v-icon>
+                <v-icon v-if="active" color="white" size="32" v-text="'mdi-circle-edit-outline'"></v-icon>
               </v-scale-transition>
             </v-row>
           </v-card>
@@ -30,7 +38,7 @@
       <v-expand-transition>
         <v-sheet v-if="model != null" color="grey lighten-4" height="200" tile>
           <v-row class="fill-height" align="center" justify="center">
-            <h3 class="title">{{decks[model].title}}</h3>
+            <v-icon v-if="active" color="white" size="48" v-text="'delete-circle-outline'"></v-icon>
             <router-link :to="{name: 'deck', params: {slug: decks[model].slug} }">
               <h5 class="card-title">{{decks[model].title}}</h5>
             </router-link>
@@ -65,6 +73,12 @@ export default {
   },
   data() {
     return {
+      visibility_colors: {
+        public: "green",
+        unlisted: "orange",
+        private: "purple"
+      },
+      active: false,
       loading: false,
       columns: 3,
       model: null

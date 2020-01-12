@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Deck;
+use App\Scopes\PublishedScope;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -19,6 +21,8 @@ class Deck extends Model implements HasMedia
      */
     protected $fillable = ['user_id', 'title', 'title', 'description', 'lang_source_id', 'lang_target_id', 'visibility', 'slug'];
 
+    protected $with = ['media'];
+
     public const PUBLIC_VISIBILITY = ['public' => "anybody can see"];
     public const UNLISTED_VISIBILITY = ['unlisted' => 'only with link'];
     public const PRIVATE_VISIBILITY = ['private' => 'only you'];
@@ -26,6 +30,18 @@ class Deck extends Model implements HasMedia
     public static function visibilities(): array
     {
         return [self::PUBLIC_VISIBILITY, self::UNLISTED_VISIBILITY, self::PRIVATE_VISIBILITY];
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new PublishedScope);
     }
 
     public function getRouteKeyName()

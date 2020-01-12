@@ -15,7 +15,7 @@ class CreateDecksTable extends Migration
     {
         Schema::create('decks', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->string('title', 80);
             $table->text('description', 320);
             $table->unsignedBigInteger('lang_source_id')->nullable();
@@ -23,6 +23,8 @@ class CreateDecksTable extends Migration
             $table->string('visibility');
             $table->string('slug')->unique();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

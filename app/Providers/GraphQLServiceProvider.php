@@ -22,5 +22,6 @@ class GraphQLServiceProvider extends ServiceProvider
         $typeRegistry = app(TypeRegistry::class);
 
         $typeRegistry->register(VisibilityEnum::get());
+
     }
 }

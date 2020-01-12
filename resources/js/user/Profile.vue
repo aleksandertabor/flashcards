@@ -2,27 +2,27 @@
   <div>
     <div v-if="loading">Profile is loading ...</div>
     <div v-else>
-      <div v-if="editable">
-        <v-badge bordered color="success" icon="mdi-account-edit" overlap>
-          <v-btn
-            class="white--text"
-            color="success"
-            depressed
-            @click="changeView('EditProfile')"
-          >Edit</v-btn>
-        </v-badge>
-        <v-badge bordered color="error" icon="mdi-account-remove" overlap>
-          <v-btn
-            class="white--text"
-            color="error"
-            depressed
-            @click="changeView('RemoveProfile')"
-          >Remove</v-btn>
-        </v-badge>
-      </div>
       <v-card class="mx-auto" max-width="434" tile>
         <v-img height="100%" src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg">
-          <v-row align="end" class="fill-height">
+          <v-row align="end" class="fill-height pl-5">
+            <v-col v-if="editable" class="pa-0 pt-5" cols="12">
+              <v-badge bordered color="success" icon="mdi-account-edit" overlap>
+                <v-btn
+                  class="white--text"
+                  color="success"
+                  depressed
+                  @click="changeView('EditProfile')"
+                >Edit</v-btn>
+              </v-badge>
+              <v-badge bordered color="error" icon="mdi-account-remove" overlap>
+                <v-btn
+                  class="white--text"
+                  color="error"
+                  depressed
+                  @click="changeView('RemoveProfile')"
+                >Remove</v-btn>
+              </v-badge>
+            </v-col>
             <v-col align-self="start" class="pa-0" cols="12">
               <v-avatar class="profile" color="grey" size="164" tile>
                 <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
@@ -38,13 +38,7 @@
             </v-col>
           </v-row>
         </v-img>
-      </v-card>Decks
-      <v-avatar color="teal" size="48">
-        <span class="white--text headline">{{ userData.decks.length }}</span>
-      </v-avatar>Cards
-      <v-avatar color="teal" size="48">
-        <span class="white--text headline">{{ userData.cards_count }}</span>
-      </v-avatar>
+      </v-card>
 
       <keep-alive>
         <component
@@ -53,7 +47,13 @@
           v-bind:userData="userData"
           v-model="userData"
         ></component>
-      </keep-alive>
+      </keep-alive>Decks
+      <v-avatar color="teal" size="48">
+        <span class="white--text headline">{{ userData.decks.length }}</span>
+      </v-avatar>Cards
+      <v-avatar color="teal" size="48">
+        <span class="white--text headline">{{ userData.cards_count }}</span>
+      </v-avatar>
       <decks v-if="userData.decks" v-bind:decks="userData.decks"></decks>
     </div>
   </div>

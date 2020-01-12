@@ -175,11 +175,18 @@ const actions = {
                         username: payload.username,
                         email: payload.email,
                         password: payload.password,
+                        password_confirmation: payload.password_confirmation,
                     },
                 })
                 .then(response => {
-                    console.log("editProfile", response);
-                    resolve(response)
+                    const user = response.data.editProfile;
+                    let currentUser = JSON.parse(localStorage.getItem('user'))
+                    currentUser.username = user.username;
+                    currentUser.email = user.email;
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    context.commit('refresh', currentUser);
+                    console.log("editProfile", user);
+                    resolve(user)
                 })
                 .catch(error => {
                     reject(error)

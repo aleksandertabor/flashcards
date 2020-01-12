@@ -64,6 +64,11 @@ class User extends Authenticatable
         $this->attributes['username'] = strtolower($value);
     }
 
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
     public function cards()
     {
         return $this->hasManyThrough('App\Card', 'App\Deck');
@@ -72,6 +77,11 @@ class User extends Authenticatable
     public function decks()
     {
         return $this->hasMany('App\Deck');
+    }
+
+    public function userDecks()
+    {
+        return $this->hasMany('App\Deck')->withoutGlobalScopes();
     }
 
     public function publishedCards()

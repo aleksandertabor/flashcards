@@ -117,9 +117,6 @@ SDL;
     protected function modelsToCheck(ArgumentSet $argumentSet, array $args): iterable
     {
         if ($find = $this->directiveArgValue('find')) {
-            dump($find);
-            dump($args[$find]);
-
             $modelOrModels = $argumentSet
                 ->enhanceBuilder(
                     $this->getModelClass()::query(),

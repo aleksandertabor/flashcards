@@ -75,7 +75,7 @@
     <v-content>
       <v-container fill-height fluid>
         <v-layout justify-center align-center row wrap>
-          <v-flex xs6>
+          <v-flex>
             <router-view></router-view>
           </v-flex>
         </v-layout>

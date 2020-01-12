@@ -1,29 +1,39 @@
 query profile($username: String!) {
   profile(username: $username) {
+    ... on AuthUser {
     id
     username
     email
     cards_count
-    cards {
-        question
+      decks {
+        title
+        description
+        cards_count
+        image
+        slug
+        created_at
+        visibility
+      }
     }
-    decks {
-      title
-      description
-      image
-      slug
-      created_at
-      cards_count
-      visibility
-      cards {
-          question
+    ... on User {
+    username
+    email
+    cards_count
+      decks {
+        title
+        description
+        cards_count
+        image
+        slug
+        created_at
+        visibility
       }
     }
   }
 }
-mutation editProfile($id: Int!, $username: String, $email: String, $password: String) {
+mutation editProfile($id: Int!, $username: String, $email: String, $password: String, $password_confirmation: String) {
   editProfile(
-      id: $id, username: $username, email: $email, password: $password
+      id: $id, username: $username, email: $email, password: $password, password_confirmation: $password_confirmation
   ) {
       username
       email

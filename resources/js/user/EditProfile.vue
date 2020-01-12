@@ -1,64 +1,62 @@
 <template>
   <div>
-    <h6 class="text-uppercase text-secondary font-weight-bolder">Edit profile</h6>
-    <div class="form-group">
-      <div class="form-group col-md-12">
-        <label for="username">Username</label>
-        <input
-          type="text"
-          name="username"
-          class="form-control form-control-sm"
-          autocomplete="off"
-          placeholder="username"
-          v-model="userData.username"
-          @input="$emit('input', userData)"
-          :class="[{'is-invalid': this.errorFor('username')}]"
-        />
-        <div
-          class="invalid-tooltip"
-          v-for="(error, index) in this.errorFor('username')"
-          :key="'username' + index"
-        >{{ error }}</div>
-      </div>
-      <div class="form-group col-md-12">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          name="email"
-          class="form-control form-control-sm"
-          autocomplete="off"
-          placeholder="email"
-          v-model="userData.email"
-          @input="$emit('input', userData)"
-          :class="[{'is-invalid': this.errorFor('email')}]"
-        />
-        <div
-          class="invalid-tooltip"
-          v-for="(error, index) in this.errorFor('email')"
-          :key="'email' + index"
-        >{{ error }}</div>
-      </div>
-      <div class="form-group col-md-12">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          name="password"
-          class="form-control form-control-sm"
-          autocomplete="off"
-          placeholder
-          v-model="user.password"
-          :class="[{'is-invalid': this.errorFor('password')}]"
-        />
-        <div
-          class="invalid-tooltip"
-          v-for="(error, index) in this.errorFor('password')"
-          :key="'password' + index"
-        >{{ error }}</div>
-      </div>
-      <button class="btn btn-success btn-block mt-3" @click="save" :disabled="loading">
-        <i class="fas fa-save"></i> Save profile
-      </button>
-    </div>
+    <v-form ref="form" lazy-validation>
+      <v-alert type="success" v-if="success" dismissible>Your account has saved.</v-alert>
+      <v-alert type="error" v-if="error" dismissible>Fill your data correctly.</v-alert>
+      <v-text-field
+        v-model="userData.username"
+        prepend-icon="mdi-account"
+        label="Username"
+        :rules="[rules.required]"
+        :error-messages="errorFor('username')"
+        @input="$emit('input', userData)"
+        @keyup.enter="save"
+        :loading="loading"
+      ></v-text-field>
+
+      <v-text-field
+        v-model="userData.email"
+        prepend-icon="mdi-at"
+        label="Email"
+        :rules="[rules.required]"
+        :error-messages="errorFor('email')"
+        @input="$emit('input', userData)"
+        @keyup.enter="save"
+        :loading="loading"
+      ></v-text-field>
+
+      <v-text-field
+        v-model="userData.password"
+        prepend-icon="mdi-lock"
+        :rules="[rules.min]"
+        :error-messages="errorFor('password')"
+        :type="show1 ? 'text' : 'password'"
+        name="input-10-1"
+        label="Password"
+        counter
+        :loading="loading"
+        @keyup.enter="save"
+      ></v-text-field>
+
+      <v-text-field
+        v-model="userData.password_confirmation"
+        prepend-icon="mdi-lock"
+        :rules="[rules.min]"
+        :error-messages="errorFor('password_confirmation')"
+        name="input-10-1"
+        :type="show1 ? 'text' : 'password'"
+        label="Password confirmation"
+        counter
+        :loading="loading"
+        @keyup.enter="save"
+      ></v-text-field>
+
+      <v-btn @click="show1 = !show1" class="ma-2" color="indigo" dark>
+        <v-icon>{{ show1 ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon>
+      </v-btn>
+
+      <v-btn :disabled="loading" color="success" class="mr-4" @click="save">Save profile</v-btn>
+    </v-form>
   </div>
 </template>
 
@@ -71,26 +69,36 @@ export default {
     return {
       loading: false,
       status: null,
-      errors: null
+      errors: null,
+      error: false,
+      show1: false,
+      success: false,
+      rules: {
+        required: v => !!v || "Required.",
+        min: v => (v && v.length) >= 6 || "Min 6 characters"
+      }
     };
   },
   methods: {
     save() {
       this.loading = true;
       this.errors = null;
+      this.error = false;
+      this.success = false;
 
       this.$store
         .dispatch("editProfile", this.userData)
         .then(response => {
-          const username = response.data.editProfile.username;
+          const username = response.username;
+          this.success = true;
           if (username !== this.$route.params.username) {
             this.$router.push({ name: "profile", params: { username } });
           }
-          //   this.userData = response.data.profile;
         })
         .catch(error => {
           if (error.graphQLErrors.validationErrors !== undefined) {
             this.errors = error.graphQLErrors.validationErrors;
+            this.error = true;
           }
         })
         .then(() => (this.loading = false));
