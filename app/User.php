@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -10,7 +9,6 @@ use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, Sluggable;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -19,7 +17,6 @@ class User extends Authenticatable
     protected $fillable = [
         'username', 'email', 'password',
     ];
-
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -28,7 +25,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
     /**
      * The attributes that should be cast to native types.
      *
@@ -37,12 +33,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
     public function findForPassport($username)
     {
         return $this->where('username', $username)->first() ?? $this->where('email', $username)->first();
     }
-
     public function sluggable()
     {
         return [
@@ -53,37 +47,30 @@ class User extends Authenticatable
             ],
         ];
     }
-
     public function getRouteKeyName()
     {
         return 'username';
     }
-
     public function setUsernameAttribute($value)
     {
         $this->attributes['username'] = strtolower($value);
     }
-
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
     }
-
     public function cards()
     {
         return $this->hasManyThrough('App\Card', 'App\Deck');
     }
-
     public function decks()
     {
         return $this->hasMany('App\Deck');
     }
-
     public function userDecks()
     {
         return $this->hasMany('App\Deck')->withoutGlobalScopes();
     }
-
     public function publishedCards()
     {
         return $this->cards()->published();

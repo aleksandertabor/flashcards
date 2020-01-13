@@ -59,7 +59,7 @@ const actions = {
                         access_token: response.data.refresh_token.access_token,
                         expires_in: response.data.refresh_token.expires_in,
                     }
-                    let currentUser = JSON.parse(localStorage.getItem('user'))
+                    let currentUser = JSON.parse(localStorage.getItem('user')) || {}
                     currentUser.access_token = user.access_token;
                     currentUser.expires_in = user.expires_in;
                     localStorage.setItem('user', JSON.stringify(currentUser))
@@ -67,7 +67,7 @@ const actions = {
                     resolve(response)
                 })
                 .catch(error => {
-                    // console.log("refrest token error", error);
+                    console.log("refrest token error", error);
                     reject(error)
                 })
 
@@ -103,9 +103,15 @@ const actions = {
                     query: me,
                 })
                 .then(response => {
-                    // const user = response.data.me;
-                    // context.commit('me', user);
-                    // localStorage.setItem('user', JSON.stringify(user))
+                    let user = {
+                        username: response.data.me.username,
+                        email: response.data.me.email,
+                    }
+                    let currentUser = JSON.parse(localStorage.getItem('user')) || {}
+                    currentUser.username = user.username;
+                    currentUser.email = user.email;
+                    localStorage.setItem('user', JSON.stringify(currentUser))
+                    context.commit('me', currentUser);
                     resolve(response)
                 })
                 .catch(error => {

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Api\GoogleTranslationApi;
+use App\Facades\TranslationFacade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -28,11 +28,8 @@ class TranslationController extends Controller
         }
 
         //! need to add the class instance to singleton
-        $translator = new GoogleTranslationApi();
-
-        $translation = $translator->translate($request->phrase, ['source' => $request->source, 'target' => $request->target]);
+        $translation = TranslationFacade::translate($request->phrase, ['source' => $request->source, 'target' => $request->target]);
 
         return response()->json(['success' => ['translation' => $translation['text']]], 200);
-
     }
 }

@@ -12,3 +12,5 @@ npm-debug.log
 yarn-error.log
 google-credentials.json
 /storage/*.index
+_ide_helper.php
+.phpstorm.meta.php

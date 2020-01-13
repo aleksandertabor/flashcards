@@ -1,24 +1,22 @@
 <?php
+
 namespace App\Api;
 
+use App\Contracts\TranslationContract;
 use Google\Cloud\Translate\V2\TranslateClient;
 use Locale;
 
-class GoogleTranslationApi
+class GoogleTranslationApi implements TranslationContract
 {
+    private $client;
 
-    protected $client;
-
-    public function __construct()
+    public function __construct(TranslateClient $client)
     {
-        $this->client = new TranslateClient([
-            'keyFilePath' => base_path(env('GOOGLE_API_CREDENTIALS')),
-        ]);
+        $this->client = $client;
     }
 
-    public function translate(string $toTranslate, array $languages): array
+    public function translate(string $toTranslate, array $languages) : array
     {
-
         $result = $this->client->translate($toTranslate, [
             'source' => $languages['source'],
             'target' => $languages['target'],
@@ -27,17 +25,16 @@ class GoogleTranslationApi
         return $result ? $result : [];
     }
 
-    public function detect(string $toDetect): array
+    public function detect(string $toDetect) : array
     {
         $result = $this->client->detectLanguage($toDetect);
 
         return $result ? $result : [];
     }
 
-    public function languages(): array
+    public function languages() : array
     {
-        $result = collect($this->client->languages())->map(fn($lang) =>
-            ['locale' => $lang, 'name' => Locale::getDisplayLanguage($lang, 'en')]
+        $result = collect($this->client->languages())->map(fn ($lang) => ['locale' => $lang, 'name' => Locale::getDisplayLanguage($lang, 'en')]
         )->toArray();
 
         return $result ? $result : [];

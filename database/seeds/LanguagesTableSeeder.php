@@ -1,6 +1,6 @@
 <?php
 
-use App\Api\GoogleTranslationApi;
+use App\Facades\TranslationFacade;
 use App\Language;
 use Illuminate\Database\Seeder;
 
@@ -13,9 +13,7 @@ class LanguagesTableSeeder extends Seeder
      */
     public function run()
     {
-        $translator = new GoogleTranslationApi();
-
-        $languages = $translator->languages();
+        $languages = TranslationFacade::languages();
 
         foreach ($languages as $lang) {
             Language::create([

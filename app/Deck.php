@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Deck;
 use App\Scopes\PublishedScope;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
@@ -13,21 +12,18 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 class Deck extends Model implements HasMedia
 {
     use Sluggable, Searchable, HasMediaTrait;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['user_id', 'title', 'title', 'description', 'lang_source_id', 'lang_target_id', 'visibility', 'slug'];
-
     protected $with = ['media'];
-
-    public const PUBLIC_VISIBILITY = ['public' => "anybody can see"];
+    public const PUBLIC_VISIBILITY = ['public' => 'anybody can see'];
     public const UNLISTED_VISIBILITY = ['unlisted' => 'only with link'];
     public const PRIVATE_VISIBILITY = ['private' => 'only you'];
 
-    public static function visibilities(): array
+    public static function visibilities() : array
     {
         return [self::PUBLIC_VISIBILITY, self::UNLISTED_VISIBILITY, self::PRIVATE_VISIBILITY];
     }
@@ -40,7 +36,6 @@ class Deck extends Model implements HasMedia
     protected static function boot()
     {
         parent::boot();
-
         static::addGlobalScope(new PublishedScope);
     }
 
@@ -76,7 +71,7 @@ class Deck extends Model implements HasMedia
 
     public function scopePublished($query)
     {
-        return $query->where('visibility', "=", key(self::PUBLIC_VISIBILITY));
+        return $query->where('visibility', '=', key(self::PUBLIC_VISIBILITY));
     }
 
     public function user()

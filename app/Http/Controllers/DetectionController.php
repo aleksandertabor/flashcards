@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Api\GoogleTranslationApi;
+use App\Facades\TranslationFacade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,12 +24,8 @@ class DetectionController extends Controller
             return response()->json(['errors' => $validator->errors()], 401);
         }
 
-        //! need to add the class instance to singleton
-        $translator = new GoogleTranslationApi();
-
-        $detection = $translator->detect($request->phrase);
+        $detection = TranslationFacade::detect($request->phrase);
 
         return response()->json(['success' => ['detection' => $detection]], 200);
-
     }
 }

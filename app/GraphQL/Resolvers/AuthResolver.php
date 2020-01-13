@@ -1,4 +1,5 @@
 <?php
+
 namespace App\GraphQL\Resolvers;
 
 use App\Exceptions\InvalidCredentialsException;
@@ -11,7 +12,6 @@ use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Laravel\Passport\Client;
@@ -21,7 +21,6 @@ use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class AuthResolver
 {
-
     use PassportTokenTrait;
 
     private $client;
@@ -39,7 +38,6 @@ class AuthResolver
      * @return array
      * @throws \Exception
      */
-
     public function login($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
         $login = $args['login'];
@@ -70,6 +68,7 @@ class AuthResolver
             Cookie::queue('_refresh_token', $decodedResponse['refresh_token'], $dt->diffInMinutes($dt->copy()->addDays(30)), '/', $context->request->getHost(), false, true);
             $user = User::where($loginType, $credentials['username'])->firstOrFail();
             $decodedResponse['user'] = $user;
+
             return $decodedResponse;
         }
         throw new InvalidCredentialsException(
@@ -77,6 +76,7 @@ class AuthResolver
             'Wrong password or server problems.'
         );
     }
+
     public function register($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
         $validator = Validator::make($args, [
@@ -111,6 +111,7 @@ class AuthResolver
             $decodedResponse['expires_in'] = $dt->seconds($decodedResponse['expires_in'])->toDateTimeString();
             Cookie::queue('_refresh_token', $decodedResponse['refresh_token'], $dt->diffInMinutes($dt->copy()->addDays(30)), '/', $context->request->getHost(), false, true);
             $decodedResponse['user'] = $user;
+
             return $decodedResponse;
         }
         throw new InvalidCredentialsException(
@@ -118,6 +119,7 @@ class AuthResolver
             'Wrong credentials or server problems.'
         );
     }
+
     public function refresh_token($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
         $credentials['refresh_token'] = Cookie::get('_refresh_token');
@@ -130,17 +132,20 @@ class AuthResolver
             $dt = Carbon::now();
             $decodedResponse['expires_in'] = $dt->seconds($decodedResponse['expires_in'])->toDateTimeString();
             Cookie::queue('_refresh_token', $decodedResponse['refresh_token'], $dt->diffInMinutes($dt->copy()->addDays(30)), '/', $context->request->getHost(), false, true);
+
             return $decodedResponse;
         }
         throw new RefreshTokenException('So you are guest.', $decodedResponse['message']);
     }
+
     public function logout($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        if (!Auth::guard('api')->check()) {
-            throw new AuthenticationException("Not Authenticated");
+        if (! Auth::guard('api')->check()) {
+            throw new AuthenticationException('Not Authenticated');
         }
         Auth::guard('api')->user()->token()->revoke();
         Cookie::queue(Cookie::forget('_refresh_token'));
+
         return [
             'status' => 'LOGOUT',
             'message' => 'Logout.',
