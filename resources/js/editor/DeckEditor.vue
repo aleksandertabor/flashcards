@@ -73,7 +73,6 @@
               :items="languages"
               filled
               label="Source language"
-              dense
               append-outer-icon="mdi-translate"
             ></v-select>
 
@@ -84,8 +83,21 @@
               :items="languages"
               filled
               label="Target language"
-              dense
               append-outer-icon="mdi-translate"
+            ></v-select>
+
+            <v-select
+              prepend-icon="mdi-link"
+              v-model="deck.visibility"
+              :hint="deck.visibility.description ? deck.visibility.description : 'Select visibility' "
+              :items="visibility_options"
+              :rules="[rules.required]"
+              filled
+              label="Visibility"
+              dense
+              persistent-hint
+              return-object
+              no-data-text="no data"
             ></v-select>
 
             <v-divider class="my-2"></v-divider>
@@ -109,25 +121,12 @@
                 v-for="(card, index) in deck.cards"
                 :cardToEdit="card"
                 :key="'card' + index"
+                v-bind:languages="getLanguagesCodes()"
               ></card-editor>
             </transition-group>
 
             <v-btn color="success" depressed @click="addCard">Add card</v-btn>
           </v-card-text>
-
-          <v-select
-            prepend-icon="mdi-link"
-            v-model="deck.visibility"
-            :hint="deck.visibility.description ? deck.visibility.description : 'Select visibility' "
-            :items="visibility_options"
-            :rules="[rules.required]"
-            filled
-            label="Visibility"
-            dense
-            persistent-hint
-            return-object
-            no-data-text="no data"
-          ></v-select>
 
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -160,8 +159,8 @@ export default {
       },
       cards_limit: 50,
       //! todo get languages and visibility options from database
-      languages: ["pl", "en", "de", "fr"],
-      visibility_options: ["public", "unlisted", "private"],
+      languages: [],
+      visibility_options: [],
       query: null,
       loading: false,
       status: null,
@@ -211,7 +210,7 @@ export default {
         } = response;
 
         const languages_options = languages.map(({ id, locale, name }) => {
-          return { text: `${name} (${locale})`, value: id };
+          return { text: `${name} (${locale})`, value: id, code: locale };
         });
 
         const visibility_options = enumValues.map(({ name, description }) => {
@@ -276,6 +275,16 @@ export default {
         this.deck.image_file = null;
         this.deck.image = "";
       }
+    },
+    getLanguagesCodes() {
+      return [
+        this.languages[
+          this.languages.findIndex(lang => lang.value === this.deck.lang_source)
+        ].code,
+        this.languages[
+          this.languages.findIndex(lang => lang.value === this.deck.lang_target)
+        ].code
+      ];
     }
   }
 };

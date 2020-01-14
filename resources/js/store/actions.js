@@ -19,6 +19,9 @@ import {
     deckEditor,
     createDeck
 } from "../queries/editor.gql";
+import {
+    translate
+} from "../queries/apis.gql";
 const actions = {
     login(context, payload) {
         return new Promise((resolve, reject) => {
@@ -313,6 +316,27 @@ const actions = {
                 })
                 .catch(error => {
                     console.log("createDeck error", error);
+                    reject(error)
+                })
+
+        });
+    },
+    translate(context, payload) {
+        return new Promise((resolve, reject) => {
+            apolloClient.query({
+                    query: translate,
+                    variables: {
+                        input: payload
+                    },
+                })
+                .then(response => {
+                    console.log("Translate: ", response);
+                    resolve(response);
+                })
+                .catch(error => {
+                    console.log("graphql error", {
+                        error
+                    });
                     reject(error)
                 })
 

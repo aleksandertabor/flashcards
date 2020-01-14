@@ -39,25 +39,29 @@
           <v-text-field
             v-model="card.question"
             label="Question"
-            :rules="[rules.required, rules.max(255)]"
+            :rules="[rules.max(255)]"
             :error-messages="errorFor('title')"
             required
             clearable
             filled
             :loading="loading"
             counter="255"
+            @change="translate"
           ></v-text-field>
 
           <v-text-field
             v-model="card.answer"
+            ref="answer"
             label="Answer"
-            :rules="[rules.required, rules.max(255)]"
+            :rules="[rules.max(255)]"
             :error-messages="errorFor('title')"
             required
             clearable
             filled
             :loading="loading"
             counter="255"
+            @input="canTranslate = false"
+            @click:clear="canTranslate = true"
           ></v-text-field>
 
           <v-textarea
@@ -84,6 +88,8 @@
             counter="255"
           ></v-textarea>
 
+          <v-btn color="success" depressed @click="translate">Translate</v-btn>
+
           <v-divider class="my-2"></v-divider>
         </v-card-text>
       </v-card>
@@ -93,7 +99,7 @@
 
 <script>
 export default {
-  props: { cardToEdit: Object },
+  props: { cardToEdit: Object, languages: Array },
   data() {
     return {
       card: {
@@ -103,6 +109,7 @@ export default {
         example_question: null,
         example_answer: null
       },
+      canTranslate: true,
       image_file: null,
       query: null,
       loading: false,
@@ -168,6 +175,26 @@ export default {
       } else {
         this.image_file = null;
         this.card.image = "";
+      }
+    },
+    translate() {
+      if (this.card.question.length && this.canTranslate) {
+        this.$store
+          .dispatch("translate", {
+            phrase: this.card.question,
+            source: this.languages[0],
+            target: this.languages[1]
+          })
+          .then(response => {
+            this.card.answer = response.data.translate;
+            this.$forceUpdate();
+            console.log("translacja: ", this.card.answer);
+            console.log("translacja: ", response.data.translate);
+          })
+          .catch(error => {
+            console.log("translateError", error);
+          })
+          .then(() => (this.loading = false));
       }
     }
   }

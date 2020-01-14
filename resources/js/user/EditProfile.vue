@@ -1,8 +1,17 @@
 <template>
   <div>
     <v-form ref="form" lazy-validation>
+      <v-btn color="purple darken-3" fab small @click="isEditing = !isEditing">
+        <v-icon v-if="isEditing">mdi-close</v-icon>
+        <v-icon v-else>mdi-pencil</v-icon>
+      </v-btn>
       <v-alert type="success" v-if="success" dismissible>Your account has saved.</v-alert>
       <v-alert type="error" v-if="error" dismissible>Fill your data correctly.</v-alert>
+
+      <v-snackbar v-model="success" :timeout="2000" bottom left>Your profile has been updated.</v-snackbar>
+
+      <v-snackbar v-model="error" :timeout="2000" bottom left>Fill your data correctly.</v-snackbar>
+
       <v-text-field
         v-model="userData.username"
         prepend-icon="mdi-account"
@@ -12,6 +21,7 @@
         @input="$emit('input', userData)"
         @keyup.enter="save"
         :loading="loading"
+        :disabled="loading || !isEditing"
       ></v-text-field>
 
       <v-text-field
@@ -23,6 +33,7 @@
         @input="$emit('input', userData)"
         @keyup.enter="save"
         :loading="loading"
+        :disabled="loading || !isEditing"
       ></v-text-field>
 
       <v-text-field
@@ -35,6 +46,7 @@
         label="Password"
         counter
         :loading="loading"
+        :disabled="loading || !isEditing"
         @keyup.enter="save"
       ></v-text-field>
 
@@ -48,14 +60,26 @@
         label="Password confirmation"
         counter
         :loading="loading"
+        :disabled="loading || !isEditing"
         @keyup.enter="save"
       ></v-text-field>
 
-      <v-btn @click="show1 = !show1" class="ma-2" color="indigo" dark>
+      <v-btn
+        @click="show1 = !show1"
+        :disabled="loading || !isEditing"
+        class="ma-2"
+        color="indigo"
+        dark
+      >
         <v-icon>{{ show1 ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon>
       </v-btn>
 
-      <v-btn :disabled="loading" color="success" class="mr-4" @click="save">Save profile</v-btn>
+      <v-btn
+        :disabled="loading || !isEditing"
+        color="success"
+        class="mr-4"
+        @click="save"
+      >Save profile</v-btn>
     </v-form>
   </div>
 </template>
@@ -73,6 +97,7 @@ export default {
       error: false,
       show1: false,
       success: false,
+      isEditing: null,
       rules: {
         required: v => !!v || "Required.",
         min: v => (v && v.length) >= 6 || "Min 6 characters"
@@ -90,6 +115,7 @@ export default {
         .dispatch("editProfile", this.userData)
         .then(response => {
           const username = response.username;
+          this.isEditing = !this.isEditing;
           this.success = true;
           if (username !== this.$route.params.username) {
             this.$router.push({ name: "profile", params: { username } });

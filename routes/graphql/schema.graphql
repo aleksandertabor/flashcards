@@ -44,12 +44,19 @@ union Person @union(resolveType: "App\\GraphQL\\Unions\\PersonUnion") = AuthUser
 
 type Query {
     profile(username: String!): Person @field(resolver: "App\\GraphQL\\Queries\\ProfileQuery")
-    allDecks(visibility: String): [Deck!]! @withoutGlobalScope
     user(username: String! @eq): User @find
     deck(slug: String! @eq): Deck @find  @able(ability: "view", find: "slug")
     me: User @middleware(checks:["auth:api"]) @auth
     decks(search: String @search, filter: [FilterClause!] @filter): [Deck!]! @paginate(model: "App\\Deck",defaultCount: 12)
     languages: [Language!]! @all
+    translate(input: TranslateInput! @spread): String! @field(resolver: "App\\GraphQL\\Queries\\TranslateQuery")
+}
+
+
+input TranslateInput {
+    phrase: String!
+    source: String!
+    target: String!
 }
 
 

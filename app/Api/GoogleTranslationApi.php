@@ -22,6 +22,8 @@ class GoogleTranslationApi implements TranslationContract
             'target' => $languages['target'],
         ]);
 
+        $result['text'] = html_entity_decode($result['text'], ENT_QUOTES, 'UTF-8');
+
         return $result ? $result : [];
     }
 
@@ -34,8 +36,10 @@ class GoogleTranslationApi implements TranslationContract
 
     public function languages() : array
     {
-        $result = collect($this->client->languages())->map(fn ($lang) => ['locale' => $lang, 'name' => Locale::getDisplayLanguage($lang, 'en')]
-        )->toArray();
+        $result = collect($this->client->languages())->map(fn ($lang) => [
+            'locale' => $lang,
+            'name' => Locale::getDisplayLanguage($lang, 'en'),
+        ])->toArray();
 
         return $result ? $result : [];
     }

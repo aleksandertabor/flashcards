@@ -1,0 +1,4 @@
+
+query translate($input: TranslateInput!) {
+    translate(input: $input)
+}

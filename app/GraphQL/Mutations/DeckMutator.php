@@ -17,8 +17,16 @@ class DeckMutator
      * @param  \GraphQL\Type\Definition\ResolveInfo  $resolveInfo Information about the query itself, such as the execution state, the field name, path to the field from the root, and more.
      * @return mixed
      */
-    public function createDeck($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo): \App\Deck
+    public function createDeck($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo) : \App\Deck
     {
+        // $validator = Validator::make($args, [
+        //     'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        //     'password' => ['required', 'string', 'min:6', 'confirmed'],
+        //     'password_confirmation' => ['required', 'string', 'min:6'],
+        // ]);
+        // if ($validator->fails()) {
+        //     throw new ValidationException($validator);
+        // }
         $user = Auth::guard('api')->user();
         $deck = $user->decks()->create($args);
         if (preg_match('/data:image/', $args['image'])) {
@@ -27,10 +35,11 @@ class DeckMutator
             $deck->addMediaFromUrl($args['image'])->toMediaCollection('main');
         }
         $this->createDeckCards($deck, $args);
+
         return $deck;
     }
 
-    public function createDeckCards(\App\Deck $root, array $args): void
+    public function createDeckCards(\App\Deck $root, array $args) : void
     {
         foreach ($args['cards'] as $card) {
             $image = $card['image'];

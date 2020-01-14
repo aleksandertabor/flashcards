@@ -204,6 +204,6 @@ return array(
     | magic methods and properties.
     |
     */
-    'include_class_docblocks' => false,
+    'include_class_docblocks' => true,
 
 );
