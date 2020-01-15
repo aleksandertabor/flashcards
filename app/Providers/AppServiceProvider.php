@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Api\GoogleTranslationApi;
+use App\Api\WikipediaApi;
 use Google\Cloud\Translate\V2\TranslateClient;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
@@ -38,9 +40,22 @@ class AppServiceProvider extends ServiceProvider
             );
         });
 
+        $this->app->singleton(WikipediaApi::class, function ($app) {
+            return new WikipediaApi(
+                new Client([
+                    'base_uri' => env('WIKIPEDIA_API_ENDPOINT'),
+                ])
+            );
+        });
+
         $this->app->bind(
             'App\Contracts\TranslationContract',
             GoogleTranslationApi::class
+        );
+
+        $this->app->bind(
+            'App\Contracts\ImageContract',
+            WikipediaApi::class
         );
 
         // JsonResource::withoutWrapping();

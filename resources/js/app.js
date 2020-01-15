@@ -117,6 +117,9 @@ export const app = new Vue({
                         .dispatch("refresh_token")
                         .then(response => {
                             this.$store.dispatch("me");
+                            this.$router.push({
+                                name: "home"
+                            });
                         }).catch(error => {
                             // what if no token and no refresh_token??
                             console.log("You are guest.");

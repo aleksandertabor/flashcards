@@ -54,4 +54,5 @@ composer require "spatie/laravel-medialibrary:^7.0.0"
 sudo apt install jpegoptim optipng pngquant gifsicle
 sudo apt-get install webp
 composer require --dev barryvdh/laravel-ide-helper
+composer require guzzlehttp/guzzle
 ```

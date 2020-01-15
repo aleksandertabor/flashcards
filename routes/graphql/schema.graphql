@@ -51,8 +51,13 @@ type Query {
     decks(search: String @search, filter: [FilterClause!] @filter): [Deck!]! @paginate(model: "App\\Deck",defaultCount: 12)
     languages: [Language!]! @all
     translate(input: TranslateInput! @spread): String! @field(resolver: "App\\GraphQL\\Queries\\TranslateQuery")
+    image(input: ImageInput! @spread): String! @field(resolver: "App\\GraphQL\\Queries\\ImageQuery")
 }
 
+input ImageInput {
+    phrase: String!
+    source: String!
+}
 
 input TranslateInput {
     phrase: String!

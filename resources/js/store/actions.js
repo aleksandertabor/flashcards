@@ -20,7 +20,8 @@ import {
     createDeck
 } from "../queries/editor.gql";
 import {
-    translate
+    translate,
+    image
 } from "../queries/apis.gql";
 const actions = {
     login(context, payload) {
@@ -332,6 +333,27 @@ const actions = {
                 })
                 .then(response => {
                     console.log("Translate: ", response);
+                    resolve(response);
+                })
+                .catch(error => {
+                    console.log("graphql error", {
+                        error
+                    });
+                    reject(error)
+                })
+
+        });
+    },
+    image(context, payload) {
+        return new Promise((resolve, reject) => {
+            apolloClient.query({
+                    query: image,
+                    variables: {
+                        input: payload
+                    },
+                })
+                .then(response => {
+                    console.log("Image: ", response);
                     resolve(response);
                 })
                 .catch(error => {

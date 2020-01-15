@@ -24,8 +24,8 @@
               </v-badge>
             </v-col>
             <v-col align-self="start" class="pa-0" cols="12">
-              <v-avatar class="profile" color="grey" size="164" tile>
-                <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
+              <v-avatar class="profile" color="teal" size="84" tile>
+                <v-icon dark>mdi-account-circle</v-icon>
               </v-avatar>
             </v-col>
             <v-col class="py-0">

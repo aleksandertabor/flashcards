@@ -2,3 +2,7 @@
 query translate($input: TranslateInput!) {
     translate(input: $input)
 }
+
+query image($input: ImageInput!) {
+    image(input: $input)
+}

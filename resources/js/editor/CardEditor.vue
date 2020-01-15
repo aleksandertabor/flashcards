@@ -16,6 +16,7 @@
             label="Image"
             @change="previewImage"
             filled
+            :disabled="loading"
           ></v-file-input>
 
           <v-text-field
@@ -26,15 +27,23 @@
             :rules="[rules.url]"
             filled
             clearable
+            :disabled="loading"
           ></v-text-field>
 
           <v-img
             v-if="card.image"
             :src="card.image"
             aspect-ratio="1"
+            max-height="125"
             class="grey lighten-2"
             contain
-          ></v-img>
+          >
+            <template v-slot:placeholder>
+              <v-row class="fill-height ma-0" align="center" justify="center">
+                <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+              </v-row>
+            </template>
+          </v-img>
 
           <v-text-field
             v-model="card.question"
@@ -46,7 +55,7 @@
             filled
             :loading="loading"
             counter="255"
-            @change="translate"
+            @change="translate(); image();"
           ></v-text-field>
 
           <v-text-field
@@ -59,6 +68,7 @@
             clearable
             filled
             :loading="loading"
+            :disabled="loading"
             counter="255"
             @input="canTranslate = false"
             @click:clear="canTranslate = true"
@@ -120,9 +130,11 @@ export default {
         required: v => !!v || "Required.",
         max: len => v => (v && v.length) <= len || `Max ${len} characters`,
         url: v =>
-          /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(
+          (/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(
             v
-          ) || "Wrong URL.",
+          ) &&
+            v.length) ||
+          "Wrong URL.",
         size: value =>
           !value ||
           value.size < 2000000 ||
@@ -179,6 +191,7 @@ export default {
     },
     translate() {
       if (this.card.question.length && this.canTranslate) {
+        this.loading = true;
         this.$store
           .dispatch("translate", {
             phrase: this.card.question,
@@ -190,6 +203,25 @@ export default {
             this.$forceUpdate();
             console.log("translacja: ", this.card.answer);
             console.log("translacja: ", response.data.translate);
+          })
+          .catch(error => {
+            console.log("translateError", error);
+          })
+          .then(() => (this.loading = false));
+      }
+    },
+    image() {
+      if (this.card.question.length && !this.card.image) {
+        this.loading = true;
+        this.$store
+          .dispatch("image", {
+            phrase: this.card.question,
+            source: this.languages[0]
+          })
+          .then(response => {
+            this.card.image = response.data.image;
+            this.$forceUpdate();
+            console.log("obrazek: ", this.card.image);
           })
           .catch(error => {
             console.log("translateError", error);

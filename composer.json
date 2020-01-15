@@ -12,6 +12,7 @@
         "cviebrock/eloquent-sluggable": "^6.0",
         "fideloper/proxy": "^4.0",
         "google/cloud-translate": "^1.6",
+        "guzzlehttp/guzzle": "^6.5",
         "laravel/framework": "^6.2",
         "laravel/passport": "^8.0",
         "laravel/scout": "^7.2",

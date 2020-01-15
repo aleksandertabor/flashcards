@@ -41,7 +41,7 @@
           link
         >
           <v-list-item-avatar>
-            <img src="https://randomuser.me/api/portraits/men/81.jpg" />
+            <v-icon dark>mdi-account-circle</v-icon>
           </v-list-item-avatar>
 
           <v-list-item-content>
