@@ -2,8 +2,14 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Deck;
+use Cviebrock\EloquentSluggable\Services\SlugService;
+use Exception;
 use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class DeckMutator
@@ -17,29 +23,56 @@ class DeckMutator
      * @param  \GraphQL\Type\Definition\ResolveInfo  $resolveInfo Information about the query itself, such as the execution state, the field name, path to the field from the root, and more.
      * @return mixed
      */
-    public function createDeck($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo) : \App\Deck
+    public function createDeck($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo) : Deck
     {
-        // $validator = Validator::make($args, [
-        //     'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-        //     'password' => ['required', 'string', 'min:6', 'confirmed'],
-        //     'password_confirmation' => ['required', 'string', 'min:6'],
-        // ]);
-        // if ($validator->fails()) {
-        //     throw new ValidationException($validator);
-        // }
-        $user = Auth::guard('api')->user();
-        $deck = $user->decks()->create($args);
-        if (preg_match('/data:image/', $args['image'])) {
-            $deck->addMediaFromBase64($args['image'])->toMediaCollection('main');
-        } else {
-            $deck->addMediaFromUrl($args['image'])->toMediaCollection('main');
+        $validator = Validator::make($args, [
+            'title' => ['required', 'string', 'max:80'],
+            'description' => ['required', 'string', 'max:320'],
+            'lang_source_id' => ['required', 'integer', 'exists:languages,id'],
+            'lang_target_id' => ['required', 'integer', 'exists:languages,id'],
+            'image' => ['string', 'nullable'],
+            'visibility' => ['required', 'string', Rule::in(Deck::visibilityNames())],
+            'cards' => ['array'],
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
         }
+
+        $user = Auth::guard('api')->user();
+
+        $args['slug'] = SlugService::createSlug(Deck::class, 'slug', $args['title']);
+
+        $deck = $user->decks()->create($args);
+
+        if ($args['image']) {
+            if (preg_match('/data:image/', $args['image'])) {
+                try {
+                    $deck->addMediaFromBase64($args['image'])->toMediaCollection('main');
+                } catch (Exception $e) {
+                    $error = ValidationException::withMessages([
+                        'image' => ['Try upload other image.'],
+                     ]);
+                    throw $error;
+                }
+            } else {
+                try {
+                    $deck->addMediaFromUrl($args['image'])->toMediaCollection('main');
+                } catch (Exception $e) {
+                    $error = ValidationException::withMessages([
+                        'image' => ['Try add other image URL.'],
+                     ]);
+                    throw $error;
+                }
+            }
+        }
+
         $this->createDeckCards($deck, $args);
 
         return $deck;
     }
 
-    public function createDeckCards(\App\Deck $root, array $args) : void
+    public function createDeckCards(Deck $root, array $args) : void
     {
         foreach ($args['cards'] as $card) {
             $image = $card['image'];

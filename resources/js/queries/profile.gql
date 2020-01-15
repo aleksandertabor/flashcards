@@ -1,9 +1,10 @@
-query profile($username: String!) {
+query profile($username: String!, $isAuthenticated: Boolean!) {
   profile(username: $username) {
     ... on AuthUser {
-    id
+    id @include(if: $isAuthenticated)
     username
     email
+    editable
     cards_count
       decks {
         title

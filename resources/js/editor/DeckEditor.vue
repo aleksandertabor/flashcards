@@ -2,6 +2,11 @@
   <div>
     <div v-if="loading">Loading ...</div>
     <div v-else>
+      <v-alert type="success" v-if="success" dismissible>Your deck has been saved.</v-alert>
+      <v-alert type="error" v-if="error" dismissible>Fill your data correctly.</v-alert>
+      <v-snackbar v-model="success" :timeout="2000" bottom left>Your deck has been saved.</v-snackbar>
+
+      <v-snackbar v-model="error" :timeout="2000" bottom left>Fill your data correctly.</v-snackbar>
       <v-form ref="form" lazy-validation>
         <v-card>
           <v-toolbar flat dark>
@@ -37,6 +42,8 @@
               counter="320"
             ></v-textarea>
 
+            <v-img v-if="deck.image" :src="deck.image" aspect-ratio="1" max-height="125" contain></v-img>
+
             <v-file-input
               v-model="deck.image_file"
               :rules="[rules.size]"
@@ -54,22 +61,16 @@
               prepend-icon="mdi-image"
               label="Image URL"
               :rules="[rules.url]"
+              :error-messages="errorFor('image')"
               filled
               clearable
             ></v-text-field>
 
-            <v-img
-              v-if="deck.image"
-              :src="deck.image"
-              aspect-ratio="1"
-              class="grey lighten-2"
-              contain
-            ></v-img>
-
             <v-select
               prepend-icon="mdi-home-floor-1"
-              v-model="deck.lang_source"
+              v-model="deck.lang_source_id"
               :rules="[rules.required]"
+              :error-messages="errorFor('lang_source_id')"
               :items="languages"
               filled
               label="Source language"
@@ -78,8 +79,9 @@
 
             <v-select
               prepend-icon="mdi-home-floor-2"
-              v-model="deck.lang_target"
+              v-model="deck.lang_target_id"
               :rules="[rules.required]"
+              :error-messages="errorFor('lang_target_id')"
               :items="languages"
               filled
               label="Target language"
@@ -92,6 +94,7 @@
               :hint="deck.visibility.description ? deck.visibility.description : 'Select visibility' "
               :items="visibility_options"
               :rules="[rules.required]"
+              :error-messages="errorFor('visibility')"
               filled
               label="Visibility"
               dense
@@ -152,8 +155,8 @@ export default {
         description: null,
         image_file: null,
         image: "",
-        lang_source: "",
-        lang_target: "",
+        lang_source_id: "",
+        lang_target_id: "",
         cards: [],
         visibility: ""
       },
@@ -167,6 +170,7 @@ export default {
       edit: false,
       errors: null,
       error: null,
+      success: null,
       rules: {
         required: v => !!v || "Required.",
         min: len => v => (v && v.length) >= len || `Min ${len} characters`,
@@ -188,6 +192,9 @@ export default {
   computed: {
     progress() {
       return (this.deck.cards.length / this.cards_limit) * 100;
+    },
+    hasErrors() {
+      return this.errors !== null;
     }
   },
   watch: {
@@ -246,13 +253,30 @@ export default {
     create() {
       this.loading = true;
       this.errors = null;
+      this.error = false;
+      this.success = false;
+
       this.$store
         .dispatch("createDeck", this.deck)
         .then(response => {
+          this.success = true;
           console.log("createDeckvue", response);
         })
         .catch(error => {
-          console.log("createDeckvue", error);
+          const {
+            graphQLErrors: { validationErrors }
+          } = error;
+          const {
+            graphQLErrors: {
+              0: { message }
+            }
+          } = error;
+          if (validationErrors) {
+            this.errors = validationErrors;
+          }
+          if (message) {
+            this.error = message;
+          }
         })
         .then(() => (this.loading = false));
     },
@@ -279,10 +303,14 @@ export default {
     getLanguagesCodes() {
       return [
         this.languages[
-          this.languages.findIndex(lang => lang.value === this.deck.lang_source)
+          this.languages.findIndex(
+            lang => lang.value === this.deck.lang_source_id
+          )
         ].code,
         this.languages[
-          this.languages.findIndex(lang => lang.value === this.deck.lang_target)
+          this.languages.findIndex(
+            lang => lang.value === this.deck.lang_target_id
+          )
         ].code
       ];
     }
@@ -291,26 +319,4 @@ export default {
 </script>
 
 <style scoped>
-label {
-  font-size: 0.7em;
-  text-transform: uppercase;
-  color: green;
-  font-weight: bolder;
-}
-
-.flashcards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  grid-gap: 30px;
-}
-
-.answers-list-enter-active,
-.answers-list-leave-active {
-  transition: all 1s;
-}
-.answers-list-enter,
-.answers-list-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
 </style>

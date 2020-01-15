@@ -34,8 +34,9 @@ type AuthUser @modelClass(class: "\\App\\User") {
     id: Int!
     username: String!
     email: String!
+    editable: Boolean
     cards_count: Int! @count(relation: "cards")
-    decks: [Deck!]! @hasMany(relation: "userDecks") @lazyLoad(relations: ["userDecks"])
+    decks: [Deck!]! @hasMany(relation: "userDecks", scopes: ["OrderByVisibility"]) @lazyLoad(relations: ["userDecks"])
     cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])
 }
 
@@ -161,12 +162,12 @@ refresh_token(refresh: Boolean): RefreshResponse!
 }
 
 input CreateDeckInput {
-    title: String!
-    description: String!
-    lang_source_id: Int!
-    lang_target_id: Int!
-    visibility: Visibility!
-    image: String!
+    title: String
+    description: String
+    lang_source_id: Int
+    lang_target_id: Int
+    visibility: Visibility
+    image: String
     cards: [CreateCardInput!]
 }
 

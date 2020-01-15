@@ -159,7 +159,8 @@ const actions = {
             apolloClient.query({
                     query: profile,
                     variables: {
-                        username: payload
+                        username: payload,
+                        isAuthenticated: context.getters.isAuthenticated
                     }
                 })
                 .then(response => {
@@ -303,8 +304,8 @@ const actions = {
                             title: payload.title,
                             description: payload.description,
                             image: payload.image,
-                            lang_source_id: payload.lang_source,
-                            lang_target_id: payload.lang_target,
+                            lang_source_id: payload.lang_source_id,
+                            lang_target_id: payload.lang_target_id,
                             visibility: payload.visibility.value,
                             cards: payload.cards
                         }

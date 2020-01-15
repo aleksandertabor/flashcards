@@ -23,29 +23,6 @@ label[data-v-4f79cede] {
   font-weight: bolder;
 }
 
-label[data-v-13052eea] {
-  font-size: 0.7em;
-  text-transform: uppercase;
-  color: green;
-  font-weight: bolder;
-}
-.flashcards[data-v-13052eea] {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  grid-gap: 30px;
-}
-.answers-list-enter-active[data-v-13052eea],
-.answers-list-leave-active[data-v-13052eea] {
-  -webkit-transition: all 1s;
-  transition: all 1s;
-}
-.answers-list-enter[data-v-13052eea],
-.answers-list-leave-to[data-v-13052eea] {
-  opacity: 0;
-  -webkit-transform: translateX(30px);
-          transform: translateX(30px);
-}
-
 a.homepage {
   color: #fff !important;
 }

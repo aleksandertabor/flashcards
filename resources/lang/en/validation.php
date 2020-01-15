@@ -149,6 +149,10 @@ return [
     |
      */
 
-    'attributes' => [],
+    'attributes' => [
+        'lang_source_id' => 'source language',
+        'lang_target_id' => 'target language',
+        'image' => 'image url',
+    ],
 
 ];

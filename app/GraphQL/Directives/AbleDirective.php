@@ -126,7 +126,6 @@ SDL;
                     }
                 )
                 ->where($find, '=', $args[$find])->firstOrFail();
-            // ->findOrFail($args[$find]);
 
             if ($modelOrModels instanceof Model) {
                 $modelOrModels = [$modelOrModels];

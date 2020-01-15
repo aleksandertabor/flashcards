@@ -36,7 +36,7 @@ class PersonUnion
      * @param  \GraphQL\Type\Definition\ResolveInfo  $resolveInfo
      * @return \GraphQL\Type\Definition\Type
      */
-    public function __invoke($rootValue, GraphQLContext $context, ResolveInfo $resolveInfo): Type
+    public function __invoke($rootValue, GraphQLContext $context, ResolveInfo $resolveInfo) : Type
     {
         // Default to getting a type with the same name as the passed in root value
         // TODO implement your own resolver logic - if the default is fine, just delete this class
@@ -44,10 +44,7 @@ class PersonUnion
         $typeName = 'User';
 
         if (Auth::check() && (Auth::user()->username === $rootValue->username)) {
-            $user = Auth::user();
             $typeName = 'AuthUser';
-        } else {
-            $user = $rootValue;
         }
 
         return $this->typeRegistry->get($typeName);

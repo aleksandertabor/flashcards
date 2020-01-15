@@ -5,6 +5,7 @@ namespace App;
 use App\Scopes\PublishedScope;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -28,6 +29,13 @@ class Deck extends Model implements HasMedia
         return [self::PUBLIC_VISIBILITY, self::UNLISTED_VISIBILITY, self::PRIVATE_VISIBILITY];
     }
 
+    public static function visibilityNames() : array
+    {
+        return collect(self::visibilities())->flatMap(fn ($options) => [
+            array_key_first($options),
+        ])->toArray();
+    }
+
     /**
      * The "booting" method of the model.
      *
@@ -48,7 +56,9 @@ class Deck extends Model implements HasMedia
     {
         return [
             'slug' => [
+                'unique' => true,
                 'source' => 'title',
+                'onUpdate' => true,
             ],
         ];
     }
@@ -72,6 +82,11 @@ class Deck extends Model implements HasMedia
     public function scopePublished($query)
     {
         return $query->where('visibility', '=', key(self::PUBLIC_VISIBILITY));
+    }
+
+    public function scopeOrderByVisibility($query)
+    {
+        return $query->orderBy(DB::raw("case when visibility = '".key(self::PUBLIC_VISIBILITY)."' then 1 when visibility = '".key(self::UNLISTED_VISIBILITY)."' then 2 when visibility = '".key(self::PRIVATE_VISIBILITY)."' then 3 end"));
     }
 
     public function user()

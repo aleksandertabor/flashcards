@@ -73,6 +73,9 @@ export default {
       additionalView: ""
     };
   },
+  beforeRouteUpdate(to, from, next) {
+    next();
+  },
   computed: {
     currentView() {
       if (this.additionalView) {
@@ -83,40 +86,37 @@ export default {
   },
   created() {
     this.loading = true;
-
-    const profile = this.$store
-      .dispatch("profile", this.$route.params.username)
-      .then(response => {
-        this.userData = response.data.profile;
-      })
-      .catch(error => {
-        this.$router.push({ name: "home" });
-      })
-      .then(() => (this.loading = false));
-
-    profile.then(() => {
-      if (this.$route.params.username === this.$store.getters.user.username) {
-        this.$store
-          .dispatch("me")
-          .then(response => {
-            this.editable = true;
-          })
-          .catch(error => {
-            this.editable = false;
-          })
-          .then(() => (this.loading = false));
-      } else {
-        this.loading = false;
-      }
-    });
+    this.loadProfile();
+  },
+  updated() {
+    console.log("updated");
   },
   methods: {
+    loadProfile() {
+      this.$store
+        .dispatch("profile", this.$route.params.username)
+        .then(response => {
+          this.userData = response.data.profile;
+          if (this.userData.id > 0) {
+            this.editable = true;
+          }
+        })
+        .catch(error => {
+          this.$router.push({ name: "home" });
+        })
+        .then(() => (this.loading = false));
+    },
     changeView(view) {
       if (view === this.additionalView) {
         this.additionalView = "";
       } else {
         this.additionalView = view;
       }
+    }
+  },
+  watch: {
+    $route(to, from) {
+      this.loadProfile();
     }
   }
 };

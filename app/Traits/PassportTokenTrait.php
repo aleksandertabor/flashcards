@@ -22,6 +22,7 @@ trait PassportTokenTrait
             'client_secret' => $this->client->secret,
             'scope' => $scope,
         ];
+
         $request = Request::create('api/token', 'POST', $credentials, [], [], [
             'HTTP_Accept' => 'application/json',
         ]);

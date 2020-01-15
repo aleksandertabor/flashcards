@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -33,10 +34,26 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        static::updating(function ($user) {
+            $user->password = bcrypt($user->password);
+        });
+
+        parent::boot();
+    }
+
     public function findForPassport($username)
     {
         return $this->where('username', $username)->first() ?? $this->where('email', $username)->first();
     }
+
     public function sluggable()
     {
         return [
@@ -47,30 +64,32 @@ class User extends Authenticatable
             ],
         ];
     }
+
     public function getRouteKeyName()
     {
         return 'username';
     }
+
     public function setUsernameAttribute($value)
     {
         $this->attributes['username'] = strtolower($value);
     }
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = bcrypt($value);
-    }
+
     public function cards()
     {
         return $this->hasManyThrough('App\Card', 'App\Deck');
     }
+
     public function decks()
     {
         return $this->hasMany('App\Deck');
     }
+
     public function userDecks()
     {
         return $this->hasMany('App\Deck')->withoutGlobalScopes();
     }
+
     public function publishedCards()
     {
         return $this->cards()->published();
