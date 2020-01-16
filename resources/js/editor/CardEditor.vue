@@ -55,7 +55,7 @@
             filled
             :loading="loading"
             counter="255"
-            @change="translate(); image();"
+            @change="translate(); image(); example();"
           ></v-text-field>
 
           <v-text-field
@@ -222,6 +222,27 @@ export default {
             this.card.image = response.data.image;
             this.$forceUpdate();
             console.log("obrazek: ", this.card.image);
+          })
+          .catch(error => {
+            console.log("translateError", error);
+          })
+          .then(() => (this.loading = false));
+      }
+    },
+    example() {
+      if (this.card.question.length) {
+        this.loading = true;
+        this.$store
+          .dispatch("example", {
+            phrase: this.card.question,
+            source: this.languages[0],
+            target: this.languages[1]
+          })
+          .then(response => {
+            console.log("Example: ", response);
+            this.card.example_question = response.data.example[0];
+            this.card.example_answer = response.data.example[1];
+            this.$forceUpdate();
           })
           .catch(error => {
             console.log("translateError", error);

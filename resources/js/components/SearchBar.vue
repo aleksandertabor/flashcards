@@ -9,14 +9,6 @@
       v-model="query"
       @input="searching"
     ></v-text-field>
-    <!-- <input
-      class="form-control mr-sm-2"
-      type="search"
-      placeholder="Deck"
-      aria-label="Search"
-      v-model="query"
-      @input="searching"
-    />-->
   </div>
 </template>
 

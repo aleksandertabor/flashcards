@@ -23,8 +23,17 @@ label[data-v-4f79cede] {
   font-weight: bolder;
 }
 
+a.logout {
+  border: thin solid #f44336;
+}
+a.logout .v-list-item__title {
+  color: #f44336 !important;
+}
 a.homepage {
   color: #fff !important;
+}
+.fab-options .v-btn--fab {
+  bottom: 70px !important;
 }
 .nick {
   text-overflow: ellipsis;

@@ -110,6 +110,9 @@ export default {
       if (this.$route.query.filter !== this.filter.name) {
         this.changeRoute();
       }
+    },
+    $route(to, from) {
+      console.log("reset");
     }
   },
   methods: {

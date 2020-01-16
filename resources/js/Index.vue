@@ -8,18 +8,6 @@
       </router-link>
 
       <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -57,16 +45,15 @@
           :key="link.title"
           :to="link.to"
           :class="link.class"
-          v-if="link.authenticated === isAuthenticated || link.isHomePage"
+          v-if="link.authenticated === isAuthenticated || link.isSearchPage"
           link
-          exact
         >
           <v-list-item-icon>
-            <v-icon>{{ link.icon }}</v-icon>
+            <v-icon :color="link.color">{{ link.icon }}</v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ link.title }}</v-list-item-title>
+            <v-list-item-title v-text="link.title"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -80,19 +67,58 @@
           </v-flex>
         </v-layout>
       </v-container>
-      <v-btn
-        v-if="isAuthenticated"
-        fixed
-        dark
-        fab
-        bottom
-        right
-        color="pink"
-        :to="{ name: 'deck-editor' }"
-      >
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
+
+      <v-container :class="{'fab-options': $vuetify.breakpoint.smAndDown}">
+        <v-fab-transition>
+          <v-btn
+            v-if="isAuthenticated && !showToTop"
+            fixed
+            dark
+            small
+            fab
+            bottom
+            right
+            color="pink"
+            :to="{ name: 'deck-editor' }"
+          >
+            <v-icon>mdi-image-edit</v-icon>
+          </v-btn>
+        </v-fab-transition>
+        <v-fab-transition>
+          <v-btn
+            v-scroll="onScroll"
+            v-show="showToTop"
+            fixed
+            small
+            dark
+            fab
+            bottom
+            right
+            color="orange"
+            @click="toTop"
+          >
+            <v-icon>mdi-chevron-up</v-icon>
+          </v-btn>
+        </v-fab-transition>
+      </v-container>
     </v-content>
+
+    <v-bottom-navigation shift fixed grow color="indigo" class="hidden-md-and-up">
+      <v-btn :to="{name: 'home'}" exact>
+        <span>Home</span>
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+
+      <v-btn :to="{name: 'search'}">
+        <span>Search</span>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+
+      <v-btn :to="{name: 'deck-editor'}">
+        <span>Editor</span>
+        <v-icon>mdi-image-edit</v-icon>
+      </v-btn>
+    </v-bottom-navigation>
 
     <v-footer app>
       <!-- -->
@@ -106,12 +132,12 @@ export default {
     return {
       drawer: true,
       links: [
-        // {
-        //   title: "Homepage",
-        //   icon: "mdi-view-dashboard",
-        //   to: { name: "home" },
-        //   isHomePage: true
-        // },
+        {
+          title: "Decks",
+          icon: "mdi-magnify",
+          to: { name: "search" },
+          isSearchPage: true
+        },
         {
           title: "Login",
           icon: "mdi-account-arrow-left",
@@ -134,6 +160,8 @@ export default {
           title: "Logout",
           icon: "mdi-logout",
           to: { name: "logout" },
+          class: "logout",
+          color: "red",
           authenticated: true
         }
       ],
@@ -142,7 +170,8 @@ export default {
       miniVariant: true,
       expandOnHover: true,
       background: false,
-      loading: true
+      loading: true,
+      showToTop: false
     };
   },
   computed: {
@@ -150,6 +179,18 @@ export default {
       return this.background
         ? "https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
         : undefined;
+    }
+  },
+  methods: {
+    onScroll(e) {
+      if (window.pageYOffset >= 200) {
+        this.showToTop = true;
+      } else {
+        this.showToTop = false;
+      }
+    },
+    toTop() {
+      this.$vuetify.goTo(0);
     }
   },
   created() {}
@@ -165,8 +206,20 @@ export default {
 </script>
 
 <style>
+a.logout {
+  border: thin solid #f44336;
+}
+
+a.logout .v-list-item__title {
+  color: #f44336 !important;
+}
+
 a.homepage {
   color: #fff !important;
+}
+
+.fab-options .v-btn--fab {
+  bottom: 70px !important;
 }
 
 .nick {

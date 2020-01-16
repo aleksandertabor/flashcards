@@ -1,4 +1,5 @@
 import VueRouter from "vue-router";
+import Home from "./pages/Home";
 import Decks from "./decks/Decks";
 import Deck from "./deck/Deck";
 import Login from "./auth/Login"
@@ -14,11 +15,13 @@ const routes = [{
     },
     {
         path: "/",
-        component: Decks,
+        component: Home,
         name: "home",
-        meta: {
-            hideNavigation: true
-        }
+    },
+    {
+        path: "/search",
+        component: Decks,
+        name: "search",
     },
     {
         path: "/login",

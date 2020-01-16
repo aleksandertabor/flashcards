@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Api\GoogleTranslationApi;
+use App\Api\TwinwordApi;
 use App\Api\WikipediaApi;
 use Google\Cloud\Translate\V2\TranslateClient;
 use GuzzleHttp\Client;
@@ -48,6 +49,17 @@ class AppServiceProvider extends ServiceProvider
             );
         });
 
+        $this->app->singleton(TwinwordApi::class, function ($app) {
+            return new TwinwordApi(
+                new Client([
+                    'base_uri' => env('TWINWORD_API_ENDPOINT'),
+                    'headers' => [
+                        'X-RapidAPI-Key' => env('TWINWORD_API_KEY'),
+                    ],
+                ])
+            );
+        });
+
         $this->app->bind(
             'App\Contracts\TranslationContract',
             GoogleTranslationApi::class
@@ -56,6 +68,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             'App\Contracts\ImageContract',
             WikipediaApi::class
+        );
+
+        $this->app->bind(
+            'App\Contracts\ExampleContract',
+            TwinwordApi::class
         );
 
         // JsonResource::withoutWrapping();

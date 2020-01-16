@@ -21,7 +21,8 @@ import {
 } from "../queries/editor.gql";
 import {
     translate,
-    image
+    image,
+    example
 } from "../queries/apis.gql";
 const actions = {
     login(context, payload) {
@@ -354,6 +355,27 @@ const actions = {
                 })
                 .then(response => {
                     console.log("Image: ", response);
+                    resolve(response);
+                })
+                .catch(error => {
+                    console.log("graphql error", {
+                        error
+                    });
+                    reject(error)
+                })
+
+        });
+    },
+    example(context, payload) {
+        return new Promise((resolve, reject) => {
+            apolloClient.query({
+                    query: example,
+                    variables: {
+                        input: payload
+                    },
+                })
+                .then(response => {
+                    console.log("Example: ", response);
                     resolve(response);
                 })
                 .catch(error => {

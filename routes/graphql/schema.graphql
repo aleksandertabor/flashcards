@@ -52,6 +52,7 @@ type Query {
     languages: [Language!]! @all
     translate(input: TranslateInput! @spread): String! @field(resolver: "App\\GraphQL\\Queries\\TranslateQuery")
     image(input: ImageInput! @spread): String! @field(resolver: "App\\GraphQL\\Queries\\ImageQuery")
+    example(input: TranslateInput! @spread): [String!]! @field(resolver: "App\\GraphQL\\Queries\\ExampleQuery")
 }
 
 input ImageInput {

@@ -37,6 +37,7 @@ Route::post('logout', 'AuthController@logout');
 Route::post('translate', 'TranslationController');
 Route::post('detect', 'DetectionController');
 Route::post('wikipedia', 'WikipediaController');
+Route::post('twinword', 'TwinwordController');
 Route::post('languages', 'LanguagesController');
 
 // Auth::routes();
