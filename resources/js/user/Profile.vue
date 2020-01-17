@@ -3,8 +3,8 @@
     <div v-if="loading">Profile is loading ...</div>
     <div v-else>
       <v-card class="mx-auto" max-width="434" tile>
-        <v-img height="100%" src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg">
-          <v-row align="end" class="fill-height pl-5">
+        <v-img height="100%" src="/img/app/bg-profile.png">
+          <v-row align="end" class="fill-height pl-5 profile-row">
             <v-col v-if="editable" class="pa-0 pt-5" cols="12">
               <v-badge bordered color="success" icon="mdi-account-edit" overlap>
                 <v-btn
@@ -29,10 +29,10 @@
               </v-avatar>
             </v-col>
             <v-col class="py-0">
-              <v-list-item color="rgba(0, 0, 0, .4)" dark>
+              <v-list-item color="rgba(0, 0, 0)">
                 <v-list-item-content>
-                  <v-list-item-title class="title">{{ userData.username }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ userData.email }}</v-list-item-subtitle>
+                  <v-list-item-title class="title" v-text="userData.username"></v-list-item-title>
+                  <v-list-item-subtitle v-text="userData.email"></v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -123,4 +123,7 @@ export default {
 </script>
 
 <style>
+.profile-row {
+  background-color: rgba(0, 255, 102, 0.59);
+}
 </style>

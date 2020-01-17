@@ -105,7 +105,7 @@ export const app = new Vue({
                         this.$store
                             .dispatch("refresh_token")
                             .then(response => {
-                                // this.$store.dispatch("me");
+                                this.$store.dispatch("me");
                             })
                             .catch(error => {
                                 this.logout();

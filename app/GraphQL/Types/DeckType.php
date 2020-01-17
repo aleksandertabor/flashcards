@@ -1,4 +1,5 @@
 <?php
+
 namespace App\GraphQL\Types;
 
 use App\Deck;
@@ -42,5 +43,4 @@ class DeckType
 
         return $url;
     }
-
 }

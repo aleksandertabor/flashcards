@@ -23,6 +23,10 @@ label[data-v-4f79cede] {
   font-weight: bolder;
 }
 
+.profile-row {
+  background-color: rgba(0, 255, 102, 0.59);
+}
+
 a.logout {
   border: thin solid #f44336;
 }

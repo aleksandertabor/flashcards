@@ -15,7 +15,6 @@
       :color="color"
       :expand-on-hover="expandOnHover"
       :mini-variant="miniVariant"
-      :src="bg"
       :clipped="$vuetify.breakpoint.lgAndUp"
       fixed
       hide-overlay
@@ -173,13 +172,6 @@ export default {
       loading: true,
       showToTop: false
     };
-  },
-  computed: {
-    bg() {
-      return this.background
-        ? "https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
-        : undefined;
-    }
   },
   methods: {
     onScroll(e) {

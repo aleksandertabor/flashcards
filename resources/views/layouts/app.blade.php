@@ -7,8 +7,10 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    <!-- Progressive Web App -->
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Styles and scripts -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
@@ -17,6 +19,13 @@
     <div id="app">
         @yield('content')
     </div>
+    <script>
+if ('serviceWorker' in navigator) {
+	window.addEventListener('load', () => {
+		navigator.serviceWorker.register('/service-worker.js');
+	});
+}
+</script>
 </body>
 
 </html>

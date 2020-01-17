@@ -55,4 +55,5 @@ sudo apt install jpegoptim optipng pngquant gifsicle
 sudo apt-get install webp
 composer require --dev barryvdh/laravel-ide-helper
 composer require guzzlehttp/guzzle
+npm install -g workbox-cli
 ```
