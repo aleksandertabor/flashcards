@@ -41,7 +41,7 @@ class DeckMutator
 
         $user = Auth::guard('api')->user();
 
-        $args['slug'] = SlugService::createSlug(Deck::class, 'slug', $args['title']);
+        // $args['slug'] = SlugService::createSlug(Deck::class, 'slug', $args['title']);
 
         $deck = $user->decks()->create($args);
 

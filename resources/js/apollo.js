@@ -30,10 +30,11 @@ const httpLink = createHttpLink({
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name=csrf-token]').getAttribute('content')
     },
     // Make all requests to API with GET method - helpful with PWA caching
     fetchOptions: {
-        method: "GET"
+        method: "GET",
     },
 })
 

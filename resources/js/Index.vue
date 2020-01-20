@@ -62,6 +62,7 @@
       <v-container fill-height fluid>
         <v-layout justify-center align-center row wrap>
           <v-flex>
+            <v-btn @click="pushNotifications">Notyfikuj!</v-btn>
             <router-view></router-view>
           </v-flex>
         </v-layout>
@@ -183,6 +184,11 @@ export default {
     },
     toTop() {
       this.$vuetify.goTo(0);
+    },
+    pushNotifications() {
+      fetch("/api/notifications", {
+        method: "GET"
+      });
     }
   },
   created() {}

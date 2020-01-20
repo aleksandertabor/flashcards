@@ -58,7 +58,7 @@ export default {
         this.deck = response.data.deck;
       })
       .catch(error => {
-        // this.$router.push({ name: "home" });
+        this.$router.push({ name: "home" });
       })
       .then(() => (this.loading = false));
   }

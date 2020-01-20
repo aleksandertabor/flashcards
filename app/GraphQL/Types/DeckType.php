@@ -39,7 +39,7 @@ class DeckType
 
     public function image(Deck $deck, array $args, GraphQLContext $context, ResolveInfo $info)
     {
-        $url = $deck->getFirstMediaUrl();
+        $url = $deck->getFirstMediaUrl('main');
 
         return $url;
     }

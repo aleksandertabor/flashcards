@@ -1,14 +1,13 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
+// @import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
+@import 'roboto-fontface/css/roboto/sass/roboto-fontface.scss';
 
 // Variables
 @import 'variables';
 
-// Font Awesome
-@import "~@fortawesome/fontawesome-free/scss/fontawesome";
-@import "~@fortawesome/fontawesome-free/scss/regular";
-@import "~@fortawesome/fontawesome-free/scss/solid";
-
+[v-cloak] {
+    display: none
+}
 
 html::-webkit-scrollbar {
     width: 10px;

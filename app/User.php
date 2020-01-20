@@ -6,10 +6,11 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable, Sluggable;
+    use HasApiTokens, Notifiable, Sluggable, HasPushSubscriptions;
     /**
      * The attributes that are mass assignable.
      *

@@ -56,4 +56,9 @@ sudo apt-get install webp
 composer require --dev barryvdh/laravel-ide-helper
 composer require guzzlehttp/guzzle
 npm install -g workbox-cli
+composer require pusher/pusher-php-server
+composer require laravel-notification-channels/webpush
+npm uninstall @fortawesome/fontawesome-free
+npm install roboto-fontface --save
+npm install workbox-window
 ```

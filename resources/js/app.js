@@ -82,6 +82,11 @@ export const app = new Vue({
     components: {
         "index": Index
     },
+    data() {
+        return {
+            state: 'initial'
+        }
+    },
     // //? add to mixins?
     methods: {
         onStorageUpdate(event) {
@@ -137,9 +142,6 @@ export const app = new Vue({
             });
         }
     },
-    created() {
-
-    },
     // beforeCreate() {
     //     window.localStorage.removeItem('logout')
     // },
@@ -149,6 +151,7 @@ export const app = new Vue({
         });
 
         window.addEventListener("storage", this.onStorageUpdate);
+
 
     },
     beforeDestroy() {

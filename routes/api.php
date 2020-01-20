@@ -40,6 +40,9 @@ Route::post('wikipedia', 'WikipediaController');
 Route::post('twinword', 'TwinwordController');
 Route::post('languages', 'LanguagesController');
 
+Route::post('push', 'PushController@store');
+Route::get('notifications', 'PushController@push');
+
 // Auth::routes();
 
 Route::fallback(function () {

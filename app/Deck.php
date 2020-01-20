@@ -2,10 +2,12 @@
 
 namespace App;
 
+use App\Notifications\DeckPublished;
 use App\Scopes\PublishedScope;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -43,6 +45,12 @@ class Deck extends Model implements HasMedia
      */
     protected static function boot()
     {
+        static::created(function ($deck) {
+            if ($deck->visibility === key(self::PUBLIC_VISIBILITY)) {
+                Notification::send(NotificationUser::all(), new DeckPublished($deck));
+            }
+        });
+
         parent::boot();
         static::addGlobalScope(new PublishedScope);
     }

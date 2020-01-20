@@ -6,7 +6,7 @@
         v-model="userData.email"
         prepend-icon="mdi-account"
         label="E-mail"
-        :rules="[rules.required]"
+        :rules="[rules.required, rules.email]"
         :error-messages="errorFor('email')"
         required
         @keyup.enter="register"
@@ -64,7 +64,8 @@ export default {
       show1: false,
       rules: {
         required: v => !!v || "Required.",
-        min: v => (v && v.length) >= 6 || "Min 6 characters"
+        min: v => (v && v.length) >= 6 || "Min 6 characters",
+        email: v => /.+@.+\..+/.test(v) || "E-mail must be valid"
       }
     };
   },
