@@ -22,34 +22,6 @@
     <div id="app">
         @yield('content')
     </div>
-    <script>
-        // function displayConfirmNotification() {
-        //     var options = {
-        //         body: 'Great!',
-        //         icon: 'img/icons/icon-96x96.png',
-        //         image: 'img/icons/icon-96x96.png',
-        //         dir: 'ltr',
-        //         lang: 'en-UK',
-        //         vibrate: [100,50,200],
-        //         badge: 'img/icons/icon-96x96.png',
-        //         tag: 'confirm-notification',
-        //         renotify: true,
-        //         actions: [
-        //             {action: 'explore', title: 'Check this deck out!', icon: 'img/icons/icon-96x96.png'},
-        //             {action: 'close', title: 'No, thanks!', icon: 'img/icons/icon-96x96.png'}
-        //         ],
-        //         data: {
-        //             dateOfArrival: Date.now(),
-        //             primaryKey: 1
-        //         }
-        //     };
-        //         navigator.serviceWorker.ready
-        //             .then(function (swreg) {
-        //                 swreg.showNotification('Successfully subscribed (from SW)!', options)
-        //             })
-        // }
-
-    </script>
 </body>
 
 </html>

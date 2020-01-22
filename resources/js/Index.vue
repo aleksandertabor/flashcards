@@ -8,6 +8,9 @@
       </router-link>
 
       <v-spacer></v-spacer>
+      <v-btn rounded color="primary" dark v-if="canInstall" @click="install">Install</v-btn>
+      <v-icon v-if="$NotificationsActive" color="green">mdi-bell</v-icon>
+      <v-icon v-else color="red">mdi-bell-off</v-icon>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -62,7 +65,6 @@
       <v-container fill-height fluid>
         <v-layout justify-center align-center row wrap>
           <v-flex>
-            <v-btn @click="pushNotifications">Notyfikuj!</v-btn>
             <router-view></router-view>
           </v-flex>
         </v-layout>
@@ -120,6 +122,12 @@
       </v-btn>
     </v-bottom-navigation>
 
+    <v-snackbar
+      v-model="$ServiceWorkerUpdated"
+      top="top"
+      color="error"
+    >Our app was updated! It needs reload.</v-snackbar>
+
     <v-footer app>
       <!-- -->
     </v-footer>
@@ -171,7 +179,9 @@ export default {
       expandOnHover: true,
       background: false,
       loading: true,
-      showToTop: false
+      showToTop: false,
+      canInstall: false,
+      promptEvent: null
     };
   },
   methods: {
@@ -185,13 +195,29 @@ export default {
     toTop() {
       this.$vuetify.goTo(0);
     },
-    pushNotifications() {
-      fetch("/api/notifications", {
-        method: "GET"
+    install() {
+      this.promptEvent.prompt();
+      this.promptEvent.userChoice.then(choiceResult => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("User accepted the A2HS prompt");
+        } else {
+          console.log("User dismissed the A2HS prompt");
+        }
+        this.promptEvent = null;
       });
     }
   },
-  created() {}
+  created() {
+    window.addEventListener("beforeinstallprompt", e => {
+      e.preventDefault();
+      this.promptEvent = e;
+      this.canInstall = true;
+    });
+
+    window.addEventListener("appinstalled", evt => {
+      console.log("App installed.");
+    });
+  }
   //   computed: {
   //     isAuthenticated() {
   //       return this.$store.getters.isAuthenticated;

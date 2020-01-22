@@ -161,7 +161,6 @@ export default {
         visibility: ""
       },
       cards_limit: 50,
-      //! todo get languages and visibility options from database
       languages: [],
       visibility_options: [],
       query: null,

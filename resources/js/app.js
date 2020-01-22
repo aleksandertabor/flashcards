@@ -3,6 +3,8 @@ import Vuex from "vuex";
 import router from "./routes";
 import VueRouter from "vue-router";
 import LazyLoad from "./lazyload";
+import ServiceWorker from "./plugins/ServiceWorker";
+import NotificationSystem from "./plugins/NotificationSystem";
 import Index from "./Index";
 import VueApollo from "vue-apollo";
 import apolloClient from "./apollo";
@@ -14,6 +16,8 @@ window.Vue = require('vue');
 Vue.use(Vuetify)
 Vue.use(VueRouter);
 Vue.use(LazyLoad);
+Vue.use(ServiceWorker);
+Vue.use(NotificationSystem);
 Vue.use(Vuex);
 Vue.use(VueApollo);
 import mutations from './store/mutations';
@@ -82,11 +86,6 @@ export const app = new Vue({
     components: {
         "index": Index
     },
-    data() {
-        return {
-            state: 'initial'
-        }
-    },
     // //? add to mixins?
     methods: {
         onStorageUpdate(event) {
@@ -142,9 +141,18 @@ export const app = new Vue({
             });
         }
     },
-    // beforeCreate() {
-    //     window.localStorage.removeItem('logout')
-    // },
+    beforeCreate() {
+        if ('serviceWorker' in navigator) {
+            this.$ServiceWorkerActivated();
+            this.$ServiceWorkerInstalled();
+            this.$ServiceWorkerRegister();
+        }
+
+        if ('Notification' in window && navigator.serviceWorker) {
+            this.$NotificationsInstall();
+        }
+        // window.localStorage.removeItem('logout')
+    },
     mounted() {
         this.auth().then(res => {
             this.authInterval = setInterval(() => this.auth(), 60000);

@@ -23,10 +23,8 @@ import {
 // HTTP connection to the API
 const httpLink = createHttpLink({
     // You should use an absolute URL here
-    uri: 'http://localhost:8000/api/graphql',
+    uri: process.env.MIX_APP_GRAPHQL_API,
     headers: {
-        // 'X-CSRF-TOKEN': Cookies.get('csrftoken'),
-        // 'Authorization': `Bearer ${app.$store.getters.token}`,
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json',
         'Accept': 'application/json',

@@ -42,6 +42,7 @@ Route::post('languages', 'LanguagesController');
 
 Route::post('push', 'PushController@store');
 Route::get('notifications', 'PushController@push');
+Route::post('unsubscribe', 'PushController@destroy');
 
 // Auth::routes();
 

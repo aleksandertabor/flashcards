@@ -2,6 +2,7 @@
 
 use App\Deck;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class DecksTableSeeder extends Seeder
 {
@@ -12,7 +13,6 @@ class DecksTableSeeder extends Seeder
      */
     public function run()
     {
-
         $users = App\User::all();
 
         $output = $this->command->getOutput();
@@ -27,11 +27,11 @@ class DecksTableSeeder extends Seeder
             $deck->user_id = $users->random()->id;
             $cards = factory(App\Card::class, random_int(20, 50))->make();
             $deck->cards()->saveMany($cards);
+            $deck->addMediaFromUrl(Storage::url('deck.png'))->toMediaCollection('main');
             $deck->save();
             $bar->advance();
         });
 
         $bar->finish();
-
     }
 }

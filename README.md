@@ -40,7 +40,6 @@ npm i apollo-link-error
 npm i apollo-link-context
 composer require laravel/telescope
 php artisan telescope:install
-npm install vue-multiselect --save
 npm install vuetify
 npm install @mdi/font -D
 npm install sass sass-loader fibers deepmerge -D
@@ -56,7 +55,6 @@ sudo apt-get install webp
 composer require --dev barryvdh/laravel-ide-helper
 composer require guzzlehttp/guzzle
 npm install -g workbox-cli
-composer require pusher/pusher-php-server
 composer require laravel-notification-channels/webpush
 npm uninstall @fortawesome/fontawesome-free
 npm install roboto-fontface --save

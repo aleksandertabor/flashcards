@@ -70,6 +70,10 @@ if (workbox) {
     "revision": "5b4a33e176ff736a74f0ca2dd9e6b396"
   },
   {
+    "url": "js/app.js",
+    "revision": "68c9f05d7e9867e7467c8fc1208f4c27"
+  },
+  {
     "url": "site.webmanifest",
     "revision": "8255e86f3bb0c79754ebbb15c23b83f1"
   },
@@ -120,14 +124,7 @@ if (workbox) {
     workbox.routing.registerRoute(
         RegExp('(graphql?)'),
         new workbox.strategies.NetworkFirst({
-            networkTimeoutSeconds: 3,
             cacheName: 'api-cache',
-            plugins: [
-                new workbox.expiration.Plugin({
-                    maxEntries: 50,
-                    maxAgeSeconds: 5 * 60, // 5 minutes
-                }),
-            ],
         })
     );
 

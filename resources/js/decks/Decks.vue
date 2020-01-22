@@ -3,22 +3,16 @@
     <nav class="navbar sticky-top navbar-light bg-light border-bottom mb-4">
       <div>
         <label class="typo__label">Decks filters</label>
-        <multiselect
+        <v-select
+          prepend-icon="mdi-filter"
           v-model="filter"
-          deselect-label="Can't remove this value"
-          track-by="name"
-          label="name"
-          placeholder="Select one"
-          :options="filters"
-          :searchable="false"
-          :allow-empty="false"
-          @select="changeFilter"
-        >
-          <template slot="filters" slot-scope="{ filter }">
-            <strong>{{ filter.name }}</strong> is written in
-            <strong>{{ filter.field }}</strong>
-          </template>
-        </multiselect>
+          :items="filters"
+          filled
+          label="Filters"
+          return-object
+          item-text="name"
+          @change="changeFilter"
+        ></v-select>
       </div>
 
       <search-bar @change-filter="changeFilter"></search-bar>
@@ -45,7 +39,6 @@
 <script>
 import SearchBar from "../components/SearchBar";
 import InfiniteLoading from "vue-infinite-loading";
-import Multiselect from "vue-multiselect";
 import DeckListItem from "./DeckListItem";
 export default {
   components: {
@@ -60,18 +53,29 @@ export default {
       columns: 3,
       filter: {
         name: "Latest",
-        field: "created_at",
-        order: "DESC"
+        val: {
+          field: "created_at",
+          order: "DESC"
+        }
       },
       filters: [
-        { name: "Latest", field: "created_at", order: "DESC" },
-        { name: "Oldest", field: "created_at", order: "ASC" },
-        { name: "Random", field: "created_at", order: "RAND" },
+        { name: "Latest", val: { field: "created_at", order: "DESC" } },
+        { name: "Oldest", val: { field: "created_at", order: "ASC" } },
+        {
+          name: "Random",
+          val: {
+            field: "created_at",
+            order: "RAND",
+            random: Math.floor(Math.random() * 1000) + 1
+          }
+        },
         {
           name: "Cards",
-          field: "cards_count",
-          order: "DESC",
-          orderByCount: { model: "Deck", relation: "cards" }
+          val: {
+            field: "cards_count",
+            order: "DESC",
+            orderByCount: { model: "Deck", relation: "cards" }
+          }
         }
       ],
       infiniteId: +new Date()
@@ -107,6 +111,7 @@ export default {
       }
     },
     filter: function() {
+      this.changeRandom();
       if (this.$route.query.filter !== this.filter.name) {
         this.changeRoute();
       }
@@ -122,7 +127,7 @@ export default {
     infiniteHandler($state) {
       let toFind = {
         page: this.page,
-        filter: { ...this.filter },
+        filter: this.filter.val,
         query: this.query
       };
       this.clean(toFind);
@@ -133,7 +138,6 @@ export default {
             response.data.decks.data.length &&
             this.page < response.data.decks.paginatorInfo.lastPage
           ) {
-            console.log("loaded");
             this.$store.commit("decksPageIncrement");
             $state.loaded();
           } else if (
@@ -156,6 +160,11 @@ export default {
       this.$store.commit("resetDecksPage");
       this.infiniteId += 1;
     },
+    changeRandom() {
+      if (this.filter.name === "Random") {
+        this.filter.val.random = Math.floor(Math.random() * 1000) + 1;
+      }
+    },
     clean(obj) {
       delete obj.filter.name;
       for (var propName in obj) {
@@ -176,8 +185,6 @@ export default {
   }
 };
 </script>
-
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style>
 </style>

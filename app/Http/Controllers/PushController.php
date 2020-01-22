@@ -65,4 +65,29 @@ class PushController extends Controller
 
         return response()->json(['success' => true], 200);
     }
+
+    /**
+     * Delete the specified subscription.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request)
+    {
+        $this->validate($request, [
+            'endpoint' => 'required',
+        ]);
+
+        $endpoint = $request->endpoint;
+
+        $subUserExist = PushSubscription::findByEndpoint($endpoint);
+
+        $notificationUser = NotificationUser::find($subUserExist->subscribable->id);
+
+        $notificationUser->deletePushSubscription($endpoint);
+
+        $notificationUser->delete();
+
+        return response()->json(['success' => true], 204);
+    }
 }

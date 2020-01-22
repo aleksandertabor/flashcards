@@ -5,6 +5,7 @@
         <h5 class="card-title">{{ title }}</h5>
       </router-link>
       <img :data-src="image" class="card-img-top lazy" alt />
+      <!-- <v-img :src="image"></v-img> -->
       <!-- <img data-src="/img/placeholder.png" class="card-img-top lazy" alt /> -->
       <p class="card-text">{{ description }}</p>
       <p class="card-text">Cards: ({{ cards_count }})</p>

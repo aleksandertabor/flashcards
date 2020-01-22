@@ -1,7 +1,7 @@
 module.exports = {
     "globDirectory": "public/",
     "globPatterns": [
-        "**/*.{css,ico,woff2,webmanifest}",
+        "**/*.{js,css,ico,woff2,webmanifest}",
         "**/img/app/icons/*",
     ],
     manifestTransforms: [

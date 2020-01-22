@@ -23,12 +23,12 @@ class FilterDirective extends BaseDirective implements ArgBuilderDirective, ArgD
      *
      * @return string
      */
-    public function name(): string
+    public function name() : string
     {
         return 'filter';
     }
 
-    public static function definition(): string
+    public static function definition() : string
     {
         return /* @lang GraphQL */<<<'SDL'
 """
@@ -48,15 +48,12 @@ SDL;
     public function handleBuilder($builder, $value)
     {
         foreach ($value as $FilterClause) {
-
-            // $builder->where('visibility', 'public');
-
             $relation = $FilterClause['orderByCount']['relation'] ?? null;
             $model = $FilterClause['orderByCount']['model'] ?? null;
             $constraints = null;
 
             if (isset($model) && isset($relation)) {
-                $className = "\\App\\" . $model;
+                $className = '\\App\\'.$model;
                 $model = new $className();
                 $constraints = function (?Model $model, $relation) {
                     return $model->withCount([$relation]);
@@ -66,13 +63,13 @@ SDL;
             if (isset($builder->query) && $constraints) {
                 $builder->constrain($constraints($model, $relation));
             }
-            if (!isset($builder->query) && $constraints !== null) {
+            if (! isset($builder->query) && $constraints !== null) {
                 $builder->withCount([$relation]);
             }
 
-            if ($FilterClause['order'] === 'RAND') {
+            if ($FilterClause['order'] === 'RAND' && $FilterClause['random']) {
                 $builder->orderBy(
-                    DB::raw('RAND()')
+                    DB::raw('RAND('.$FilterClause['random'].')')
                 );
             } else {
                 $builder->orderBy(
@@ -80,10 +77,7 @@ SDL;
                     $FilterClause['order']
                 );
             }
-
         }
-
-        // dump('FilterDirective', now());
 
         return $builder;
     }
@@ -104,7 +98,7 @@ SDL;
         InputValueDefinitionNode &$argDefinition,
         FieldDefinitionNode &$parentField,
         ObjectTypeDefinitionNode &$parentType
-    ): void {
+    ) : void {
         // Users may define this as NonNull if they want
         // Because we need to validate the structure regardless,
         // we unwrap it by one level if it is
@@ -118,9 +112,9 @@ SDL;
                 // Must be a list
                 'type'
                 // of non-nullable
-                 . '.type'
+                 .'.type'
                 // input objects
-                 . '.type.name.value'
+                 .'.type.name.value'
                 // that are exactly of type
             ) !== 'FilterClause'
         ) {
@@ -129,5 +123,4 @@ SDL;
             );
         }
     }
-
 }

@@ -23,14 +23,7 @@ if (workbox) {
     workbox.routing.registerRoute(
         RegExp('(graphql?)'),
         new workbox.strategies.NetworkFirst({
-            networkTimeoutSeconds: 3,
             cacheName: 'api-cache',
-            plugins: [
-                new workbox.expiration.Plugin({
-                    maxEntries: 50,
-                    maxAgeSeconds: 5 * 60, // 5 minutes
-                }),
-            ],
         })
     );
 

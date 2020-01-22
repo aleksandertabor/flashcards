@@ -66,23 +66,13 @@ input TranslateInput {
     target: String!
 }
 
-
-input OrderByClause{
-    field: String!
-    order: SortOrder!
-}
-
-
-enum SortOrder {
-    ASC
-    DESC
-}
-
 input FilterClause{
     field: String!
     order: FilterOrder!
+    random: Int
     orderByCount: CountInput
 }
+
 
 enum FilterOrder {
     ASC
