@@ -43,7 +43,6 @@ import DeckListItem from "./DeckListItem";
 export default {
   components: {
     InfiniteLoading,
-    Multiselect,
     DeckListItem,
     SearchBar
   },

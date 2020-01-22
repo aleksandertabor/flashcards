@@ -142,15 +142,15 @@ export const app = new Vue({
         }
     },
     beforeCreate() {
-        if ('serviceWorker' in navigator) {
-            this.$ServiceWorkerActivated();
-            this.$ServiceWorkerInstalled();
-            this.$ServiceWorkerRegister();
-        }
+        // if ('serviceWorker' in navigator) {
+        //     this.$ServiceWorkerActivated();
+        //     this.$ServiceWorkerInstalled();
+        //     this.$ServiceWorkerRegister();
+        // }
 
-        if ('Notification' in window && navigator.serviceWorker) {
-            this.$NotificationsInstall();
-        }
+        // if ('Notification' in window && navigator.serviceWorker) {
+        //     this.$NotificationsInstall();
+        // }
         // window.localStorage.removeItem('logout')
     },
     mounted() {
