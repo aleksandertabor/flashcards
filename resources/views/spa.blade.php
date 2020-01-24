@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<index></index>
+<index>
+    @include('partials.loading')
+</index>
 @endsection

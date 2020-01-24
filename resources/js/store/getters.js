@@ -16,7 +16,10 @@ const getters = {
     },
     expiry: state => {
         return state.user.expires_in
-    }
+    },
+    started: state => {
+        return state.started
+    },
 }
 
 export default getters;

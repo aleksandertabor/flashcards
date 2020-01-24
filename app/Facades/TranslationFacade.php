@@ -11,6 +11,8 @@ class TranslationFacade extends Facade
      * @method static array translate(string $toTranslate, array $languages)
      * @method static array detect(string $toDetect)
      * @method static array languages()
+     *
+     * @see \App\Contracts\TranslationContract
      */
     public static function getFacadeAccessor()
     {

@@ -5,6 +5,7 @@ const state = {
     cards: [],
     errors: [],
     user: JSON.parse(localStorage.getItem('user')) || {},
+    started: false
 }
 
 export default state;

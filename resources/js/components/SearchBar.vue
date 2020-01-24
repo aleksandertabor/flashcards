@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import _ from "lodash";
+import {debounce} from "lodash";
 export default {
   data() {
     return {
@@ -26,7 +26,7 @@ export default {
     this.search();
   },
   methods: {
-    searching: _.debounce(function() {
+    searching: debounce(function() {
       this.search();
     }, 300),
     search: function() {

@@ -1,9 +1,9 @@
 type Card {
     id: Int!
-    question: String!
-    answer: String!
-    example_answer: String!
-    example_question: String!
-    image: String! @field(resolver: "App\\GraphQL\\Types\\CardType@image")
+    question: String
+    answer: String
+    example_answer: String
+    example_question: String
+    image: String @field(resolver: "App\\GraphQL\\Types\\CardType@image")
     deck: Deck! @belongsTo
 }

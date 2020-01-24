@@ -8,7 +8,9 @@
       @click="toggle"
     >
       <div v-if="!active" class="display-1 flex-grow-1 text-center">
-        <div class="text-no-wrap text-center">{{ question }}</div>
+        <v-img v-if="image" :src="image" aspect-ratio="1" class="grey lighten-2" contain>
+          <div class="text-no-wrap text-center">{{ question }}</div>
+        </v-img>
       </div>
       <div v-if="active" class="display-1 flex-grow-1 text-center">
         <div class="text-no-wrap text-center">{{ answer }}</div>

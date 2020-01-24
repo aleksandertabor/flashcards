@@ -46,7 +46,7 @@ union Person @union(resolveType: "App\\GraphQL\\Unions\\PersonUnion") = AuthUser
 type Query {
     profile(username: String!): Person @field(resolver: "App\\GraphQL\\Queries\\ProfileQuery")
     user(username: String! @eq): User @find
-    deck(slug: String! @eq): Deck @find  @able(ability: "view", find: "slug")
+    deck(slug: String! @eq): Deck @find(scopes: ["WithoutScopes"]) @able(ability: "view", find: "slug")
     me: User @middleware(checks:["auth:api"]) @auth
     decks(search: String @search, filter: [FilterClause!] @filter): [Deck!]! @paginate(model: "App\\Deck",defaultCount: 12)
     languages: [Language!]! @all
@@ -137,8 +137,6 @@ type Mutation @middleware(checks: ["auth:api"]) {
 
 
 extend type Mutation {
-
-
           updateDeck(input: CreateCardInput! @spread): Deck @update @able(ability: "update", find: "id")
           removeDeck(input: CreateCardInput! @spread): Deck @delete @able(ability: "delete", find: "id")
 
@@ -164,15 +162,17 @@ input CreateDeckInput {
     lang_target_id: Int
     visibility: Visibility
     image: String
+    image_file: Upload
     cards: [CreateCardInput!]
 }
 
 input CreateCardInput {
-    question: String!
-    answer: String!
-    example_question: String!
-    example_answer: String!
-    image: String!
+    question: String
+    answer: String
+    example_question: String
+    example_answer: String
+    image: String
+    image_file: Upload
 }
 
 

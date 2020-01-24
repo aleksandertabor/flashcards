@@ -1,50 +1,8 @@
 <template>
-  <div>
+  <v-expansion-panel-content>
     <v-form ref="form" lazy-validation>
-      <v-card>
-        <v-toolbar flat dark>
-          <v-toolbar-title>Card Editor</v-toolbar-title>
-        </v-toolbar>
-
-        <v-card-text>
-          <v-file-input
-            v-model="image_file"
-            :rules="[rules.size]"
-            accept="image/png, image/jpeg, image/webp"
-            placeholder="Pick an image"
-            prepend-icon="mdi-camera"
-            label="Image"
-            @change="previewImage"
-            filled
-            :disabled="loading"
-          ></v-file-input>
-
-          <v-text-field
-            v-if="!image_file"
-            v-model="card.image"
-            prepend-icon="mdi-image"
-            label="Image URL"
-            :rules="[rules.url]"
-            filled
-            clearable
-            :disabled="loading"
-          ></v-text-field>
-
-          <v-img
-            v-if="card.image"
-            :src="card.image"
-            aspect-ratio="1"
-            max-height="125"
-            class="grey lighten-2"
-            contain
-          >
-            <template v-slot:placeholder>
-              <v-row class="fill-height ma-0" align="center" justify="center">
-                <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-              </v-row>
-            </template>
-          </v-img>
-
+      <v-row justify="space-between">
+        <v-col cols="12" md="6">
           <v-text-field
             v-model="card.question"
             label="Question"
@@ -57,7 +15,8 @@
             counter="255"
             @change="translate(); image(); example();"
           ></v-text-field>
-
+        </v-col>
+        <v-col cols="12" md="6">
           <v-text-field
             v-model="card.answer"
             ref="answer"
@@ -73,7 +32,11 @@
             @input="canTranslate = false"
             @click:clear="canTranslate = true"
           ></v-text-field>
+        </v-col>
+      </v-row>
 
+      <v-row justify="space-between">
+        <v-col cols="12" md="6">
           <v-textarea
             v-model="card.example_question"
             label="Example question"
@@ -85,7 +48,8 @@
             :loading="loading"
             counter="255"
           ></v-textarea>
-
+        </v-col>
+        <v-col cols="12" md="6">
           <v-textarea
             v-model="card.example_answer"
             label="Example answer"
@@ -97,14 +61,61 @@
             :loading="loading"
             counter="255"
           ></v-textarea>
+        </v-col>
+      </v-row>
 
-          <v-btn color="success" depressed @click="translate">Translate</v-btn>
+      <v-row justify="space-between">
+        <v-col cols="12" md="6">
+          <v-file-input
+            v-model="card.image_file"
+            :rules="[rules.size]"
+            accept="image/png, image/jpeg, image/webp"
+            placeholder="Pick an image"
+            prepend-icon="mdi-camera"
+            label="Image"
+            @change="previewImage"
+            filled
+            :loading="loading"
+            @click:clear="forceImageRerender()"
+          ></v-file-input>
 
-          <v-divider class="my-2"></v-divider>
-        </v-card-text>
-      </v-card>
+          <v-text-field
+            v-if="!card.image_file"
+            v-model="card.image"
+            prepend-icon="mdi-image"
+            label="Image URL"
+            :rules="[rules.url]"
+            :error-messages="errorFor('image')"
+            filled
+            clearable
+            :loading="loading"
+            @click:clear="forceImageRerender()"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-img
+            :key="imageRenderKey"
+            :src="card.image"
+            lazy-src="/img/app/bg-profile.png"
+            aspect-ratio="1"
+            max-height="125"
+            contain
+          ></v-img>
+        </v-col>
+      </v-row>
+
+      <v-btn color="error" depressed @click="remove();">Delete</v-btn>
+
+      <v-btn
+        v-if="card.question"
+        color="success"
+        depressed
+        @click="translate(); image(); example();"
+      >Translate</v-btn>
+
+      <v-divider class="my-2"></v-divider>
     </v-form>
-  </div>
+  </v-expansion-panel-content>
 </template>
 
 <script>
@@ -115,30 +126,33 @@ export default {
       card: {
         question: null,
         answer: null,
-        image: null,
+        image_file: null,
+        image: "",
         example_question: null,
         example_answer: null
       },
       canTranslate: true,
-      image_file: null,
       query: null,
-      loading: false,
+      loading: null,
       status: null,
       error: null,
       errors: null,
+      imageRenderKey: 0,
       rules: {
         required: v => !!v || "Required.",
+        min: len => v => (v && v.length) >= len || `Min ${len} characters`,
         max: len => v => (v && v.length) <= len || `Max ${len} characters`,
+        length: len => v =>
+          (v || "").length >= len ||
+          `Invalid character length, required ${len}`,
         url: v =>
-          (/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(
+          /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(
             v
-          ) &&
-            v.length) ||
-          "Wrong URL.",
+          ) || "Wrong URL.",
         size: value =>
           !value ||
-          value.size < 2000000 ||
-          "File size should be less than 2 MB!"
+          value.size < 5000000 ||
+          "File size should be less than 5 MB!"
       }
     };
   },
@@ -153,21 +167,11 @@ export default {
     this.cardToEdit !== null ? (this.card = this.cardToEdit) : this.card;
   },
   methods: {
-    addFinishedCard() {
-      if (this.source !== null && this.target !== null) {
-        this.$emit("add-finished-card", 1);
-      } else {
-        this.$emit("add-finished-card", -1);
-      }
+    remove() {
+      this.$emit("remove-card");
     },
-    addCard() {
-      this.loading = true;
-      axios
-        .get(``)
-        .then(response => {
-          this.status = response.status;
-        })
-        .catch(error => {});
+    forceImageRerender() {
+      this.imageRenderKey += 1;
     },
     errorFor(field) {
       return this.hasErrors && this.errors[field] ? this.errors[field] : null;
@@ -179,13 +183,13 @@ export default {
           return;
         }
         const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
         fileReader.addEventListener("load", () => {
           this.card.image = fileReader.result;
         });
-        fileReader.readAsDataURL(file);
-        this.image_file = file;
+        this.card.image_file = file;
       } else {
-        this.image_file = null;
+        this.card.image_file = null;
         this.card.image = "";
       }
     },
@@ -206,8 +210,8 @@ export default {
           })
           .catch(error => {
             console.log("translateError", error);
-          })
-          .then(() => (this.loading = false));
+          });
+        //   .finally(() => (this.loading = false));
       }
     },
     image() {
@@ -220,13 +224,12 @@ export default {
           })
           .then(response => {
             this.card.image = response.data.image;
-            this.$forceUpdate();
             console.log("obrazek: ", this.card.image);
           })
           .catch(error => {
             console.log("translateError", error);
-          })
-          .then(() => (this.loading = false));
+          });
+        //   .finally(() => (this.loading = false));
       }
     },
     example() {
@@ -247,7 +250,7 @@ export default {
           .catch(error => {
             console.log("translateError", error);
           })
-          .then(() => (this.loading = false));
+          .finally(() => (this.loading = false));
       }
     }
   }

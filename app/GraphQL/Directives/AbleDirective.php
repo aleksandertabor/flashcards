@@ -37,12 +37,12 @@ class AbleDirective extends BaseDirective implements FieldMiddleware, DefinedDir
      *
      * @return string
      */
-    public function name(): string
+    public function name() : string
     {
         return 'able';
     }
 
-    public static function definition(): string
+    public static function definition() : string
     {
         return /* @lang GraphQL */<<<'SDL'
 """
@@ -86,7 +86,7 @@ SDL;
      * @param  \Closure  $next
      * @return \Nuwave\Lighthouse\Schema\Values\FieldValue
      */
-    public function handleField(FieldValue $fieldValue, Closure $next): FieldValue
+    public function handleField(FieldValue $fieldValue, Closure $next) : FieldValue
     {
         $previousResolver = $fieldValue->getResolver();
 
@@ -114,18 +114,18 @@ SDL;
      *
      * @throws \Nuwave\Lighthouse\Exceptions\DefinitionException
      */
-    protected function modelsToCheck(ArgumentSet $argumentSet, array $args): iterable
+    protected function modelsToCheck(ArgumentSet $argumentSet, array $args) : iterable
     {
         if ($find = $this->directiveArgValue('find')) {
             $modelOrModels = $argumentSet
                 ->enhanceBuilder(
                     $this->getModelClass()::query(),
                     [],
-                    function (Directive $directive): bool {
+                    function (Directive $directive) : bool {
                         return $directive instanceof TrashedDirective;
                     }
                 )
-                ->where($find, '=', $args[$find])->firstOrFail();
+                ->withoutGlobalScopes()->where($find, '=', $args[$find])->firstOrFail();
 
             if ($modelOrModels instanceof Model) {
                 $modelOrModels = [$modelOrModels];
@@ -146,13 +146,13 @@ SDL;
      *
      * @throws \Nuwave\Lighthouse\Exceptions\AuthorizationException
      */
-    protected function authorize(Gate $gate, $ability, $model, array $arguments): void
+    protected function authorize(Gate $gate, $ability, $model, array $arguments) : void
     {
         // The signature of the second argument `$arguments` of `Gate::check`
         // should be [modelClassName, additionalArg, additionalArg...]
         array_unshift($arguments, $model);
 
-        if (!$gate->check($ability, $arguments)) {
+        if (! $gate->check($ability, $arguments)) {
             throw new AuthorizationException(
                 "You are not authorized to access {$this->definitionNode->name->value}"
             );
@@ -165,7 +165,7 @@ SDL;
      * @param  array  $args
      * @return mixed[]
      */
-    protected function buildCheckArguments(array $args): array
+    protected function buildCheckArguments(array $args) : array
     {
         $checkArguments = [];
 

@@ -14,12 +14,11 @@ query deckEditor {
 
 mutation createDeck($input: CreateDeckInput!) {
   createDeck(input: $input) {
-    title
-    description
-    image
-    visibility
-    cards {
-      question
-    }
+    id
+    slug
   }
+}
+
+mutation upload($file: Upload!) {
+    upload(file: $file)
 }

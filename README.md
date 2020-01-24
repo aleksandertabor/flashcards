@@ -59,4 +59,6 @@ composer require laravel-notification-channels/webpush
 npm uninstall @fortawesome/fontawesome-free
 npm install roboto-fontface --save
 npm install workbox-window
+npm install apollo-upload-client
+npm install --save vue-clipboard2
 ```

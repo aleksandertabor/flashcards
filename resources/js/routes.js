@@ -52,14 +52,6 @@ const routes = [{
         component: Profile,
         name: "profile",
     },
-    // {
-    //     path: "/profile/edit",
-    //     component: Profile,
-    //     name: "profile",
-    //     meta: {
-    //         authenticated: true
-    //     }
-    // },
     {
         path: "/deck/editor",
         component: DeckEditor,

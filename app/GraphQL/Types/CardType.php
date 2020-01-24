@@ -1,4 +1,5 @@
 <?php
+
 namespace App\GraphQL\Types;
 
 use App\Card;
@@ -9,9 +10,8 @@ class CardType
 {
     public function image(Card $card, array $args, GraphQLContext $context, ResolveInfo $info)
     {
-        $url = $card->getFirstMediaUrl();
+        $url = $card->getFirstMediaUrl('main');
 
         return $url;
     }
-
 }

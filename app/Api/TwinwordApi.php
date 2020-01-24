@@ -18,6 +18,8 @@ class TwinwordApi
     {
         $wasTranslated = false;
 
+        // if source lang is not english
+
         if (! is_null($sourceLanguage) && $sourceLanguage !== 'en') {
             $wordToFind = TranslationFacade::translate($wordToFind, [
                 'source' => $sourceLanguage,
@@ -37,11 +39,14 @@ class TwinwordApi
             return [];
         }
 
-        $exampleTargetLanguage = TranslationFacade::translate($exampleEnglish, [
-            'source' => 'en',
-            'target' => $targetLanguage,
-        ])['text'];
-
+        if (! is_null($targetLanguage) && $targetLanguage !== 'en') {
+            $exampleTargetLanguage = TranslationFacade::translate($exampleEnglish, [
+                'source' => 'en',
+                'target' => $targetLanguage,
+            ])['text'];
+        } else {
+            $exampleTargetLanguage = $exampleEnglish;
+        }
         if ($wasTranslated) {
             $exampleSourceLanguage = TranslationFacade::translate($exampleEnglish, [
                 'source' => 'en',
@@ -50,6 +55,8 @@ class TwinwordApi
 
             return [$exampleSourceLanguage, $exampleTargetLanguage];
         } else {
+            $exampleSourceLanguage = $exampleEnglish;
+
             return [$exampleSourceLanguage, $exampleTargetLanguage];
         }
     }

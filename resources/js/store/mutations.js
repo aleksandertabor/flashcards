@@ -35,6 +35,9 @@ const mutations = {
         state.decks = payload;
         state.decksPage = 1;
     },
+    start(state) {
+        state.started = true;
+    },
 }
 
 export default mutations;

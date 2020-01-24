@@ -14,6 +14,50 @@
     <!-- Progressive Web App -->
     <link rel="manifest" href="/site.webmanifest">
     <!-- Styles and scripts -->
+    <style>
+        @keyframes loading-bounce {
+            0%,
+            25%,
+            50%,
+            75%,
+            100% {
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+
+            15% {
+                -webkit-transform: translateY(-20px);
+                transform: translateY(-20px);
+            }
+
+            35% {
+                -webkit-transform: translateY(-12px);
+                transform: translateY(-12px);
+            }
+        }
+
+        @-webkit-keyframes loading-bounce {
+
+            0%,
+            25%,
+            50%,
+            75%,
+            100% {
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+
+            15% {
+                -webkit-transform: translateY(-20px);
+                transform: translateY(-20px);
+            }
+
+            35% {
+                -webkit-transform: translateY(-12px);
+                transform: translateY(-12px);
+            }
+        }
+    </style>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>

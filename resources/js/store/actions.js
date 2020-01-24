@@ -1,4 +1,5 @@
 import apolloClient from "../apollo";
+import apolloUploadClient from "../apolloUploadClient";
 import {
     login,
     refresh_token,
@@ -17,7 +18,8 @@ import {
 } from "../queries/deck.gql"
 import {
     deckEditor,
-    createDeck
+    createDeck,
+    upload
 } from "../queries/editor.gql";
 import {
     translate,
@@ -284,7 +286,6 @@ const actions = {
                     query: deckEditor,
                 })
                 .then(response => {
-                    console.log("Deck Editor: ", response);
                     resolve(response);
                 })
                 .catch(error => {
@@ -299,18 +300,19 @@ const actions = {
     createDeck(context, payload) {
         console.log("createDeck payload", payload);
         return new Promise((resolve, reject) => {
-            apolloClient.mutate({
+            apolloUploadClient.mutate({
                     mutation: createDeck,
                     variables: {
                         input: {
                             title: payload.title,
                             description: payload.description,
                             image: payload.image,
+                            image_file: payload.image_file,
                             lang_source_id: payload.lang_source_id,
                             lang_target_id: payload.lang_target_id,
                             visibility: payload.visibility.value,
                             cards: payload.cards
-                        }
+                        },
                     }
                 })
                 .then(response => {

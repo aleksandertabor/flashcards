@@ -27,6 +27,9 @@ label[data-v-4f79cede] {
   background-color: rgba(0, 255, 102, 0.59);
 }
 
+.v-content {
+  padding-bottom: 96px !important;
+}
 a.logout {
   border: thin solid #f44336;
 }

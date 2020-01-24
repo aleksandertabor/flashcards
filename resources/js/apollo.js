@@ -5,6 +5,9 @@ import {
     createHttpLink
 } from 'apollo-link-http'
 import {
+    createUploadLink
+} from "apollo-upload-client";
+import {
     onError
 } from "apollo-link-error";
 import {
@@ -16,9 +19,7 @@ import {
 import {
     setContext
 } from 'apollo-link-context';
-import {
-    app
-} from "./app.js";
+import store from "./store";
 
 // HTTP connection to the API
 const httpLink = createHttpLink({
@@ -31,9 +32,10 @@ const httpLink = createHttpLink({
         'X-CSRF-Token': document.querySelector('meta[name=csrf-token]').getAttribute('content')
     },
     // Make all requests to API with GET method - helpful with PWA caching
-    fetchOptions: {
-        method: "GET",
-    },
+    useGETForQueries: true,
+    // fetchOptions: {
+    //     method: "GET",
+    // },
 })
 
 const errorLink = onError(({
@@ -68,9 +70,8 @@ const authLink = setContext((_, {
     if (Object.entries(storageUser).length !== 0 && storageUser.constructor === Object) {
         token = storageUser.access_token;
     } else {
-        token = app.$store.getters.token;
+        token = store.getters.token;
     }
-    console.log("wysylam ten token do bearera: ", token);
     // return the headers to the context so httpLink can read them
     return {
         headers: {

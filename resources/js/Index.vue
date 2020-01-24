@@ -63,11 +63,9 @@
 
     <v-content>
       <v-container fill-height fluid>
-        <v-layout justify-center align-center row wrap>
-          <v-flex>
-            <router-view></router-view>
-          </v-flex>
-        </v-layout>
+        <v-flex>
+          <router-view></router-view>
+        </v-flex>
       </v-container>
 
       <v-container :class="{'fab-options': $vuetify.breakpoint.smAndDown}">
@@ -127,10 +125,6 @@
       top="top"
       color="error"
     >Our app was updated! It needs reload.</v-snackbar>
-
-    <v-footer app>
-      <!-- -->
-    </v-footer>
   </v-app>
 </template>
 
@@ -209,6 +203,7 @@ export default {
   },
   created() {
     window.addEventListener("beforeinstallprompt", e => {
+      console.log(e);
       e.preventDefault();
       this.promptEvent = e;
       this.canInstall = true;
@@ -230,6 +225,10 @@ export default {
 </script>
 
 <style>
+.v-content {
+  padding-bottom: 96px !important;
+}
+
 a.logout {
   border: thin solid #f44336;
 }

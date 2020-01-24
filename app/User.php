@@ -44,7 +44,9 @@ class User extends Authenticatable
     protected static function boot()
     {
         static::updating(function ($user) {
-            $user->password = bcrypt($user->password);
+            if ($user->isDirty('password')) {
+                $user->password = bcrypt($user->password);
+            }
         });
 
         parent::boot();
