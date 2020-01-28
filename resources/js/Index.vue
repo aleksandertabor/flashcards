@@ -30,8 +30,8 @@
           :to="{ name: 'profile', params: { username: user.username } }"
           link
         >
-          <v-list-item-avatar>
-            <v-icon dark>mdi-account-circle</v-icon>
+          <v-list-item-avatar color="teal">
+            <span class="white--text headline">{{ user.username.charAt(0).toUpperCase() }}</span>
           </v-list-item-avatar>
 
           <v-list-item-content>

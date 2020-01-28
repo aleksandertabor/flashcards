@@ -25,6 +25,7 @@ type User {
     id: Int!
     username: String!
     email: String!
+    created_at: String!
     cards_count: Int! @count(relation: "publishedCards")
     decks: [Deck!]! @hasMany @lazyLoad(relations: ["decks"])
     cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])
@@ -45,7 +46,12 @@ union Person @union(resolveType: "App\\GraphQL\\Unions\\PersonUnion") = AuthUser
 
 type Query {
     profile(username: String!): Person @field(resolver: "App\\GraphQL\\Queries\\ProfileQuery")
+    usersTotal: Int! @count(model: "User")
+    decksTotal: Int! @count(model: "Deck")
+    cardsTotal: Int! @count(model: "Card")
+    users: [User!]! @paginate(scopes: ["Newest"])
     user(username: String! @eq): User @find
+    languages: [Language!]! @all
     deck(slug: String! @eq): Deck @find(scopes: ["WithoutScopes"]) @able(ability: "view", find: "slug")
     me: User @middleware(checks:["auth:api"]) @auth
     decks(search: String @search, filter: [FilterClause!] @filter): [Deck!]! @paginate(model: "App\\Deck",defaultCount: 12)
@@ -54,6 +60,7 @@ type Query {
     image(input: ImageInput! @spread): String! @field(resolver: "App\\GraphQL\\Queries\\ImageQuery")
     example(input: TranslateInput! @spread): [String!]! @field(resolver: "App\\GraphQL\\Queries\\ExampleQuery")
 }
+
 
 input ImageInput {
     phrase: String!

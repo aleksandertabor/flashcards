@@ -37,6 +37,8 @@ query deck($slug: String!) {
             id
             question
             answer
+            example_question
+            example_answer
             image
         }
         user {

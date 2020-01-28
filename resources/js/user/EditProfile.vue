@@ -43,7 +43,7 @@
         :error-messages="errorFor('password')"
         :type="show1 ? 'text' : 'password'"
         name="input-10-1"
-        label="Password"
+        label="New Password"
         counter
         :loading="loading"
         :disabled="loading || !isEditing"
@@ -57,7 +57,7 @@
         :error-messages="errorFor('password_confirmation')"
         name="input-10-1"
         :type="show1 ? 'text' : 'password'"
-        label="Password confirmation"
+        label="New Password confirmation"
         counter
         :loading="loading"
         :disabled="loading || !isEditing"

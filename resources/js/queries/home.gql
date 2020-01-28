@@ -1,0 +1,29 @@
+query stats {
+    usersTotal
+  	decksTotal
+  	cardsTotal
+}
+
+query newestFiveDecks {
+    decks (first: 5, filter: {field: "created_at", order: DESC}) {
+      data {
+        title
+        description
+        user {
+            username
+        }
+        created_at
+        cards_count
+        slug
+      }
+    }
+}
+
+query newestFiveUsers {
+  users (first: 5)  {
+    data {
+      username
+      created_at
+    }
+  }
+}

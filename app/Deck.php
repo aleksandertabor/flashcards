@@ -4,6 +4,7 @@ namespace App;
 
 use App\Notifications\DeckPublished;
 use App\Scopes\PublishedScope;
+use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -141,6 +142,11 @@ class Deck extends Model implements HasMedia
             'title' => $this->title,
             'description' => $this->description,
         ];
+    }
+
+    public function getCreatedAtAttribute($date)
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $date)->diffForHumans();
     }
 
     public function scopePublished($query)

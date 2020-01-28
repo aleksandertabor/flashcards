@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -73,9 +74,19 @@ class User extends Authenticatable
         return 'username';
     }
 
+    public function getCreatedAtAttribute($date)
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $date)->diffForHumans();
+    }
+
     public function setUsernameAttribute($value)
     {
         $this->attributes['username'] = strtolower($value);
+    }
+
+    public function scopeNewest($query)
+    {
+        return $query->latest();
     }
 
     public function cards()
