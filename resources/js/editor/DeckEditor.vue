@@ -2,32 +2,51 @@
   <div>
     <div v-if="loading">Loading ...</div>
     <div v-else>
-      <v-form ref="form" lazy-validation>
-        <v-card>
-          <v-card-title class="title font-weight-regular justify-space-between">
-            <span>{{ currentTitle }}</span>
-            <v-avatar
-              color="green lighten-2"
-              class="subheading white--text"
-              size="24"
-              v-text="step"
-            ></v-avatar>
-          </v-card-title>
+      <v-card>
+        <v-card-title class="title font-weight-regular justify-space-between">
+          <span>{{ currentTitle }}</span>
+          <v-avatar color="green lighten-2" class="subheading white--text" size="24" v-text="step"></v-avatar>
+        </v-card-title>
+        <v-card-actions>
+          <v-btn :disabled="step === 1" v-if="step !== 1" text @click="step--">
+            <v-icon left dark>mdi-arrow-left-bold-box-outline</v-icon>Deck editor
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            :disabled="step === 2 || this.deck.id === null"
+            v-if="step !== 2"
+            color="primary"
+            depressed
+            @click="step++"
+          >
+            Flashcards editor
+            <v-icon right dark>mdi-arrow-right-bold-box-outline</v-icon>
+          </v-btn>
+        </v-card-actions>
 
-          <v-card-actions>
-            <v-alert type="error" v-if="error" dismissible>{{ error }}</v-alert>
-            <v-alert v-if="success" type="success" dismissible>Your deck has been saved.</v-alert>
-            <v-snackbar
-              v-model="success"
-              color="success"
-              :timeout="3000"
-              bottom
-              left
-            >Your deck has been saved.</v-snackbar>
-          </v-card-actions>
+        <v-card-actions>
+          <v-alert type="error" v-if="error" dismissible>{{ error }} Not saved.</v-alert>
+          <v-alert v-if="success" type="success" dismissible>Your deck has been saved.</v-alert>
+          <v-snackbar
+            v-model="success"
+            color="success"
+            :timeout="3000"
+            bottom
+            left
+          >Your deck has been saved.</v-snackbar>
+          <v-alert v-if="deletedCard" type="success" dismissible>Flashcard has been removed.</v-alert>
+          <v-snackbar
+            v-model="deletedCard"
+            color="success"
+            :timeout="3000"
+            bottom
+            left
+          >Flashcard has been removed.</v-snackbar>
+        </v-card-actions>
 
-          <v-window v-model="step">
-            <v-window-item :value="1">
+        <v-window v-model="step">
+          <v-window-item :value="1">
+            <v-form ref="deckForm" v-model="valid" lazy-validation>
               <v-card-text>
                 <v-text-field
                   v-model="deck.title"
@@ -65,6 +84,7 @@
                       @change="previewImage"
                       filled
                       @click:clear="forceImageRerender()"
+                      show-size
                     ></v-file-input>
 
                     <v-text-field
@@ -145,45 +165,9 @@
                 ></v-text-field>
                 <v-btn color="primary" v-if="slug" v-clipboard:copy="slug">Copy link</v-btn>
               </v-card-text>
-            </v-window-item>
-
-            <v-window-item :value="2">
-              <v-card-text>
-                <v-expansion-panels focusable>
-                  <v-expansion-panel v-for="(card, index) in deck.cards" :key="'card' + card.uuid">
-                    <card-editor
-                      v-on:remove-card="removeThisCard(index)"
-                      :cardToEdit="card"
-                      :index="index"
-                      v-bind:languages="getLanguagesCodes()"
-                    ></card-editor>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-                <v-row justify="space-between">
-                  <v-col cols="12" md="6">
-                    <h2 class="display-1 success--text">
-                      Flashcards:&nbsp;
-                      <v-fade-transition leave-absolute>
-                        <span>{{ deck.cards.length }} / {{ this.cards_limit }}</span>
-                      </v-fade-transition>
-                    </h2>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-progress-circular :value="progress" class="mr-2"></v-progress-circular>
-                  </v-col>
-                </v-row>
-                <v-btn
-                  color="success"
-                  depressed
-                  @click="addCard"
-                  :disabled="deck.cards.length >= cards_limit"
-                >Add card</v-btn>
-              </v-card-text>
-            </v-window-item>
-          </v-window>
-          <v-card-actions>
-            <v-btn color="success" depressed @click="create">Save deck</v-btn>
-            <v-dialog v-if="deckToEdit" v-model="dialog" persistent max-width="290">
+            </v-form>
+            <v-btn color="success" :disabled="!valid || loading" depressed @click="save">Save deck</v-btn>
+            <v-dialog v-if="deck.id" v-model="dialog" persistent max-width="290">
               <v-card>
                 <v-card-title class="headline">Do you really want remove this deck?</v-card-title>
                 <v-card-text>Your deck and all cards will be deleted.</v-card-text>
@@ -194,21 +178,47 @@
                 </v-card-actions>
               </v-card>
               <template v-slot:activator="{ on }">
-                <v-btn color="red" dark v-on="on">Remove deck</v-btn>
+                <v-btn color="red" :disabled="!valid || loading" dark v-on="on">Remove deck</v-btn>
               </template>
             </v-dialog>
+          </v-window-item>
 
-            <v-btn :disabled="step === 1" text @click="step--">Back</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-              :disabled="step === 2 || this.deck.id === null"
-              color="primary"
-              depressed
-              @click="step++"
-            >Cards</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-form>
+          <v-window-item :value="2">
+            <v-card-text>
+              <v-expansion-panels v-if="deck.cards" focusable>
+                <v-expansion-panel v-for="(card, index) in deck.cards" :key="'card' + card.uuid">
+                  <card-editor
+                    v-on:remove-card="removeThisCard(index)"
+                    :cardToEdit="card"
+                    :index="index"
+                    :deckToEdit="deck.id"
+                    v-bind:languages="getLanguagesCodes()"
+                  ></card-editor>
+                </v-expansion-panel>
+              </v-expansion-panels>
+              <v-row justify="space-between">
+                <v-col cols="12" md="6">
+                  <h2 class="display-1 success--text">
+                    Flashcards:&nbsp;
+                    <v-fade-transition leave-absolute>
+                      <span>{{ deck.cards.length }} / {{ this.cards_limit }}</span>
+                    </v-fade-transition>
+                  </h2>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-progress-circular :value="progress" class="mr-2"></v-progress-circular>
+                </v-col>
+              </v-row>
+              <v-btn
+                color="success"
+                depressed
+                @click="addCard"
+                :disabled="deck.cards.length >= cards_limit"
+              >Add card</v-btn>
+            </v-card-text>
+          </v-window-item>
+        </v-window>
+      </v-card>
     </div>
   </div>
 </template>
@@ -248,8 +258,10 @@ export default {
       errors: null,
       error: null,
       success: null,
+      deletedCard: null,
       step: 1,
       imageRenderKey: 0,
+      valid: true,
       dialog: false,
       rules: {
         required: v => !!v || "Required.",
@@ -264,7 +276,7 @@ export default {
           ) || "Wrong URL.",
         size: value =>
           !value ||
-          value.size < 5000000 ||
+          value.size < 2000000 ||
           "File size should be less than 5 MB!"
       }
     };
@@ -279,7 +291,7 @@ export default {
             return "Add a new deck";
           }
         case 2:
-          return "Create flashcards";
+          return "Flashcards Editor";
         default:
           return "Save all";
       }
@@ -376,9 +388,7 @@ export default {
       this.imageRenderKey += 1;
     },
     removeThisCard(index) {
-      if (this.deck.cards[index].id !== undefined) {
-        this.deck.cardsForDelete.push(this.deck.cards[index].id);
-      }
+      this.deletedCard = true;
       this.deck.cards.splice(index, 1);
     },
     addCard() {
@@ -386,23 +396,18 @@ export default {
         this.deck.cards.push({ uuid: uuid.v4() });
       }
     },
-    create() {
+    save() {
       this.loading = true;
       this.errors = null;
       this.error = false;
       this.success = false;
 
       if (this.deck.id) {
-        console.log("bedzie updejtowac");
         this.$store
           .dispatch("updateDeck", this.deck)
           .then(response => {
             this.success = true;
             this.deck.id = response.data.updateDeck.id;
-            for (let i = 0; i < this.deck.cards.length; i++) {
-              this.deck.cards[i].id = response.data.updateDeck.cards[i].id;
-              this.deck.cards[i].uuid = uuid.v4();
-            }
             this.slug =
               window.location.origin +
               this.$router.resolve({
@@ -434,10 +439,6 @@ export default {
           .then(response => {
             this.success = true;
             this.deck.id = response.data.createDeck.id;
-            for (let i = 0; i < this.deck.cards.length; i++) {
-              this.deck.cards[i].id = response.data.createDeck.cards[i].id;
-              this.deck.cards[i].uuid = uuid.v4();
-            }
             this.slug =
               window.location.origin +
               this.$router.resolve({
@@ -447,6 +448,9 @@ export default {
             console.log("createDeckvue", response);
           })
           .catch(error => {
+            for (let i = 0; i < this.deck.cards.length; i++) {
+              this.deck.cards[i].uuid = uuid.v4();
+            }
             const {
               graphQLErrors: { validationErrors }
             } = error;

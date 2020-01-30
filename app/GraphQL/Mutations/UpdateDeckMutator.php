@@ -21,11 +21,8 @@ class UpdateDeckMutator
      * @param  \GraphQL\Type\Definition\ResolveInfo  $resolveInfo Information about the query itself, such as the execution state, the field name, path to the field from the root, and more.
      * @return mixed
      */
-    public function updateDeck($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo) : Deck
+    public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo) : Deck
     {
-
-        // dump($args);
-
         $validator = Validator::make($args, [
             'title' => ['required', 'string', 'max:80'],
             'description' => ['required', 'string', 'max:320'],
@@ -34,7 +31,6 @@ class UpdateDeckMutator
             'image' => ['string', 'nullable'],
             'image_file' => ['image', 'nullable'],
             'visibility' => ['required', 'string', Rule::in(Deck::visibilityNames())],
-            'cards' => ['array', 'max:50'],
         ]);
 
         if ($validator->fails()) {
@@ -70,67 +66,13 @@ class UpdateDeckMutator
                      ]);
                 throw $error;
             }
+        } else {
+            $media = $deck->getFirstMedia('main');
+            if ($media) {
+                $media->delete();
+            }
         }
-
-        $args['cards'] = array_filter($args['cards'], function ($card) {
-            return count($card) !== 0;
-        });
-
-        $this->updateDeckCards($deck, $args);
-
-        $deck->cards()->whereIn('id', $args['cardsForDelete'])->delete();
 
         return $deck;
-    }
-
-    public function updateDeckCards(Deck $root, array $args) : void
-    {
-        foreach ($args['cards'] as $card) {
-            $validator = Validator::make($card, [
-                'question' => ['string', 'max:255'],
-                'answer' => ['string', 'max:255'],
-                'example_question' => ['string', 'max:255'],
-                'example_answer' => ['string', 'max:255'],
-                'image' => ['string', 'nullable'],
-                'image_file' => ['image', 'nullable'],
-            ]);
-
-            if ($validator->fails()) {
-                throw new ValidationException($validator);
-            }
-
-            $cardImages = [
-                'file' => $card['image_file'] ?? null,
-                'url' => $card['image'] ?? null,
-            ];
-            $card = $root->cards()->updateOrCreate(['id' => $card['id'] ?? null],
-        $card);
-            if ($cardImages['file']) {
-                try {
-                    $card->addMedia($cardImages['file'])->toMediaCollection('main');
-                } catch (Exception $e) {
-                    $error = ValidationException::withMessages([
-                            'image' => ['Try upload other image.'],
-                         ]);
-                    throw $error;
-                }
-            } elseif ($cardImages['url']) {
-                try {
-                    $url = '';
-                    $media = $card->getFirstMedia('main');
-                    if ($media) {
-                        $url = $media->getFullUrl();
-                    }
-                    if ($cardImages['url'] !== $url) {
-                        $card->addMediaFromUrl($cardImages['url'])->toMediaCollection('main');
-                    }
-                } catch (Exception $e) {
-                    $error = ValidationException::withMessages([
-                            'image' => ['Try add other image URL.'],
-                         ]);
-                    throw $error;
-                }
-            }
-        }
     }
 }

@@ -137,16 +137,25 @@ type Mutation @middleware(checks: ["auth:api"]) {
           id: Int!
           ): User @delete @able(ability: "delete", find: "id")
 
-  createDeck(input: CreateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\DeckMutator@createDeck") @able(ability: "create")
+  createDeck(input: CreateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\CreateDeckMutator") @able(ability: "create")
 
-            updateDeck(input: UpdateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\UpdateDeckMutator@updateDeck") @able(ability: "update", find: "id")
+            updateDeck(input: UpdateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\UpdateDeckMutator") @able(ability: "update", find: "id")
           removeDeck(id: ID!): Deck! @field(resolver: "App\\GraphQL\\Mutations\\RemoveDeckMutator") @able(ability: "delete", find: "id")
+
+
+
+    createCard(input: CreateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\CreateCardMutator")
+
+        updateCard(input: UpdateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\UpdateCardMutator")
+
+        removeCard(id: ID!): Card! @field(resolver: "App\\GraphQL\\Mutations\\RemoveCardMutator")
 
 }
 
 
 
 extend type Mutation {
+
 
           logout: LogoutResponse!
       @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@logout")
@@ -171,10 +180,10 @@ input CreateDeckInput {
     visibility: Visibility
     image: String
     image_file: Upload
-    cards: [CreateCardInput!]
 }
 
 input CreateCardInput {
+    deck_id: ID!
     question: String
     answer: String
     example_question: String
@@ -192,12 +201,11 @@ input UpdateDeckInput {
     visibility: Visibility
     image: String
     image_file: Upload
-    cards: [UpdateCardInput!]
-    cardsForDelete: [Int!]
 }
 
 input UpdateCardInput {
-    id: ID
+    id: ID!
+    deck_id: ID!
     question: String
     answer: String
     example_question: String

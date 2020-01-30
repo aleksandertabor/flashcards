@@ -21,6 +21,9 @@ import {
     createDeck,
     updateDeck,
     removeDeck,
+    createCard,
+    updateCard,
+    removeCard,
     deckToEdit,
     upload
 } from "../queries/editor.gql";
@@ -322,7 +325,6 @@ const actions = {
         });
     },
     createDeck(context, payload) {
-        console.log("createDeck payload", payload);
         return new Promise((resolve, reject) => {
             apolloUploadClient.mutate({
                     mutation: createDeck,
@@ -335,7 +337,6 @@ const actions = {
                             lang_source_id: payload.lang_source_id,
                             lang_target_id: payload.lang_target_id,
                             visibility: payload.visibility.value,
-                            cards: payload.cards
                         },
                     }
                 })
@@ -351,7 +352,6 @@ const actions = {
         });
     },
     updateDeck(context, payload) {
-        console.log("updateDeck payload", payload);
         return new Promise((resolve, reject) => {
             apolloUploadClient.mutate({
                     mutation: updateDeck,
@@ -365,8 +365,6 @@ const actions = {
                             lang_source_id: payload.lang_source_id,
                             lang_target_id: payload.lang_target_id,
                             visibility: payload.visibility.value,
-                            cards: payload.cards,
-                            cardsForDelete: payload.cardsForDelete,
                         },
                     }
                 })
@@ -395,6 +393,81 @@ const actions = {
                 })
                 .catch(error => {
                     console.log("removeDeck error", error);
+                    reject(error)
+                })
+
+        });
+    },
+    createCard(context, payload) {
+        return new Promise((resolve, reject) => {
+            apolloUploadClient.mutate({
+                    mutation: createCard,
+                    variables: {
+                        input: {
+                            deck_id: payload.deck_id,
+                            question: payload.question,
+                            answer: payload.answer,
+                            image: payload.image,
+                            image_file: payload.image_file,
+                            example_question: payload.example_question,
+                            example_answer: payload.example_answer,
+                        },
+                    }
+                })
+                .then(response => {
+                    console.log("createDeck", response);
+                    resolve(response)
+                })
+                .catch(error => {
+                    console.log("createDeck error", error);
+                    reject(error)
+                })
+
+        });
+    },
+    updateCard(context, payload) {
+        console.log("payload: ", payload);
+        return new Promise((resolve, reject) => {
+            apolloUploadClient.mutate({
+                    mutation: updateCard,
+                    variables: {
+                        input: {
+                            id: payload.id,
+                            deck_id: payload.deck_id,
+                            question: payload.question,
+                            answer: payload.answer,
+                            image: payload.image,
+                            image_file: payload.image_file,
+                            example_question: payload.example_question,
+                            example_answer: payload.example_answer,
+                        },
+                    }
+                })
+                .then(response => {
+                    console.log("updateDeck", response);
+                    resolve(response)
+                })
+                .catch(error => {
+                    console.log("updateDeck error", error);
+                    reject(error)
+                })
+
+        });
+    },
+    removeCard(context, payload) {
+        return new Promise((resolve, reject) => {
+            apolloUploadClient.mutate({
+                    mutation: removeCard,
+                    variables: {
+                        id: payload
+                    }
+                })
+                .then(response => {
+                    console.log("removeCard", response);
+                    resolve(response)
+                })
+                .catch(error => {
+                    console.log("removeCard error", error);
                     reject(error)
                 })
 

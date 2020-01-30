@@ -63,6 +63,24 @@ mutation removeDeck($id: ID!) {
   }
 }
 
+mutation createCard($input: CreateCardInput!) {
+  createCard(input: $input) {
+    id
+  }
+}
+
+mutation updateCard($input: UpdateCardInput!) {
+  updateCard(input: $input) {
+    id
+  }
+}
+
+mutation removeCard($id: ID!) {
+  removeCard(id: $id) {
+      id
+  }
+}
+
 mutation upload($file: Upload!) {
     upload(file: $file)
 }
