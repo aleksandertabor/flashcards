@@ -4,8 +4,48 @@
     <div v-else>
       <v-card class="mx-auto" max-width="434" tile>
         <v-img height="100%" src="/img/app/bg-profile.png">
-          <v-row align="end" class="fill-height pl-5 profile-row">
-            <v-col v-if="editable" class="pa-0 pt-5" cols="12">
+          <v-row align="end" class="fill-height pa-5 profile-row">
+            <v-col class="d-flex justify-space-between" cols="12">
+              <v-avatar class="profile" color="teal" size="84">
+                <span class="white--text headline">{{ userData.username.charAt(0).toUpperCase() }}</span>
+              </v-avatar>
+              <div class="d-flex flex-column justify-space-around align-items-center pr-2">
+                <div class="pb-5">
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn icon v-on="on">
+                        <v-badge :content="userData.decks.length || '0'">
+                          <v-icon large color="blue darken-2">mdi-image-album</v-icon>
+                        </v-badge>
+                      </v-btn>
+                    </template>
+                    <span>All decks</span>
+                  </v-tooltip>
+                </div>
+
+                <div>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn icon v-on="on">
+                        <v-badge :content="userData.cards_count || '0'">
+                          <v-icon large color="blue darken-2">mdi-cards</v-icon>
+                        </v-badge>
+                      </v-btn>
+                    </template>
+                    <span>All cards</span>
+                  </v-tooltip>
+                </div>
+              </div>
+            </v-col>
+            <v-col class="pl-0" cols="12">
+              <v-list-item color="rgba(0, 0, 0)">
+                <v-list-item-content>
+                  <v-list-item-title class="title" v-text="userData.username"></v-list-item-title>
+                  <v-list-item-subtitle v-text="userData.email"></v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-col>
+            <v-col v-if="editable" class="d-flex justify-space-between" cols="12">
               <v-badge bordered color="success" icon="mdi-account-edit" overlap>
                 <v-btn
                   class="white--text"
@@ -23,19 +63,6 @@
                 >Remove</v-btn>
               </v-badge>
             </v-col>
-            <v-col align-self="start" class="pa-0" cols="12">
-              <v-avatar class="profile" color="teal" size="84">
-                <span class="white--text headline">{{ userData.username.charAt(0).toUpperCase() }}</span>
-              </v-avatar>
-            </v-col>
-            <v-col class="py-0">
-              <v-list-item color="rgba(0, 0, 0)">
-                <v-list-item-content>
-                  <v-list-item-title class="title" v-text="userData.username"></v-list-item-title>
-                  <v-list-item-subtitle v-text="userData.email"></v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-col>
           </v-row>
         </v-img>
       </v-card>
@@ -47,14 +74,13 @@
           v-bind:userData="userData"
           v-model="userData"
         ></component>
-      </keep-alive>Decks
-      <v-avatar color="teal" size="48">
-        <span class="white--text headline">{{ userData.decks.length }}</span>
-      </v-avatar>Cards
-      <v-avatar color="teal" size="48">
-        <span class="white--text headline">{{ userData.cards_count }}</span>
-      </v-avatar>
-      <decks v-if="userData.decks" v-bind:decks="userData.decks"></decks>
+      </keep-alive>
+
+      <decks
+        v-if="userData.decks.length > 0"
+        v-bind:decks="userData.decks"
+        v-bind:editable="editable"
+      ></decks>
     </div>
   </div>
 </template>

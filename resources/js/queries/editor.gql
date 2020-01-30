@@ -12,10 +12,54 @@ query deckEditor {
     }
 }
 
+query deckToEdit($slug: String!) {
+    deck (slug: $slug) {
+        id
+        title
+        description
+        image
+        lang_source {
+            id
+        }
+        lang_target {
+            id
+        }
+        visibility
+        slug
+        cards {
+            id
+            question
+            answer
+            example_question
+            example_answer
+            image
+        }
+    }
+}
+
 mutation createDeck($input: CreateDeckInput!) {
   createDeck(input: $input) {
     id
     slug
+    cards {
+        id
+    }
+  }
+}
+
+mutation updateDeck($input: UpdateDeckInput!) {
+  updateDeck(input: $input) {
+    id
+    slug
+    cards {
+        id
+    }
+  }
+}
+
+mutation removeDeck($id: ID!) {
+  removeDeck(id: $id) {
+      id
   }
 }
 

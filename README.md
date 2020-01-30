@@ -61,4 +61,6 @@ npm install roboto-fontface --save
 npm install workbox-window
 npm install apollo-upload-client
 npm install --save vue-clipboard2
+npm install jspdf --save
+npm i vue-uuid
 ```

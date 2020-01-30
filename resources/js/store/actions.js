@@ -19,6 +19,9 @@ import {
 import {
     deckEditor,
     createDeck,
+    updateDeck,
+    removeDeck,
+    deckToEdit,
     upload
 } from "../queries/editor.gql";
 import {
@@ -280,6 +283,27 @@ const actions = {
 
         });
     },
+    deckToEdit(context, payload) {
+        return new Promise((resolve, reject) => {
+            console.log(payload);
+            apolloClient.query({
+                    query: deckToEdit,
+                    variables: {
+                        slug: payload
+                    }
+                })
+                .then(response => {
+                    resolve(response)
+                })
+                .catch(error => {
+                    console.log("graphql error", {
+                        error
+                    });
+                    reject(error)
+                })
+
+        });
+    },
     deckEditor(context) {
         return new Promise((resolve, reject) => {
             apolloClient.query({
@@ -321,6 +345,56 @@ const actions = {
                 })
                 .catch(error => {
                     console.log("createDeck error", error);
+                    reject(error)
+                })
+
+        });
+    },
+    updateDeck(context, payload) {
+        console.log("updateDeck payload", payload);
+        return new Promise((resolve, reject) => {
+            apolloUploadClient.mutate({
+                    mutation: updateDeck,
+                    variables: {
+                        input: {
+                            id: payload.id,
+                            title: payload.title,
+                            description: payload.description,
+                            image: payload.image,
+                            image_file: payload.image_file,
+                            lang_source_id: payload.lang_source_id,
+                            lang_target_id: payload.lang_target_id,
+                            visibility: payload.visibility.value,
+                            cards: payload.cards,
+                            cardsForDelete: payload.cardsForDelete,
+                        },
+                    }
+                })
+                .then(response => {
+                    console.log("updateDeck", response);
+                    resolve(response)
+                })
+                .catch(error => {
+                    console.log("updateDeck error", error);
+                    reject(error)
+                })
+
+        });
+    },
+    removeDeck(context, payload) {
+        return new Promise((resolve, reject) => {
+            apolloUploadClient.mutate({
+                    mutation: removeDeck,
+                    variables: {
+                        id: payload
+                    }
+                })
+                .then(response => {
+                    console.log("removeDeck", response);
+                    resolve(response)
+                })
+                .catch(error => {
+                    console.log("removeDeck error", error);
                     reject(error)
                 })
 

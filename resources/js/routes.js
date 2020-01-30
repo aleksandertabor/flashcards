@@ -56,6 +56,7 @@ const routes = [{
         path: "/deck/editor",
         component: DeckEditor,
         name: "deck-editor",
+        props: true,
         meta: {
             authenticated: true
         }

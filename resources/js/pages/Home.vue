@@ -36,7 +36,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn icon v-on="on">
-                    <v-badge :content="data.usersTotal">
+                    <v-badge :content="data.usersTotal || '0'">
                       <v-icon large color="blue darken-2">mdi-account-circle</v-icon>
                     </v-badge>
                   </v-btn>
@@ -47,7 +47,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn icon v-on="on">
-                    <v-badge :content="data.decksTotal">
+                    <v-badge :content="data.decksTotal || '0'">
                       <v-icon large color="blue darken-2">mdi-image-album</v-icon>
                     </v-badge>
                   </v-btn>
@@ -58,7 +58,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn icon v-on="on">
-                    <v-badge :content="data.cardsTotal">
+                    <v-badge :content="data.cardsTotal || '0'">
                       <v-icon large color="blue darken-2">mdi-cards</v-icon>
                     </v-badge>
                   </v-btn>

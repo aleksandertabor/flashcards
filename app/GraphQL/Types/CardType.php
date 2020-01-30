@@ -10,7 +10,13 @@ class CardType
 {
     public function image(Card $card, array $args, GraphQLContext $context, ResolveInfo $info)
     {
-        $url = $card->getFirstMediaUrl('main');
+        $url = '';
+
+        $media = $card->getFirstMedia('main');
+
+        if ($media) {
+            $url = $media->getFullUrl();
+        }
 
         return $url;
     }

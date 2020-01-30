@@ -3,7 +3,6 @@
 namespace App\GraphQL\Mutations;
 
 use App\Deck;
-use Cviebrock\EloquentSluggable\Services\SlugService;
 use Exception;
 use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Facades\Auth;
@@ -46,35 +45,7 @@ class DeckMutator
 
         $user = Auth::guard('api')->user();
 
-        // dump($args);
-
-        // $args['slug'] = SlugService::createSlug(Deck::class, 'slug', $args['title']);
-
-        // dump($args['image_file']);
-
-        // dump($context->request());
-
-        // dump($args);
-
-        // ddd($args['title']);
-
-        // dump($slug);
-
-        // $deck = new Deck($args);
-
-        // $slug = SlugService::createSlug(Deck::class, 'slug', $args['title']);
-
-        // dump($slug);
-
-        // try {
         $deck = $user->decks()->create($args);
-        // } catch (Exception $e) {
-        //     // dump($e);
-        //     // dump($args);
-        //     throw $e;
-        // }
-
-        // dump($args['visibility']);
 
         if ($args['image_file']) {
             try {
@@ -118,6 +89,19 @@ class DeckMutator
     public function createDeckCards(Deck $root, array $args) : void
     {
         foreach ($args['cards'] as $card) {
+            $validator = Validator::make($card, [
+                'question' => ['string', 'max:255'],
+                'answer' => ['string', 'max:255'],
+                'example_question' => ['string', 'max:255'],
+                'example_answer' => ['string', 'max:255'],
+                'image' => ['string', 'nullable'],
+                'image_file' => ['image', 'nullable'],
+            ]);
+
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+
             $cardImages = [
                 'file' => $card['image_file'] ?? null,
                 'url' => $card['image'] ?? null,

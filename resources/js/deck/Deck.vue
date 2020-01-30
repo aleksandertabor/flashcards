@@ -1,7 +1,6 @@
 <template>
   <div>
     <div v-if="!loading">
-      <h2>{{ deck.title }}</h2>
       <router-link
         class="btn nav-button"
         :to="{ name: 'profile', params: {username: deck.user.username}}"
@@ -9,8 +8,8 @@
         <i class="fas fa-user"></i>
         <h3>{{ deck.user.username }}</h3>
       </router-link>
-      <v-parallax dark :src="deck.image">
-        <v-row align="center" justify="center">
+      <v-parallax :src="deck.image || '/img/deck.png'">
+        <v-row align="center" class="parallax-overlay" justify="center">
           <v-col class="text-center" cols="12">
             <h1 class="display-1 font-weight-thin mb-4">{{deck.title}}</h1>
             <h4 class="subheading">{{deck.description}}</h4>
@@ -61,4 +60,7 @@ export default {
 </script>
 
 <style scoped>
+.parallax-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+}
 </style>

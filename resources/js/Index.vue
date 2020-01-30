@@ -62,7 +62,7 @@
     </v-navigation-drawer>
 
     <v-content>
-      <v-container fill-height fluid>
+      <v-container fluid>
         <v-flex>
           <router-view></router-view>
         </v-flex>

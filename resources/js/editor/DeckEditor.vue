@@ -14,6 +14,18 @@
             ></v-avatar>
           </v-card-title>
 
+          <v-card-actions>
+            <v-alert type="error" v-if="error" dismissible>{{ error }}</v-alert>
+            <v-alert v-if="success" type="success" dismissible>Your deck has been saved.</v-alert>
+            <v-snackbar
+              v-model="success"
+              color="success"
+              :timeout="3000"
+              bottom
+              left
+            >Your deck has been saved.</v-snackbar>
+          </v-card-actions>
+
           <v-window v-model="step">
             <v-window-item :value="1">
               <v-card-text>
@@ -121,15 +133,6 @@
                   color="grey darken-4"
                   :background-color="deck.visibility.color"
                 ></v-select>
-                <v-alert type="error" v-if="error" dismissible>{{ error }}</v-alert>
-                <v-alert v-if="success" type="success" dismissible>Your deck has been saved.</v-alert>
-                <v-snackbar
-                  v-model="success"
-                  color="success"
-                  :timeout="3000"
-                  bottom
-                  left
-                >Your deck has been saved.</v-snackbar>
               </v-card-text>
               <v-card-text v-if="slug">
                 <v-text-field
@@ -142,19 +145,16 @@
                 ></v-text-field>
                 <v-btn color="primary" v-if="slug" v-clipboard:copy="slug">Copy link</v-btn>
               </v-card-text>
-              <v-card-actions>
-                <v-btn color="success" depressed @click="create">Save deck</v-btn>
-              </v-card-actions>
             </v-window-item>
 
             <v-window-item :value="2">
               <v-card-text>
                 <v-expansion-panels focusable>
-                  <v-expansion-panel v-for="(card, index) in deck.cards" :key="'card' + index">
-                    <v-expansion-panel-header>Flashcard {{index + 1}} {{ card.question !== undefined ? card.question.substring(0,8) : ""}} {{card.answer !== undefined ? card.answer.substring(0,8) : ""}}</v-expansion-panel-header>
+                  <v-expansion-panel v-for="(card, index) in deck.cards" :key="'card' + card.uuid">
                     <card-editor
                       v-on:remove-card="removeThisCard(index)"
                       :cardToEdit="card"
+                      :index="index"
                       v-bind:languages="getLanguagesCodes()"
                     ></card-editor>
                   </v-expansion-panel>
@@ -180,24 +180,32 @@
                 >Add card</v-btn>
               </v-card-text>
             </v-window-item>
-
-            <v-window-item :value="3">
-              <div class="pa-4 text-center">
-                <v-img
-                  class="mb-4"
-                  contain
-                  height="128"
-                  src="https://cdn.vuetifyjs.com/images/logos/v.svg"
-                ></v-img>
-                <h3 class="title font-weight-light mb-2">Welcome to Vuetify</h3>
-                <span class="caption grey--text">Thanks for signing up!</span>
-              </div>
-            </v-window-item>
           </v-window>
           <v-card-actions>
+            <v-btn color="success" depressed @click="create">Save deck</v-btn>
+            <v-dialog v-if="deckToEdit" v-model="dialog" persistent max-width="290">
+              <v-card>
+                <v-card-title class="headline">Do you really want remove this deck?</v-card-title>
+                <v-card-text>Your deck and all cards will be deleted.</v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="green darken-1" text @click="dialog = false">No</v-btn>
+                  <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
+                </v-card-actions>
+              </v-card>
+              <template v-slot:activator="{ on }">
+                <v-btn color="red" dark v-on="on">Remove deck</v-btn>
+              </template>
+            </v-dialog>
+
             <v-btn :disabled="step === 1" text @click="step--">Back</v-btn>
             <v-spacer></v-spacer>
-            <v-btn :disabled="step === 3" color="primary" depressed @click="step++">Next</v-btn>
+            <v-btn
+              :disabled="step === 2 || this.deck.id === null"
+              color="primary"
+              depressed
+              @click="step++"
+            >Cards</v-btn>
           </v-card-actions>
         </v-card>
       </v-form>
@@ -206,14 +214,19 @@
 </template>
 
 <script>
+import { uuid } from "vue-uuid";
 import CardEditor from "./CardEditor";
 export default {
   components: {
     CardEditor
   },
+  props: {
+    deckToEdit: String
+  },
   data() {
     return {
       deck: {
+        id: null,
         title: null,
         description: null,
         image_file: null,
@@ -221,7 +234,8 @@ export default {
         lang_source_id: "",
         lang_target_id: "",
         cards: [],
-        visibility: ""
+        visibility: "",
+        cardsForDelete: []
       },
       cards_limit: 50,
       slug: null,
@@ -236,6 +250,7 @@ export default {
       success: null,
       step: 1,
       imageRenderKey: 0,
+      dialog: false,
       rules: {
         required: v => !!v || "Required.",
         min: len => v => (v && v.length) >= len || `Min ${len} characters`,
@@ -258,7 +273,11 @@ export default {
     currentTitle() {
       switch (this.step) {
         case 1:
-          return "Add a new deck";
+          if (this.deck.id) {
+            return "Edit deck";
+          } else {
+            return "Add a new deck";
+          }
         case 2:
           return "Create flashcards";
         default:
@@ -310,31 +329,61 @@ export default {
         this.languages = languages_options;
       })
       .catch(error => {})
-      .then(() => (this.loading = false));
-  },
-  created() {
-    // axios
-    //   //   .get(`/api/decks/et-autem-laborum`)
-    //   .get(`/api/decks/programmable-global-help-desk`)
-    //   .then(response => {
-    //     this.deck = response.data.data;
-    //     this.edit = true;
-    //   })
-    //   .catch(error => {})
-    //   .then(() => {
-    //     this.loading = false;
-    //   });
+      .then(() => {
+        if (this.deckToEdit) {
+          this.$store
+            .dispatch("deckToEdit", this.deckToEdit)
+            .then(response => {
+              const {
+                data: { deck }
+              } = response;
+              this.deck.id = deck.id;
+              this.deck.title = deck.title;
+              this.deck.description = deck.description;
+              this.deck.image = deck.image;
+              this.deck.lang_source_id = deck.lang_source.id;
+              this.deck.lang_target_id = deck.lang_target.id;
+              this.deck.visibility = this.visibility_options.find(
+                option => option.text === deck.visibility
+              );
+              this.deck.cards = deck.cards;
+              for (let i = 0; i < this.deck.cards.length; i++) {
+                this.deck.cards[i].uuid = uuid.v4();
+              }
+              this.slug =
+                window.location.origin +
+                this.$router.resolve({
+                  name: "deck",
+                  params: { slug: deck.slug }
+                }).href;
+
+              //   this.deck = response.data.deck;
+              //   if (this.deck === null) {
+              //     this.$router.push({ name: "home" });
+              //   }
+            })
+            .catch(error => {
+              this.$router.go(-1);
+            })
+            .then(() => (this.loading = false));
+        } else {
+          this.loading = false;
+        }
+      });
   },
   methods: {
     forceImageRerender() {
       this.imageRenderKey += 1;
     },
     removeThisCard(index) {
+      if (this.deck.cards[index].id !== undefined) {
+        this.deck.cardsForDelete.push(this.deck.cards[index].id);
+      }
       this.deck.cards.splice(index, 1);
     },
     addCard() {
       if (this.deck.cards.length < this.cards_limit) {
-        this.deck.cards.push({});
+        this.deck.cards.push({ uuid: uuid.v4() });
       }
     },
     create() {
@@ -343,35 +392,88 @@ export default {
       this.error = false;
       this.success = false;
 
-      this.$store
-        .dispatch("createDeck", this.deck)
-        .then(response => {
-          this.success = true;
-          this.slug =
-            window.location.origin +
-            this.$router.resolve({
-              name: "deck",
-              params: { slug: response.data.createDeck.slug }
-            }).href;
-          console.log("createDeckvue", response);
-        })
-        .catch(error => {
-          const {
-            graphQLErrors: { validationErrors }
-          } = error;
-          const {
-            graphQLErrors: {
-              0: { message }
+      if (this.deck.id) {
+        console.log("bedzie updejtowac");
+        this.$store
+          .dispatch("updateDeck", this.deck)
+          .then(response => {
+            this.success = true;
+            this.deck.id = response.data.updateDeck.id;
+            for (let i = 0; i < this.deck.cards.length; i++) {
+              this.deck.cards[i].id = response.data.updateDeck.cards[i].id;
+              this.deck.cards[i].uuid = uuid.v4();
             }
-          } = error;
-          if (validationErrors) {
-            this.errors = validationErrors;
-          }
-          if (message) {
-            this.error = message;
-          }
+            this.slug =
+              window.location.origin +
+              this.$router.resolve({
+                name: "deck",
+                params: { slug: response.data.updateDeck.slug }
+              }).href;
+          })
+          .catch(error => {
+            const {
+              graphQLErrors: { validationErrors }
+            } = error;
+            const {
+              graphQLErrors: {
+                0: { message }
+              }
+            } = error;
+            if (validationErrors) {
+              this.errors = validationErrors;
+            }
+            if (message) {
+              this.error = message;
+            }
+          })
+          .then(() => (this.loading = false));
+      } else {
+        console.log("bedzie creatowac");
+        this.$store
+          .dispatch("createDeck", this.deck)
+          .then(response => {
+            this.success = true;
+            this.deck.id = response.data.createDeck.id;
+            for (let i = 0; i < this.deck.cards.length; i++) {
+              this.deck.cards[i].id = response.data.createDeck.cards[i].id;
+              this.deck.cards[i].uuid = uuid.v4();
+            }
+            this.slug =
+              window.location.origin +
+              this.$router.resolve({
+                name: "deck",
+                params: { slug: response.data.createDeck.slug }
+              }).href;
+            console.log("createDeckvue", response);
+          })
+          .catch(error => {
+            const {
+              graphQLErrors: { validationErrors }
+            } = error;
+            const {
+              graphQLErrors: {
+                0: { message }
+              }
+            } = error;
+            if (validationErrors) {
+              this.errors = validationErrors;
+            }
+            if (message) {
+              this.error = message;
+            }
+          })
+          .then(() => (this.loading = false));
+      }
+    },
+    remove() {
+      this.$store
+        .dispatch("removeDeck", this.deck.id)
+        .then(response => {
+          this.$router.push({
+            name: "home"
+          });
         })
-        .then(() => (this.loading = false));
+        .catch(error => {});
     },
     errorFor(field) {
       return this.hasErrors && this.errors[field] ? this.errors[field] : null;

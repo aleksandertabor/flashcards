@@ -1,18 +1,18 @@
 <template>
-  <div class="card w-100">
-    <div class="card-body">
-      <router-link :to="{name: 'deck', params: {slug}}">
-        <h5 class="card-title">{{ title }}</h5>
-      </router-link>
-      <img :data-src="image" class="card-img-top lazy" alt />
-      <!-- <v-img :src="image"></v-img> -->
-      <!-- <img data-src="/img/placeholder.png" class="card-img-top lazy" alt /> -->
-      <p class="card-text">{{ description }}</p>
-      <p class="card-text">Cards: ({{ cards_count }})</p>
-      <p class="card-text">Created at: ({{ created_at }})</p>
-      <p class="card-text">Created at: ({{ visibility }})</p>
-    </div>
-  </div>
+  <v-card class="mx-auto my-12" max-width="374">
+    <v-img :src="image"></v-img>
+
+    <v-badge :content="cards_count || '0'" :value="cards_count" color="brown" overlap bordered>
+      <v-icon x-large>mdi-cards</v-icon>
+    </v-badge>
+
+    <v-card-title>{{title}}</v-card-title>
+
+    <v-card-text>
+      <div>{{description}}</div>
+      <div class="my-4 subtitle-1 black--text">{{created_at}}</div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

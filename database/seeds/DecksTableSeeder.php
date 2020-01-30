@@ -27,7 +27,7 @@ class DecksTableSeeder extends Seeder
             $deck->user_id = $users->random()->id;
             $cards = factory(App\Card::class, random_int(20, 50))->make();
             $deck->cards()->saveMany($cards);
-            $deck->addMediaFromUrl(Storage::url('deck.png'))->toMediaCollection('main');
+            $deck->addMediaFromUrl(Storage::url('deck.jpg'))->toMediaCollection('main');
             $deck->save();
             $bar->advance();
         });

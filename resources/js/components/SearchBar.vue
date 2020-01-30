@@ -2,7 +2,7 @@
   <div>
     <v-text-field
       flat
-      solo-inverted
+      filled
       hide-details
       prepend-inner-icon="mdi-magnify"
       label="Search for a deck"
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import {debounce} from "lodash";
+import { debounce } from "lodash";
 export default {
   data() {
     return {

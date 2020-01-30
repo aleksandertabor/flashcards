@@ -139,13 +139,14 @@ type Mutation @middleware(checks: ["auth:api"]) {
 
   createDeck(input: CreateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\DeckMutator@createDeck") @able(ability: "create")
 
+            updateDeck(input: UpdateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\UpdateDeckMutator@updateDeck") @able(ability: "update", find: "id")
+          removeDeck(id: ID!): Deck! @field(resolver: "App\\GraphQL\\Mutations\\RemoveDeckMutator") @able(ability: "delete", find: "id")
+
 }
 
 
 
 extend type Mutation {
-          updateDeck(input: CreateCardInput! @spread): Deck @update @able(ability: "update", find: "id")
-          removeDeck(input: CreateCardInput! @spread): Deck @delete @able(ability: "delete", find: "id")
 
           logout: LogoutResponse!
       @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@logout")
@@ -182,21 +183,25 @@ input CreateCardInput {
     image_file: Upload
 }
 
-
-input UpdateCardInput {
+input UpdateDeckInput {
     id: ID!
-    question: String!
-    answer: String!
-    example_question: String!
-    example_answer: String!
-    image: String!
+    title: String
+    description: String
+    lang_source_id: Int
+    lang_target_id: Int
+    visibility: Visibility
+    image: String
+    image_file: Upload
+    cards: [UpdateCardInput!]
+    cardsForDelete: [Int!]
 }
 
-input UpsertCardInput {
-    id: ID!
-    question: String!
-    answer: String!
-    example_question: String!
-    example_answer: String!
-    image: String!
+input UpdateCardInput {
+    id: ID
+    question: String
+    answer: String
+    example_question: String
+    example_answer: String
+    image: String
+    image_file: Upload
 }

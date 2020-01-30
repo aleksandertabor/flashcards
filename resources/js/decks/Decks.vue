@@ -1,33 +1,31 @@
 <template>
   <div>
     <nav class="navbar sticky-top navbar-light bg-light border-bottom mb-4">
-      <div>
-        <label class="typo__label">Decks filters</label>
-        <v-select
-          prepend-icon="mdi-filter"
-          v-model="filter"
-          :items="filters"
-          filled
-          label="Filters"
-          return-object
-          item-text="name"
-          @change="changeFilter"
-        ></v-select>
-      </div>
-
-      <search-bar @change-filter="changeFilter"></search-bar>
+      <v-row justify="space-between">
+        <v-col cols="12" md="6">
+          <v-select
+            v-model="filter"
+            :items="filters"
+            filled
+            label="Filters"
+            return-object
+            item-text="name"
+            @change="changeFilter"
+            class="mb-n5"
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="6">
+          <search-bar @change-filter="changeFilter"></search-bar>
+        </v-col>
+      </v-row>
     </nav>
     <div v-if="loading">Decks are loading ...</div>
     <div v-else>
-      <div class="row mb-4" :class="'row-cols-' + columns" v-for="row in rows" :key="'row' + row">
-        <div
-          class="col d-flex align-items-stretch"
-          v-for="(deck, column) in decksInRow(row)"
-          :key="'row' + row + column"
-        >
+      <v-row justify="space-between">
+        <v-col sm="6" cols="12" md="3" v-for="(deck, index) in decks" :key="'deck' + index">
           <deck-list-item v-bind="deck"></deck-list-item>
-        </div>
-      </div>
+        </v-col>
+      </v-row>
     </div>
     <infinite-loading :identifier="infiniteId" @infinite="infiniteHandler" spinner="spiral">
       <div slot="no-more">No more decks</div>
@@ -81,11 +79,6 @@ export default {
     };
   },
   computed: {
-    rows() {
-      return this.decks === null
-        ? 0
-        : Math.ceil(this.decks.length / this.columns);
-    },
     decks() {
       return this.$store.state.decks;
     },
@@ -114,15 +107,9 @@ export default {
       if (this.$route.query.filter !== this.filter.name) {
         this.changeRoute();
       }
-    },
-    $route(to, from) {
-      console.log("reset");
     }
   },
   methods: {
-    decksInRow(row) {
-      return this.decks.slice((row - 1) * this.columns, row * this.columns);
-    },
     infiniteHandler($state) {
       let toFind = {
         page: this.page,

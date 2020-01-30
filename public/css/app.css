@@ -6,6 +6,10 @@ label[data-v-58264d0c] {
   font-weight: bolder;
 }
 
+.parallax-overlay[data-v-99afc33e] {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 label[data-v-d7dc2e88] {
   font-size: 1.2em;
   text-transform: uppercase;
