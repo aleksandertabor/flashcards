@@ -8,7 +8,7 @@
         <i class="fas fa-user"></i>
         <h3>{{ deck.user.username }}</h3>
       </router-link>
-      <v-parallax :src="deck.image || '/img/deck.png'">
+      <v-parallax :src="deck.image || '/img/app/bg-profile.png'">
         <v-row align="center" class="parallax-overlay" justify="center">
           <v-col class="text-center" cols="12">
             <h1 class="display-1 font-weight-thin mb-4">{{deck.title}}</h1>

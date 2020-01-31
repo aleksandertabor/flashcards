@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Facades\Validator;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
 
 class UpdateCardMutator
 {
@@ -60,8 +61,14 @@ class UpdateCardMutator
                     $card->addMediaFromUrl($args['image'])->toMediaCollection('main');
                 }
             } catch (Exception $e) {
+                if ($e instanceof FileIsTooBig) {
+                    $error = ValidationException::withMessages([
+                        'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
+                     ]);
+                    throw $error;
+                }
                 $error = ValidationException::withMessages([
-                        'image' => ['Try add other image URL.'],
+                        'image' => [$e->getMessage()],
                      ]);
                 throw $error;
             }

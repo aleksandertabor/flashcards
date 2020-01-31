@@ -91,6 +91,7 @@
             ></v-file-input>
 
             <v-text-field
+              ref="imageUrl"
               v-if="!card.image_file"
               v-model="card.image"
               prepend-icon="mdi-image"
@@ -100,14 +101,14 @@
               filled
               clearable
               :loading="loading"
-              @click:clear="forceImageRerender()"
+              @click:clear="forceImageRerender(); clearImageUrl();"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
             <v-img
               :key="imageRenderKey"
-              :src="card.image"
-              lazy-src="/img/app/bg-profile.png"
+              :src="card.image || ''"
+              :lazy-src="'/img/app/bg-profile.png'"
               aspect-ratio="1"
               max-height="125"
               contain
@@ -117,7 +118,7 @@
 
         <v-btn color="success" :disabled="!valid || loading" depressed @click="save();">Save card</v-btn>
 
-        <v-btn color="error" :disabled="!valid || loading" depressed @click="remove();">Remove card</v-btn>
+        <v-btn color="error" :disabled="loading" depressed @click="remove();">Remove card</v-btn>
 
         <v-btn
           v-if="card.question"
@@ -181,9 +182,11 @@ export default {
           (v || "").length >= len ||
           `Invalid character length, required ${len}`,
         url: v =>
+          !v ||
           /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(
             v
-          ) || "Wrong URL.",
+          ) ||
+          "Wrong URL.",
         size: value =>
           !value ||
           value.size < 2000000 ||
@@ -202,6 +205,11 @@ export default {
       : this.card.deck_id;
     this.$delete(this.cardToEdit);
     // this.$refs.cardForm.validate();
+  },
+  computed: {
+    hasErrors() {
+      return this.errors !== null;
+    }
   },
   methods: {
     save() {
@@ -270,6 +278,10 @@ export default {
           })
           .then(() => this.$emit("remove-card"));
       }
+    },
+    clearImageUrl() {
+      this.error = null;
+      this.errors["image"] = [];
     },
     forceImageRerender() {
       this.imageRenderKey += 1;

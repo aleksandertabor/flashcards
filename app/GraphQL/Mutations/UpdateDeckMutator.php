@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
 
 class UpdateDeckMutator
 {
@@ -61,8 +62,14 @@ class UpdateDeckMutator
                     $deck->addMediaFromUrl($args['image'])->toMediaCollection('main');
                 }
             } catch (Exception $e) {
+                if ($e instanceof FileIsTooBig) {
+                    $error = ValidationException::withMessages([
+                        'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
+                     ]);
+                    throw $error;
+                }
                 $error = ValidationException::withMessages([
-                        'image' => ['Try add other image URL.'],
+                        'image' => [$e->getMessage()],
                      ]);
                 throw $error;
             }

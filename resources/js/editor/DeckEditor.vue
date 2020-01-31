@@ -102,8 +102,8 @@
                   <v-col cols="12" md="6">
                     <v-img
                       :key="imageRenderKey"
-                      :src="deck.image"
-                      lazy-src="/img/app/bg-profile.png"
+                      :src="deck.image || ''"
+                      :lazy-src="'/img/app/bg-profile.png'"
                       aspect-ratio="1"
                       max-height="125"
                       contain
@@ -271,9 +271,11 @@ export default {
           (v || "").length >= len ||
           `Invalid character length, required ${len}`,
         url: v =>
+          !v ||
           /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(
             v
-          ) || "Wrong URL.",
+          ) ||
+          "Wrong URL.",
         size: value =>
           !value ||
           value.size < 2000000 ||
