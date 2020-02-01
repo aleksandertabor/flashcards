@@ -144,11 +144,11 @@ type Mutation @middleware(checks: ["auth:api"]) {
 
 
 
-    createCard(input: CreateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\CreateCardMutator")
+    createCard(input: CreateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\CreateCardMutator") @able(ability: "create")
 
-        updateCard(input: UpdateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\UpdateCardMutator")
+        updateCard(input: UpdateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\UpdateCardMutator") @able(ability: "update", find: "id")
 
-        removeCard(id: ID!): Card! @field(resolver: "App\\GraphQL\\Mutations\\RemoveCardMutator")
+        removeCard(id: ID!): Card! @field(resolver: "App\\GraphQL\\Mutations\\RemoveCardMutator") @able(ability: "delete", find: "id")
 
 }
 

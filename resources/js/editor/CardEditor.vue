@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-expansion-panel-header :color="!valid ? 'error' : ''">
-      Flashcard {{index + 1}} {{ card.question ? card.question.substring(0,8) : ""}} {{card.answer ? card.answer.substring(0,8) : ""}}
+      Flashcard {{index + 1}} {{this.headingQuestion}} {{this.headingAnswer}}
       <template
         v-slot:actions
         v-if="!valid"
@@ -11,6 +11,7 @@
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-form ref="cardForm" v-model="valid" lazy-validation>
+        <v-switch v-model="autoMode" label="Auto mode" color="success" hide-details inset></v-switch>
         <v-row justify="space-between">
           <v-col cols="12" md="6">
             <v-text-field
@@ -21,9 +22,9 @@
               required
               clearable
               filled
-              :loading="loading"
+              :loading="loading || !assetsLoaded"
               counter="255"
-              @change="translate(); image(); example();"
+              @change="autoAssets()"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -36,11 +37,9 @@
               required
               clearable
               filled
-              :loading="loading"
+              :loading="loading || !assetsLoaded"
               :disabled="loading"
               counter="255"
-              @input="canTranslate = false"
-              @click:clear="canTranslate = true"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -55,7 +54,7 @@
               required
               clearable
               filled
-              :loading="loading"
+              :loading="loading || !assetsLoaded"
               counter="255"
             ></v-textarea>
           </v-col>
@@ -68,7 +67,7 @@
               required
               clearable
               filled
-              :loading="loading"
+              :loading="loading || !assetsLoaded"
               counter="255"
             ></v-textarea>
           </v-col>
@@ -85,7 +84,7 @@
               label="Image"
               @change="previewImage"
               filled
-              :loading="loading"
+              :loading="loading || !assetsLoaded"
               @click:clear="forceImageRerender()"
               show-size
             ></v-file-input>
@@ -100,12 +99,14 @@
               :error-messages="errorFor('image')"
               filled
               clearable
-              :loading="loading"
-              @click:clear="forceImageRerender(); clearImageUrl();"
+              :loading="loading || !assetsLoaded"
+              @input="forceImageRerender(); clearImageUrlValidation();"
+              @click:clear="forceImageRerender(); clearImageUrlValidation();"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
             <v-img
+              ref="image"
               :key="imageRenderKey"
               :src="card.image || ''"
               :lazy-src="'/img/app/bg-profile.png'"
@@ -116,17 +117,27 @@
           </v-col>
         </v-row>
 
-        <v-btn color="success" :disabled="!valid || loading" depressed @click="save();">Save card</v-btn>
+        <v-btn
+          color="success"
+          :disabled="!valid || loading || !assetsLoaded"
+          depressed
+          @click="save();"
+        >Save card</v-btn>
 
-        <v-btn color="error" :disabled="loading" depressed @click="remove();">Remove card</v-btn>
+        <v-btn
+          color="error"
+          :disabled="loading || !assetsLoaded"
+          depressed
+          @click="remove();"
+        >Remove card</v-btn>
 
         <v-btn
           v-if="card.question"
           color="primary"
           :disabled="loading"
           depressed
-          @click="translate(); image(); example();"
-        >Translate</v-btn>
+          @click="getAssets()"
+        >Find assets</v-btn>
 
         <v-card-actions>
           <v-alert type="error" v-if="error" dismissible>{{ error }} Not saved.</v-alert>
@@ -165,6 +176,11 @@ export default {
         example_question: "",
         example_answer: ""
       },
+      loaded: {
+        translate: true,
+        example: true,
+        image: true
+      },
       canTranslate: true,
       query: null,
       loading: null,
@@ -174,10 +190,13 @@ export default {
       success: null,
       imageRenderKey: 0,
       valid: true,
+      autoMode: true,
       rules: {
         required: v => !!v || "Required.",
-        min: len => v => (v && v.length) >= len || `Min ${len} characters`,
-        max: len => v => (v && v.length) <= len || `Max ${len} characters`,
+        min: len => v =>
+          !v || (v && v.length >= len) || `Min ${len} characters`,
+        max: len => v =>
+          !v || (v && v.length <= len) || `Max ${len} characters`,
         length: len => v =>
           (v || "").length >= len ||
           `Invalid character length, required ${len}`,
@@ -195,8 +214,6 @@ export default {
     };
   },
   created() {
-    // this.loading = true;
-    // console.log(this.$attr.card);
     this.cardToEdit !== null ? (this.card = this.cardToEdit) : this.card;
     this.cardToEdit.image_file = null;
     this.cardToEdit.image = null;
@@ -204,11 +221,32 @@ export default {
       ? (this.card.deck_id = this.deckToEdit)
       : this.card.deck_id;
     this.$delete(this.cardToEdit);
-    // this.$refs.cardForm.validate();
   },
   computed: {
     hasErrors() {
       return this.errors !== null;
+    },
+    headingQuestion() {
+      let question = "";
+      question = this.card.question;
+      if (question && question.length > 10) {
+        question = question.substring(0, 10) + "...";
+      }
+      return question;
+    },
+    headingAnswer() {
+      let answer = "";
+      answer = this.card.answer;
+      if (answer && answer.length > 10) {
+        answer = answer.substring(0, 10) + "...";
+      }
+      return answer;
+    },
+    assetsLoaded() {
+      for (const loading in this.loaded) {
+        if (!this.loaded[loading]) return false;
+      }
+      return true;
     }
   },
   methods: {
@@ -218,8 +256,6 @@ export default {
       this.error = false;
       this.success = false;
       if (this.card.id) {
-        console.log("karta: ", this.card);
-        console.log("karta image file: ", this.card.image_file);
         this.$store
           .dispatch("updateCard", this.card)
           .then(response => {
@@ -269,19 +305,22 @@ export default {
       }
     },
     remove() {
+      this.loading = true;
+      this.errors = null;
+      this.error = false;
+      this.success = false;
       if (this.card.id) {
         this.$store
           .dispatch("removeCard", this.card.id)
           .then(response => {})
-          .catch(error => {
-            this.loading = false;
-          })
           .then(() => this.$emit("remove-card"));
       }
     },
-    clearImageUrl() {
+    clearImageUrlValidation() {
       this.error = null;
-      this.errors["image"] = [];
+      if (this.errors !== null) {
+        this.errors["image"] = [];
+      }
     },
     forceImageRerender() {
       this.imageRenderKey += 1;
@@ -306,9 +345,19 @@ export default {
         this.card.image = "";
       }
     },
+    autoAssets() {
+      if (this.autoMode) {
+        this.getAssets();
+      }
+    },
+    getAssets() {
+      this.translate();
+      this.example();
+      this.image();
+    },
     translate() {
-      if (this.card.question.length && this.canTranslate) {
-        this.loading = true;
+      if (this.card.question.length) {
+        this.loaded.translate = false;
         this.$store
           .dispatch("translate", {
             phrase: this.card.question,
@@ -318,36 +367,36 @@ export default {
           .then(response => {
             this.card.answer = response.data.translate;
             this.$forceUpdate();
-            console.log("translacja: ", this.card.answer);
-            console.log("translacja: ", response.data.translate);
           })
           .catch(error => {
             console.log("translateError", error);
-          });
-        //   .finally(() => (this.loading = false));
+          })
+          .finally(() => (this.loaded.translate = true));
       }
     },
     image() {
-      if (this.card.question.length && !this.card.image) {
-        this.loading = true;
+      if (this.card.question.length) {
+        this.loaded.image = false;
         this.$store
           .dispatch("image", {
             phrase: this.card.question,
             source: this.languages[0]
           })
           .then(response => {
-            this.card.image = response.data.image;
+            if (response.data.image) {
+              this.card.image = response.data.image;
+            }
             console.log("obrazek: ", this.card.image);
           })
           .catch(error => {
             console.log("translateError", error);
-          });
-        //   .finally(() => (this.loading = false));
+          })
+          .finally(() => (this.loaded.image = true));
       }
     },
     example() {
       if (this.card.question.length) {
-        this.loading = true;
+        this.loaded.example = false;
         this.$store
           .dispatch("example", {
             phrase: this.card.question,
@@ -363,7 +412,7 @@ export default {
           .catch(error => {
             console.log("translateError", error);
           })
-          .finally(() => (this.loading = false));
+          .finally(() => (this.loaded.example = true));
       }
     }
   }

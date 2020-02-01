@@ -1,13 +1,21 @@
 <template>
   <div>
     <div v-if="!loading">
-      <router-link
-        class="btn nav-button"
-        :to="{ name: 'profile', params: {username: deck.user.username}}"
-      >
-        <i class="fas fa-user"></i>
-        <h3>{{ deck.user.username }}</h3>
-      </router-link>
+      <v-row justify="space-between">
+        <v-col cols="12" md="6">
+          <router-link
+            class="btn nav-button"
+            :to="{ name: 'profile', params: {username: deck.user.username}}"
+          >
+            <i class="fas fa-user"></i>
+            <h3>{{ deck.user.username }}</h3>
+          </router-link>
+        </v-col>
+        <v-col cols="12" md="6">
+          <print-deck :deck="deck"></print-deck>
+        </v-col>
+      </v-row>
+
       <v-parallax :src="deck.image || '/img/app/bg-profile.png'">
         <v-row align="center" class="parallax-overlay" justify="center">
           <v-col class="text-center" cols="12">
@@ -28,11 +36,11 @@
 
 <script>
 import Cards from "./Cards";
-import DeckActions from "./DeckActions";
+import PrintDeck from "./PrintDeck";
 export default {
   components: {
     Cards,
-    DeckActions
+    PrintDeck
   },
   data() {
     return {
