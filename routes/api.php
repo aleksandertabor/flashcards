@@ -1,5 +1,6 @@
 <?php
 
+use App\Deck;
 use Illuminate\Http\Request;
 
 /*
@@ -43,6 +44,13 @@ Route::post('languages', 'LanguagesController');
 Route::post('push', 'PushController@store');
 Route::get('notifications', 'PushController@push');
 Route::post('unsubscribe', 'PushController@destroy');
+
+
+Route::post('deck/pdf', function (Request $request) {
+    $pdf = PDF::loadView('decks.pdf', ['deck' => $request->deck]);
+
+    return $pdf->download('decks.pdf');
+});
 
 // Auth::routes();
 

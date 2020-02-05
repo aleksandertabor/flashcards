@@ -170,7 +170,6 @@ const actions = {
                     query: profile,
                     variables: {
                         username: payload,
-                        isAuthenticated: context.getters.isAuthenticated
                     }
                 })
                 .then(response => {

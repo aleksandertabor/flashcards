@@ -112,6 +112,7 @@ export default {
   },
   created() {
     this.loading = true;
+    console.log("created");
     this.loadProfile();
   },
   updated() {
@@ -119,6 +120,7 @@ export default {
   },
   methods: {
     loadProfile() {
+      console.log("loading profile");
       this.$store
         .dispatch("profile", this.$route.params.username)
         .then(response => {
@@ -126,6 +128,7 @@ export default {
           if (this.userData.id > 0) {
             this.editable = true;
           }
+          console.log(this.userData);
         })
         .catch(error => {
           this.$router.push({ name: "home" });

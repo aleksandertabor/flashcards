@@ -1,11 +1,11 @@
 <template>
   <div>
-    <v-btn color="success" @click="print">Print this deck</v-btn>
+    <v-btn color="success" app @click="print"><v-icon>mdi-file-pdf</v-icon> Print deck</v-btn>
   </div>
 </template>
 
 <script>
-import * as jsPDF from "jspdf";
+import download from "downloadjs";
 export default {
   props: {
     deck: Object
@@ -15,71 +15,26 @@ export default {
   },
   methods: {
     print() {
-      var doc = new jsPDF();
-
-      var pageWidth = 595;
-      var pageHeight = 842;
-
-      var pageMargin = 20;
-
-      pageWidth -= pageMargin * 2;
-      pageHeight -= pageMargin * 2;
-
-      var cellPadding = 10;
-      var cellWidth = 180;
-      var cellHeight = 70;
-      var lineHeight = 20;
-
-      var startX = pageMargin;
-      var startY = pageMargin;
-
-      doc.setFontSize(12);
-
-      function createCard(item) {
-        console.log(item);
-        //cell projection
-        var requiredWidth = startX + cellWidth + cellPadding * 2;
-
-        var requiredHeight = startY + cellHeight + cellPadding * 2;
-
-        if (requiredWidth <= pageWidth) {
-          textWriter(item, startX + cellPadding, startY + cellPadding);
-
-          startX = requiredWidth;
-          //  startY += cellHeight + cellPadding;
-        } else {
-          if (requiredHeight > pageHeight) {
-            doc.addPage();
-            startY = pageMargin;
-          } else {
-            startY = requiredHeight;
+      console.log(this.deck);
+      axios
+        .post(
+          "/api/deck/pdf",
+          { deck: this.deck },
+          {
+            responseType: "blob",
+            headers: {
+              Accept: "application/pdf"
+            }
           }
-
-          startX = pageMargin;
-
-          textWriter(item, startX + cellPadding, startY + cellPadding);
-
-          startX = startX + cellWidth + cellPadding * 2;
-        }
-      }
-
-      function textWriter(item, xAxis, yAxis) {
-        if (item.question) {
-          doc.text(item.question, xAxis, yAxis);
-        }
-        if (item.answer) {
-          doc.text(item.answer, xAxis, yAxis + lineHeight);
-        }
-        if (item.example_question) {
-          doc.text(item.example_question, xAxis, yAxis + lineHeight * 2);
-        }
-      }
-
-      for (var i = 0; i < this.deck.cards.length; i++) {
-        createCard(this.deck.cards[i]);
-      }
-      doc.save("deck.pdf");
-    }
+        )
+        .then(response => {
+          const content = response.headers["content-type"];
+          download(response.data, this.deck.title + ".pdf", content);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
   }
 };
 </script>

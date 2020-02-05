@@ -38,9 +38,11 @@ class Deck extends Model implements HasMedia
 
     public static function visibilityNames() : array
     {
-        return collect(self::visibilities())->flatMap(fn ($options) => [
+        return collect(self::visibilities())->flatMap(function ($options) {
+            return [
             array_key_first($options),
-        ])->toArray();
+        ];
+        })->toArray();
     }
 
     /**

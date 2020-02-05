@@ -36,10 +36,12 @@ class GoogleTranslationApi implements TranslationContract
 
     public function languages() : array
     {
-        $result = collect($this->client->languages())->map(fn ($lang) => [
+        $result = collect($this->client->languages())->map(function ($lang) {
+            return [
             'locale' => $lang,
             'name' => Locale::getDisplayLanguage($lang, 'en'),
-        ])->toArray();
+        ];
+        })->toArray();
 
         return $result ? $result : [];
     }

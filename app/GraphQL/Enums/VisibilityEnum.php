@@ -11,12 +11,14 @@ final class VisibilityEnum
     {
         $visibilities = collect(Deck::visibilities());
 
-        $values = $visibilities->flatMap(fn($options) => [
+        $values = $visibilities->flatMap(function ($options) {
+            return [
             strtoupper(array_key_first($options)) => [
                 'value' => array_key_first($options),
                 'description' => $options[array_key_first($options)],
             ],
-        ])->toArray();
+        ];
+        })->toArray();
 
         $visibilityEnum = new EnumType([
             'name' => 'Visibility',

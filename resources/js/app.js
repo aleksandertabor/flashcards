@@ -63,7 +63,9 @@ function auth() {
                         return store.dispatch("me")
                     })
                     .catch(error => {
-                        logout();
+                        if (navigator.onLine) {
+                            logout();
+                        }
                     })
                     .finally(res => {
                         if (!store.getters.started) {
