@@ -3,33 +3,36 @@
     <div v-if="!loading">
       <v-row justify="space-between">
         <v-col cols="12" md="6">
-          <router-link
-            class="btn nav-button"
+          <v-btn
+            color="primary"
+            app
             :to="{ name: 'profile', params: {username: deck.user.username}}"
           >
-            <i class="fas fa-user"></i>
-            <h3>{{ deck.user.username }}</h3>
-          </router-link>
+            <v-icon>mdi-account</v-icon>
+            {{ deck.user.username }}
+          </v-btn>
         </v-col>
         <v-col cols="12" md="6">
           <print-deck :deck="deck"></print-deck>
         </v-col>
       </v-row>
 
-      <v-parallax :src="deck.image || '/img/app/bg-profile.png'">
-        <v-row align="center" class="parallax-overlay" justify="center">
+      <v-img
+        :src="deck.image || '/img/app/bg-profile.png'"
+        class="parallax"
+        gradient="to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)"
+      >
+        <v-row align="center" justify="center" class="pa-5 white--text fill-height">
           <v-col class="text-center" cols="12">
-            <h1 class="display-1 font-weight-thin mb-4">{{deck.title}}</h1>
-            <h4 class="subheading">{{deck.description}}</h4>
+            <h1 class="text-break display-1 font-weight-thin mb-4">{{deck.title}}</h1>
+            <h4 class="subheading text-break">{{deck.description}}</h4>
           </v-col>
         </v-row>
-      </v-parallax>
+      </v-img>
     </div>
     <div v-else>Loading ...</div>
     <v-item-group v-if="!loading" multiple>
-      <v-container>
-        <cards :cards="this.deck.cards"></cards>
-      </v-container>
+      <cards :cards="this.deck.cards"></cards>
     </v-item-group>
   </div>
 </template>
@@ -67,8 +70,11 @@ export default {
 };
 </script>
 
-<style scoped>
-.parallax-overlay {
-  background-color: rgba(0, 0, 0, 0.5);
+<style>
+.parallax .v-image__image {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 </style>

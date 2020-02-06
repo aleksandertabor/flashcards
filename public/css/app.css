@@ -1,6 +1,36 @@
 
-.parallax-overlay[data-v-99afc33e] {
-  background-color: rgba(0, 0, 0, 0.5);
+.custom-loader[data-v-83e8b624] {
+  -webkit-animation: loader-data-v-83e8b624 1s infinite;
+          animation: loader-data-v-83e8b624 1s infinite;
+  display: -webkit-box;
+  display: flex;
+}
+@-webkit-keyframes loader-data-v-83e8b624 {
+from {
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
+}
+to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+}
+}
+@keyframes loader-data-v-83e8b624 {
+from {
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
+}
+to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+}
+}
+
+.parallax .v-image__image {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 label[data-v-d7dc2e88] {
@@ -14,6 +44,11 @@ label[data-v-4f79cede] {
   text-transform: uppercase;
   color: green;
   font-weight: bolder;
+}
+
+.title-card {
+  font-size: 13px;
+  color: #fff;
 }
 
 .profile-row {

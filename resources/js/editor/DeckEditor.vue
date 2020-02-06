@@ -165,22 +165,36 @@
                 ></v-text-field>
                 <v-btn color="primary" v-if="slug" v-clipboard:copy="slug">Copy link</v-btn>
               </v-card-text>
+              <v-card-text>
+                <v-btn
+                  color="success"
+                  class="mb-2"
+                  :disabled="!valid || loading"
+                  depressed
+                  @click="save"
+                >Save deck</v-btn>
+                <v-dialog v-if="deck.id" v-model="dialog" persistent max-width="290">
+                  <v-card>
+                    <v-card-title class="headline">Do you really want remove this deck?</v-card-title>
+                    <v-card-text>Your deck and all cards will be deleted.</v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="green darken-1" text @click="dialog = false">No</v-btn>
+                      <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      class="mb-2"
+                      color="red"
+                      :disabled="!valid || loading"
+                      dark
+                      v-on="on"
+                    >Remove deck</v-btn>
+                  </template>
+                </v-dialog>
+              </v-card-text>
             </v-form>
-            <v-btn color="success" :disabled="!valid || loading" depressed @click="save">Save deck</v-btn>
-            <v-dialog v-if="deck.id" v-model="dialog" persistent max-width="290">
-              <v-card>
-                <v-card-title class="headline">Do you really want remove this deck?</v-card-title>
-                <v-card-text>Your deck and all cards will be deleted.</v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="green darken-1" text @click="dialog = false">No</v-btn>
-                  <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
-                </v-card-actions>
-              </v-card>
-              <template v-slot:activator="{ on }">
-                <v-btn color="red" :disabled="!valid || loading" dark v-on="on">Remove deck</v-btn>
-              </template>
-            </v-dialog>
           </v-window-item>
 
           <v-window-item :value="2">

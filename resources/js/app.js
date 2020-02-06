@@ -129,9 +129,6 @@ export function start() {
         router,
         apolloProvider,
         vuetify,
-        // components: {
-        //     "index": Index
-        // },
         components: {
             "index": Index
         },
@@ -191,15 +188,15 @@ export function start() {
             }
         },
         beforeCreate() {
-            // if ('serviceWorker' in navigator) {
-            //     this.$ServiceWorkerActivated();
-            //     this.$ServiceWorkerInstalled();
-            //     this.$ServiceWorkerRegister();
-            // }
+            if ('serviceWorker' in navigator) {
+                this.$ServiceWorkerActivated();
+                this.$ServiceWorkerInstalled();
+                this.$ServiceWorkerRegister();
+            }
 
-            // if ('Notification' in window && navigator.serviceWorker) {
-            //     this.$NotificationsInstall();
-            // }
+            if ('Notification' in window && navigator.serviceWorker) {
+                this.$NotificationsInstall();
+            }
             // window.localStorage.removeItem('logout')
         },
         created() {

@@ -25,6 +25,7 @@
               :loading="loading || !assetsLoaded"
               counter="255"
               @change="autoAssets()"
+              autofocus
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -118,6 +119,7 @@
         </v-row>
 
         <v-btn
+          class="mb-2"
           color="success"
           :disabled="!valid || loading || !assetsLoaded"
           depressed
@@ -125,6 +127,7 @@
         >Save card</v-btn>
 
         <v-btn
+          class="mb-2"
           color="error"
           :disabled="loading || !assetsLoaded"
           depressed
@@ -132,6 +135,7 @@
         >Remove card</v-btn>
 
         <v-btn
+          class="mb-2"
           v-if="card.question"
           color="primary"
           :disabled="loading"
@@ -314,6 +318,8 @@ export default {
           .dispatch("removeCard", this.card.id)
           .then(response => {})
           .then(() => this.$emit("remove-card"));
+      } else {
+        this.$emit("remove-card");
       }
     },
     clearImageUrlValidation() {
@@ -340,6 +346,7 @@ export default {
           this.card.image = fileReader.result;
         });
         this.card.image_file = file;
+        this.forceImageRerender();
       } else {
         this.card.image_file = null;
         this.card.image = "";
@@ -365,8 +372,12 @@ export default {
             target: this.languages[1]
           })
           .then(response => {
-            this.card.answer = response.data.translate;
-            this.$forceUpdate();
+            if (response.data.translate.length) {
+              const answerInput = this.$refs.answer;
+              answerInput.reset();
+              this.card.answer = response.data.translate;
+              this.$forceUpdate();
+            }
           })
           .catch(error => {
             console.log("translateError", error);

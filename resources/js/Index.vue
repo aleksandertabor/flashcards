@@ -20,7 +20,7 @@
       :mini-variant="miniVariant"
       :clipped="$vuetify.breakpoint.lgAndUp"
       fixed
-      hide-overlay
+      :hide-overlay="$vuetify.breakpoint.lgAndUp"
       app
     >
       <v-list dense nav class="py-0">
@@ -132,7 +132,7 @@
 export default {
   data() {
     return {
-      drawer: true,
+      drawer: false,
       links: [
         {
           title: "Decks",
@@ -201,6 +201,11 @@ export default {
       });
     }
   },
+  mounted() {
+    if (this.$vuetify.breakpoint.lgAndUp) {
+      this.drawer = true;
+    }
+  },
   created() {
     window.addEventListener("beforeinstallprompt", e => {
       console.log(e);
@@ -213,14 +218,6 @@ export default {
       console.log("App installed.");
     });
   }
-  //   computed: {
-  //     isAuthenticated() {
-  //       return this.$store.getters.isAuthenticated;
-  //     },
-  //     user() {
-  //       return this.$store.getters.user;
-  //     }
-  //   }
 };
 </script>
 

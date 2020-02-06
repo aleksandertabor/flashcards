@@ -45,10 +45,10 @@
                 </v-list-item-content>
               </v-list-item>
             </v-col>
-            <v-col v-if="editable" class="d-flex justify-space-between" cols="12">
+            <v-col v-if="editable" class="d-flex flex-wrap justify-space-between" cols="12">
               <v-badge bordered color="success" icon="mdi-account-edit" overlap>
                 <v-btn
-                  class="white--text"
+                  class="white--text mb-2"
                   color="success"
                   depressed
                   @click="changeView('EditProfile')"
@@ -56,7 +56,7 @@
               </v-badge>
               <v-badge bordered color="error" icon="mdi-account-remove" overlap>
                 <v-btn
-                  class="white--text"
+                  class="white--text mb-2"
                   color="error"
                   depressed
                   @click="changeView('RemoveProfile')"
@@ -112,11 +112,7 @@ export default {
   },
   created() {
     this.loading = true;
-    console.log("created");
     this.loadProfile();
-  },
-  updated() {
-    console.log("updated");
   },
   methods: {
     loadProfile() {
@@ -128,7 +124,6 @@ export default {
           if (this.userData.id > 0) {
             this.editable = true;
           }
-          console.log(this.userData);
         })
         .catch(error => {
           this.$router.push({ name: "home" });

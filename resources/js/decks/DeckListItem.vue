@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto my-12" max-width="374">
+  <v-card class="mx-auto" max-width="374" :to="{ name: 'deck', params: { slug } }">
     <v-img :src="image"></v-img>
 
     <v-badge :content="cards_count || '0'" :value="cards_count" color="brown" overlap bordered>
@@ -7,11 +7,6 @@
     </v-badge>
 
     <v-card-title>{{title}}</v-card-title>
-
-    <v-card-text>
-      <div>{{description}}</div>
-      <div class="my-4 subtitle-1 black--text">{{created_at}}</div>
-    </v-card-text>
   </v-card>
 </template>
 

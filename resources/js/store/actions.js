@@ -266,7 +266,6 @@ const actions = {
     },
     deck(context, payload) {
         return new Promise((resolve, reject) => {
-            console.log(payload);
             apolloClient.query({
                     query: deck,
                     variables: {
@@ -287,7 +286,6 @@ const actions = {
     },
     deckToEdit(context, payload) {
         return new Promise((resolve, reject) => {
-            console.log(payload);
             apolloClient.query({
                     query: deckToEdit,
                     variables: {
@@ -425,7 +423,6 @@ const actions = {
         });
     },
     updateCard(context, payload) {
-        console.log("payload: ", payload);
         return new Promise((resolve, reject) => {
             apolloUploadClient.mutate({
                     mutation: updateCard,
@@ -443,11 +440,9 @@ const actions = {
                     }
                 })
                 .then(response => {
-                    console.log("updateDeck", response);
                     resolve(response)
                 })
                 .catch(error => {
-                    console.log("updateDeck error", error);
                     reject(error)
                 })
 
@@ -462,11 +457,9 @@ const actions = {
                     }
                 })
                 .then(response => {
-                    console.log("removeCard", response);
                     resolve(response)
                 })
                 .catch(error => {
-                    console.log("removeCard error", error);
                     reject(error)
                 })
 
@@ -481,7 +474,6 @@ const actions = {
                     },
                 })
                 .then(response => {
-                    console.log("Translate: ", response);
                     resolve(response);
                 })
                 .catch(error => {
@@ -502,7 +494,6 @@ const actions = {
                     },
                 })
                 .then(response => {
-                    console.log("Image: ", response);
                     resolve(response);
                 })
                 .catch(error => {
@@ -523,7 +514,6 @@ const actions = {
                     },
                 })
                 .then(response => {
-                    console.log("Example: ", response);
                     resolve(response);
                 })
                 .catch(error => {

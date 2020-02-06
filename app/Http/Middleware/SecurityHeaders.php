@@ -22,7 +22,7 @@ class SecurityHeaders
             'X-XSS-Protection' => '1; mode=block',
             'X-Content-Type-Options' => 'nosniff',
             'Referrer-Policy' => 'same-origin',
-            // 'Content-Security-Policy' => "default-src 'self';",
+            'Content-Security-Policy' => "default-src 'self';",
         ]);
 
         return $response;

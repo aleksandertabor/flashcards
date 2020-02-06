@@ -34,6 +34,7 @@ query deck($slug: String!) {
         title
         description
         image
+        slug
         cards {
             id
             question

@@ -1,17 +1,17 @@
 <template>
   <v-card>
-    <v-img :src="image" height="200px"></v-img>
+    <v-img :src="image" v-if="image" height="200px"></v-img>
     <v-item v-slot:default="{ active, toggle }">
       <v-card
         :color="active ? 'primary' : ''"
         class="d-flex align-center"
         dark
-        height="200"
+        height="100%"
         @click="toggle"
       >
-        <div v-if="!active" class="display-1 flex-grow-1 text-center">
-          <div class="text-no-wrap text-center">{{ question }}</div>
-          <v-btn icon @click="show = !show">
+        <div v-if="!active" class="flex-grow-1 text-center">
+          <div class="pa-2 text-center">{{ question }}</div>
+          <v-btn icon @click.stop.prevent="show = !show">
             <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
           </v-btn>
           <v-expand-transition>
@@ -22,9 +22,9 @@
             </div>
           </v-expand-transition>
         </div>
-        <div v-if="active" class="display-1 flex-grow-1 text-center">
-          <div class="text-no-wrap text-center">{{ answer }}</div>
-          <v-btn icon @click="show = !show">
+        <div v-if="active" class="flex-grow-1 text-center">
+          <div class="pa-2 text-center">{{ answer }}</div>
+          <v-btn icon @click.stop.prevent="show = !show">
             <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
           </v-btn>
           <v-expand-transition>
