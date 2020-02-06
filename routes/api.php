@@ -1,6 +1,5 @@
 <?php
 
-use App\Deck;
 use Illuminate\Http\Request;
 
 /*
@@ -19,12 +18,6 @@ Route::group(['middleware' => ['auth:api']], function () {
 });
 
 Route::apiResource('users', 'UserController')->only(['show']);
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// Route::group(['middleware' => ['auth:api']], function () {
-// });
 
 Route::apiResource('decks', 'Api\DeckController')->only(['index', 'show']);
 
@@ -45,14 +38,11 @@ Route::post('push', 'PushController@store');
 Route::get('notifications', 'PushController@push');
 Route::post('unsubscribe', 'PushController@destroy');
 
-
 Route::post('deck/pdf', function (Request $request) {
     $pdf = PDF::loadView('decks.pdf', ['deck' => $request->deck]);
 
     return $pdf->download('decks.pdf');
 });
-
-// Auth::routes();
 
 Route::fallback(function () {
     return response()->json([

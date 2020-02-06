@@ -53,7 +53,7 @@ export default {
                         return registration.pushManager.subscribe(subscribeOptions);
                     })
                     .then((pushSubscription) => {
-                        console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
+                        // console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
                         this.$NotificationsPushSubscription(pushSubscription);
                     });
             },

@@ -2,7 +2,7 @@
 
 ## Required
 ```bash
-PHP > 7.3
+PHP >= 7.3
 ```
 
 ## Installation

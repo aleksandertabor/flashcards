@@ -1,6 +1,8 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js');
 if (workbox) {
-
+    workbox.setConfig({
+        debug: false
+    })
     workbox.core.skipWaiting();
     workbox.core.clientsClaim();
 
@@ -11,7 +13,7 @@ if (workbox) {
     workbox.precaching.precacheAndRoute([
   {
     "url": "css/app.css",
-    "revision": "45f8894c271ffb6398a651a5c9bcc559"
+    "revision": "77f02eb6e420d275fb6eca6a0b98e7b4"
   },
   {
     "url": "favicon.ico",
@@ -70,8 +72,12 @@ if (workbox) {
     "revision": "5b4a33e176ff736a74f0ca2dd9e6b396"
   },
   {
+    "url": "img/pdf/bootstrap.min.css",
+    "revision": "ec3bb52a00e176a7181d454dffaea219"
+  },
+  {
     "url": "js/app.js",
-    "revision": "68c9f05d7e9867e7467c8fc1208f4c27"
+    "revision": "20be3f5f93f1b63cb67fd8b861c607c5"
   },
   {
     "url": "site.webmanifest",

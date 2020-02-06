@@ -51,7 +51,6 @@ function logout() {
 }
 
 function auth() {
-    console.log("🙊check auth");
     return new Promise((resolve, reject) => {
         if (store.getters.token) {
             const expiry = store.getters.expiry;
