@@ -66,6 +66,12 @@
     <div id="app">
         @yield('content')
     </div>
+    <script>
+        var installPromptGlobal = null;
+        window.addEventListener("beforeinstallprompt", e => {
+            installPromptGlobal = e;
+        });
+    </script>
 </body>
 
 </html>

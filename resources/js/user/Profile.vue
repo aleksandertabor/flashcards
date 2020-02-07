@@ -116,7 +116,6 @@ export default {
   },
   methods: {
     loadProfile() {
-      console.log("loading profile");
       this.$store
         .dispatch("profile", this.$route.params.username)
         .then(response => {

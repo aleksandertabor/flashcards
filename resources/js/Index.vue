@@ -8,7 +8,7 @@
       </router-link>
 
       <v-spacer></v-spacer>
-      <v-btn rounded color="primary" dark v-if="canInstall" @click="install">Install</v-btn>
+      <v-btn rounded color="primary" dark @click="install">{{installBtnText}}</v-btn>
       <v-icon v-if="$NotificationsActive" color="green">mdi-bell</v-icon>
       <v-icon v-else color="red">mdi-bell-off</v-icon>
     </v-app-bar>
@@ -174,8 +174,7 @@ export default {
       background: false,
       loading: true,
       showToTop: false,
-      canInstall: false,
-      promptEvent: null
+      installBtnText: "Install"
     };
   },
   methods: {
@@ -190,15 +189,17 @@ export default {
       this.$vuetify.goTo(0);
     },
     install() {
-      this.promptEvent.prompt();
-      this.promptEvent.userChoice.then(choiceResult => {
-        if (choiceResult.outcome === "accepted") {
-          console.log("User accepted the A2HS prompt");
-        } else {
-          console.log("User dismissed the A2HS prompt");
-        }
-        this.promptEvent = null;
-      });
+      if (installPromptGlobal !== null) {
+        installPromptGlobal.prompt();
+        installPromptGlobal.userChoice.then(choiceResult => {
+          if (choiceResult.outcome === "accepted") {
+            console.log("User accepted the A2HS prompt");
+          } else {
+            console.log("User dismissed the A2HS prompt");
+          }
+          installPromptGlobal = null;
+        });
+      }
     }
   },
   mounted() {
@@ -207,14 +208,8 @@ export default {
     }
   },
   created() {
-    window.addEventListener("beforeinstallprompt", e => {
-      console.log(e);
-      e.preventDefault();
-      this.promptEvent = e;
-      this.canInstall = true;
-    });
-
     window.addEventListener("appinstalled", evt => {
+      this.installBtnText = "Installed";
       console.log("App installed.");
     });
   }

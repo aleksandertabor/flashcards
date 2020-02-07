@@ -77,7 +77,7 @@ if (workbox) {
   },
   {
     "url": "js/app.js",
-    "revision": "20be3f5f93f1b63cb67fd8b861c607c5"
+    "revision": "a1fa4bc7d5dcebbba2cc3c2541480cea"
   },
   {
     "url": "site.webmanifest",

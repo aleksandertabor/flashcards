@@ -119,8 +119,6 @@ router.beforeEach((to, from, next) => {
     }
 })
 
-
-
 export function start() {
     new Vue({
         el: '#app',
@@ -196,6 +194,7 @@ export function start() {
             if ('Notification' in window && navigator.serviceWorker) {
                 this.$NotificationsInstall();
             }
+
             // window.localStorage.removeItem('logout')
         },
         created() {

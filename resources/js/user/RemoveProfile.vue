@@ -42,12 +42,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-label {
-  font-size: 0.7em;
-  text-transform: uppercase;
-  color: green;
-  font-weight: bolder;
-}
-</style>
