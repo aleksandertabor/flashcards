@@ -21,6 +21,7 @@
       :clipped="$vuetify.breakpoint.lgAndUp"
       fixed
       :hide-overlay="$vuetify.breakpoint.lgAndUp"
+      disable-resize-watcher
       app
     >
       <v-list dense nav class="py-0">

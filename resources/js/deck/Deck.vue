@@ -18,7 +18,7 @@
       </v-row>
 
       <v-img
-        :src="deck.image || '/img/app/bg-profile.png'"
+        :src="deck.image || '/images/bg-profile.png'"
         class="parallax"
         gradient="to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)"
       >

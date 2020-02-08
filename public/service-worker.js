@@ -13,7 +13,7 @@ if (workbox) {
     workbox.precaching.precacheAndRoute([
   {
     "url": "css/app.css",
-    "revision": "77f02eb6e420d275fb6eca6a0b98e7b4"
+    "revision": "f3c79e6f12cb178101d761b05d2b6ccd"
   },
   {
     "url": "favicon.ico",
@@ -72,48 +72,48 @@ if (workbox) {
     "revision": "5b4a33e176ff736a74f0ca2dd9e6b396"
   },
   {
-    "url": "img/pdf/bootstrap.min.css",
-    "revision": "ec3bb52a00e176a7181d454dffaea219"
-  },
-  {
     "url": "js/app.js",
-    "revision": "a1fa4bc7d5dcebbba2cc3c2541480cea"
+    "revision": "f5c79dc42496316cbf66247bf29da541"
   },
   {
     "url": "site.webmanifest",
-    "revision": "8255e86f3bb0c79754ebbb15c23b83f1"
+    "revision": "a7d2ada0fdc4ad6d5bb7d4d0f6da5f4e"
   },
   {
-    "url": "img/app/icons/icon-128x128.png",
+    "url": "images/icons/icon-128x128.png",
     "revision": "11c551c2981b1d299f5a2e5761515754"
   },
   {
-    "url": "img/app/icons/icon-144x144.png",
+    "url": "images/icons/icon-144x144.png",
     "revision": "c15fac59454a02e8d20035ec29990c23"
   },
   {
-    "url": "img/app/icons/icon-152x152.png",
+    "url": "images/icons/icon-152x152.png",
     "revision": "cf92ed4ce19bc7eed2f3da0344792a24"
   },
   {
-    "url": "img/app/icons/icon-192x192.png",
+    "url": "images/icons/icon-192x192.png",
     "revision": "a385b294366358735296d6947037d72e"
   },
   {
-    "url": "img/app/icons/icon-384x384.png",
+    "url": "images/icons/icon-384x384.png",
     "revision": "95d264560224bb0c14a469bc9345fb34"
   },
   {
-    "url": "img/app/icons/icon-512x512.png",
+    "url": "images/icons/icon-512x512.png",
     "revision": "9a72d588678eefe18b3356f831c69417"
   },
   {
-    "url": "img/app/icons/icon-72x72.png",
+    "url": "images/icons/icon-72x72.png",
     "revision": "3be7a72aec631600d4355d8ea93d8082"
   },
   {
-    "url": "img/app/icons/icon-96x96.png",
+    "url": "images/icons/icon-96x96.png",
     "revision": "8cc003eee4f132bd83d92154c219f65a"
+  },
+  {
+    "url": "images/bg-profile.png",
+    "revision": "58886c45aa326c7075fc56ccc12b1a90"
   }
 ]);
 

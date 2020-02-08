@@ -110,7 +110,7 @@
               ref="image"
               :key="imageRenderKey"
               :src="card.image || ''"
-              :lazy-src="'/img/app/bg-profile.png'"
+              :lazy-src="'/images/bg-profile.png'"
               aspect-ratio="1"
               max-height="125"
               contain
@@ -344,9 +344,9 @@ export default {
         fileReader.readAsDataURL(file);
         fileReader.addEventListener("load", () => {
           this.card.image = fileReader.result;
+          this.forceImageRerender();
         });
         this.card.image_file = file;
-        this.forceImageRerender();
       } else {
         this.card.image_file = null;
         this.card.image = "";

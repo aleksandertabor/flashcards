@@ -7,9 +7,18 @@ PHP >= 7.3
 
 ## Installation
 ```bash
-composer update
+git clone https://github.com/aleksandertabor/flashcards.git flashcards
+cd flashcards
+cp .env.example .env
+composer install
+php artisan key:generate
+php artisan migrate --seed
+php artisan webpush:vapid
+php artisan passport:install
 npm install
-php artisan passport:client --password
+php artisan storage:link
+cd public || mv storage img
+mv pdf storage/app/public
 ```
 
 ## My steps to create this project (from zero):

@@ -103,7 +103,7 @@
                     <v-img
                       :key="imageRenderKey"
                       :src="deck.image || ''"
-                      :lazy-src="'/img/app/bg-profile.png'"
+                      :lazy-src="'/images/bg-profile.png'"
                       aspect-ratio="1"
                       max-height="125"
                       contain

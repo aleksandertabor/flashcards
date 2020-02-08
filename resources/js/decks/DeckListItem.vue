@@ -7,6 +7,7 @@
     </v-badge>
 
     <v-card-title>{{title}}</v-card-title>
+    <v-card-text>{{created_at}}</v-card-text>
   </v-card>
 </template>
 

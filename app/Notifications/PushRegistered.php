@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Storage;
 use NotificationChannels\WebPush\WebPushChannel;
 use NotificationChannels\WebPush\WebPushMessage;
 
@@ -37,11 +36,11 @@ class PushRegistered extends Notification
     {
         return (new WebPushMessage)
         ->title('Thank you!')
-        ->icon(Storage::url('app/icons/icon-96x96.png'))
+        ->icon('/images/icons/icon-96x96.png')
         ->body('We will inform you about new decks.')
         ->action('See all decks', 'explore')
         ->action('Not now', 'close')
-        ->badge(Storage::url('app/icons/icon-96x96.png'))
+        ->badge('/images/icons/icon-96x96.png')
         ->data(['action_url' => 'search']);
     }
 }

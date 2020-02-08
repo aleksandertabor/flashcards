@@ -3,7 +3,7 @@
     <div v-if="loading">Profile is loading ...</div>
     <div v-else>
       <v-card class="mx-auto" max-width="434" tile>
-        <v-img height="100%" src="/img/app/bg-profile.png">
+        <v-img height="100%" src="/images/bg-profile.png">
           <v-row align="end" class="fill-height pa-5 profile-row">
             <v-col class="d-flex justify-space-between" cols="12">
               <v-avatar class="profile" color="teal" size="84">

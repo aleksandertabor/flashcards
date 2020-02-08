@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Storage;
 use NotificationChannels\WebPush\WebPushChannel;
 use NotificationChannels\WebPush\WebPushMessage;
 
@@ -41,13 +40,13 @@ class DeckPublished extends Notification
         ->title('🃏 New Deck was published!')
         ->dir('ltr')
         ->lang('en-GB')
-        ->icon(Storage::url('app/icons/icon-96x96.png'))
+        ->icon('/images/icons/icon-96x96.png')
         ->image($this->deck->getFirstMediaUrl('main'))
         ->body("User {$this->deck->user->username} has published deck - {$this->deck->title}")
         ->action('🃏 View deck', 'explore')
         ->action('⌚ Maybe later', 'close')
         ->requireInteraction(true)
-        ->badge(Storage::url('app/icons/icon-96x96.png'))
+        ->badge('/images/icons/icon-96x96.png')
         ->data(['action_url' => 'deck/'.$this->deck->slug]);
     }
 }
