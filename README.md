@@ -10,7 +10,16 @@ PHP >= 7.3
 git clone https://github.com/aleksandertabor/flashcards.git flashcards
 cd flashcards
 cp .env.example .env
-composer install
+sudo apt install jpegoptim optipng pngquant gifsicle
+sudo apt-get install webp
+sudo apt-get install php7.x-gmp
+sudo apt-get install php7.x-sqlite
+sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
+sudo /sbin/mkswap /var/swap.1
+sudo /sbin/swapon /var/swap.1
+sudo chown -R my-user:www-data /var/www/flashcards/storage
+sudo chown -R my-user:www-data /var/www/flashcards/boostrap/cache
+composer update php
 php artisan key:generate
 php artisan migrate --seed
 php artisan webpush:vapid
@@ -18,7 +27,10 @@ php artisan passport:install
 npm install
 php artisan storage:link
 cd public || mv storage img
+chmod -R 777 pdf
 mv pdf storage/app/public
+sudo npm install workbox-cli --global
+npm run production
 ```
 
 ## My steps to create this project (from zero):
@@ -73,4 +85,7 @@ npm install --save vue-clipboard2
 npm i vue-uuid
 composer require barryvdh/laravel-dompdf
 npm install downloadjs
+npm install --save cross-fetch
+npm i --save core-js regenerator-runtime
+npm install --save-dev @babel/plugin-syntax-dynamic-import
 ```

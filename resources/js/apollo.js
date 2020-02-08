@@ -1,3 +1,4 @@
+import fetch from 'cross-fetch'
 import {
     ApolloClient
 } from 'apollo-client'
@@ -33,6 +34,7 @@ const httpLink = createHttpLink({
     },
     // Make all requests to API with GET method - helpful with PWA caching
     useGETForQueries: true,
+    fetch
     // fetchOptions: {
     //     method: "GET",
     // },
@@ -58,7 +60,7 @@ const errorLink = onError(({
                     // console.log('validation errors', err.extensions.validation);
             }
         }
-    if (networkError) console.log(`[Network error]: ${networkError}`);
+    if (networkError) console.log("[Network error]: " + networkError);
 });
 
 const authLink = setContext((_, {
@@ -76,7 +78,7 @@ const authLink = setContext((_, {
     return {
         headers: {
             ...headers,
-            authorization: token ? `Bearer ${token}` : '',
+            authorization: token ? "Bearer " + token : '',
         },
     };
 });

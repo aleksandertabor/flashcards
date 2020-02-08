@@ -106,7 +106,7 @@ export default {
     currentView() {
       if (this.additionalView) {
         const name = this.additionalView;
-        return () => import(`./${name}`);
+        return () => import("./" + name);
       }
     }
   },

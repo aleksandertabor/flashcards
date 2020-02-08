@@ -209,10 +209,13 @@ export default {
     }
   },
   created() {
-    window.addEventListener("appinstalled", evt => {
-      this.installBtnText = "Installed";
-      console.log("App installed.");
-    });
+    window.addEventListener(
+      "appinstalled",
+      function(e) {
+        this.installBtnText = "Installed";
+        console.log("App installed.");
+      }.bind(this)
+    );
   }
 };
 </script>

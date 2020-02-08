@@ -18,7 +18,7 @@ mix.webpackConfig({
             exclude: /node_modules/,
             loader: 'graphql-tag/loader',
         }, ]
-    }
+    },
 })
 
 mix.browserSync({
@@ -30,6 +30,22 @@ mix.browserSync({
 mix.options({
     extractVueStyles: true,
 });
+
+// if (mix.inProduction()) {
+
+//     mix.webpackConfig({
+//         module: {
+//             rules: [{
+//                 test: /\.js?$/,
+//                 exclude: /(node_modules|bower_components)/,
+//                 use: [{
+//                     loader: 'babel-loader',
+//                     options: mix.config.babel()
+//                 }]
+//             }]
+//         }
+//     });
+// }
 
 
 mix.js('resources/js/app.js', 'public/js')

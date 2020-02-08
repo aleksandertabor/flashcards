@@ -1,4 +1,4 @@
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js');
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.0.0/workbox-sw.js');
 if (workbox) {
     workbox.setConfig({
         debug: false
@@ -12,14 +12,17 @@ if (workbox) {
     // injected assets by Workbox CLI
     workbox.precaching.precacheAndRoute([]);
 
+    workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
+
     workbox.precaching.cleanupOutdatedCaches()
 
     // Cache main SPA html for all routes
-    workbox.routing.registerNavigationRoute(
-        // Assuming '/' has been precached,
-        // look up its corresponding cache key.
-        workbox.precaching.getCacheKeyForURL('/')
-    );
+    const handler = workbox.precaching.createHandlerBoundToURL('/');
+    // Assuming '/' has been precached,
+    // look up its corresponding cache key.
+    const navigationRoute = new workbox.routing.NavigationRoute(handler);
+    workbox.routing.registerRoute(navigationRoute);
+
 
     // Cache GraphQL API requests
     workbox.routing.registerRoute(
@@ -45,7 +48,7 @@ if (workbox) {
         new workbox.strategies.CacheFirst({
             cacheName: 'images-cache',
             plugins: [
-                new workbox.expiration.Plugin({
+                new workbox.expiration.ExpirationPlugin({
                     // Cache upto 60 images.
                     maxEntries: 60,
                     // Cache for a maximum of a month.

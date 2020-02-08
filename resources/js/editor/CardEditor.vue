@@ -198,12 +198,12 @@ export default {
       rules: {
         required: v => !!v || "Required.",
         min: len => v =>
-          !v || (v && v.length >= len) || `Min ${len} characters`,
+          !v || (v && v.length >= len) || "Min " + len + "characters",
         max: len => v =>
-          !v || (v && v.length <= len) || `Max ${len} characters`,
+          !v || (v && v.length <= len) || "Max " + len + "characters",
         length: len => v =>
           (v || "").length >= len ||
-          `Invalid character length, required ${len}`,
+          "Invalid character length, required " + len,
         url: v =>
           !v ||
           /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(
@@ -247,7 +247,7 @@ export default {
       return answer;
     },
     assetsLoaded() {
-      for (const loading in this.loaded) {
+      for (let loading in this.loaded) {
         if (!this.loaded[loading]) return false;
       }
       return true;

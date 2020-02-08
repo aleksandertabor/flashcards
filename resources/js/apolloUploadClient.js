@@ -1,3 +1,4 @@
+import fetch from 'cross-fetch'
 import {
     ApolloClient
 } from 'apollo-client'
@@ -30,6 +31,7 @@ const uploadLink = createUploadLink({
         'Accept': 'application/json',
         'X-CSRF-Token': document.querySelector('meta[name=csrf-token]').getAttribute('content')
     },
+    fetch
     // Make all requests to API with GET method - helpful with PWA caching
     // useGETForQueries: true,
 });
@@ -55,7 +57,7 @@ const errorLink = onError(({
                     // console.log('validation errors', err.extensions.validation);
             }
         }
-    if (networkError) console.log(`[Network error]: ${networkError}`);
+    if (networkError) console.log("[Network error]: " + networkError);
 });
 
 const authLink = setContext((_, {
@@ -69,12 +71,11 @@ const authLink = setContext((_, {
     } else {
         token = store.getters.token;
     }
-    console.log("wysylam ten token do bearera: ", token);
     // return the headers to the context so httpLink can read them
     return {
         headers: {
             ...headers,
-            authorization: token ? `Bearer ${token}` : '',
+            authorization: token ? "Bearer " + token : '',
         },
     };
 });

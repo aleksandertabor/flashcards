@@ -1,4 +1,5 @@
 require('./bootstrap');
+import 'cross-fetch/polyfill';
 import store from "./store";
 import router from "./routes";
 import VueRouter from "vue-router";

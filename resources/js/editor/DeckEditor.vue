@@ -280,12 +280,12 @@ export default {
       rules: {
         required: v => !!v || "Required.",
         min: len => v =>
-          !v || (v && v.length >= len) || `Min ${len} characters`,
+          !v || (v && v.length >= len) || "Min " + len + "characters",
         max: len => v =>
-          !v || (v && v.length <= len) || `Max ${len} characters`,
+          !v || (v && v.length <= len) || "Max " + len + "characters",
         length: len => v =>
           (v || "").length >= len ||
-          `Invalid character length, required ${len}`,
+          "Invalid character length, required " + len,
         url: v =>
           !v ||
           /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi.test(
@@ -341,12 +341,12 @@ export default {
         } = response;
 
         const languages_options = languages.map(({ id, locale, name }) => {
-          return { text: `${name} (${locale})`, value: id, code: locale };
+          return { text: name + " (" + locale + ")", value: id, code: locale };
         });
 
         let visibility_options = enumValues.map(({ name, description }) => {
           return {
-            text: `${name.toLowerCase()}`,
+            text: name.toLowerCase(),
             value: name,
             description,
             color: "success"
