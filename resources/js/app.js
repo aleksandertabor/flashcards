@@ -15,11 +15,14 @@ import VueClipboard from 'vue-clipboard2'
 
 window.Vue = require('vue');
 
+if ('Notification' in window) {
+    Vue.use(NotificationSystem);
+}
+
 Vue.use(Vuetify)
 Vue.use(VueRouter);
 Vue.use(LazyLoad);
 Vue.use(ServiceWorker);
-Vue.use(NotificationSystem);
 Vue.use(VueApollo);
 Vue.use(VueClipboard)
 

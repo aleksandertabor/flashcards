@@ -26,7 +26,7 @@ class Card extends Model implements HasMedia
 
     public function deck()
     {
-        return $this->belongsTo('App\Card');
+        return $this->belongsTo('App\Deck');
     }
 
     public function user()

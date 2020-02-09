@@ -48,7 +48,7 @@ type Query {
     profile(username: String!): Person @field(resolver: "App\\GraphQL\\Queries\\ProfileQuery")
     usersTotal: Int! @count(model: "User")
     decksTotal: Int! @count(model: "Deck")
-    cardsTotal: Int! @count(model: "Card")
+    cardsTotal: Int! @field(resolver: "App\\GraphQL\\Queries\\CardsTotalQuery")
     users: [User!]! @paginate(scopes: ["Newest"])
     user(username: String! @eq): User @find
     languages: [Language!]! @all
