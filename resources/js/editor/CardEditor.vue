@@ -382,7 +382,7 @@ export default {
           .catch(error => {
             console.log("translateError", error);
           })
-          .finally(() => (this.loaded.translate = true));
+          .then(() => (this.loaded.translate = true));
       }
     },
     image() {
@@ -402,7 +402,7 @@ export default {
           .catch(error => {
             console.log("translateError", error);
           })
-          .finally(() => (this.loaded.image = true));
+          .then(() => (this.loaded.image = true));
       }
     },
     example() {
@@ -423,7 +423,7 @@ export default {
           .catch(error => {
             console.log("translateError", error);
           })
-          .finally(() => (this.loaded.example = true));
+          .then(() => (this.loaded.example = true));
       }
     }
   }

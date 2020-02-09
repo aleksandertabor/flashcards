@@ -111,7 +111,7 @@ const apolloClient = new ApolloClient({
     link,
     cache,
     defaultHttpLink: false,
-    connectToDevTools: true,
+    connectToDevTools: false,
     defaultOptions
 })
 

@@ -28,9 +28,6 @@
             <!-- Loading -->
             <div v-if="isLoading" class="loading apollo"></div>
 
-            <!-- Error -->
-            <div v-else-if="error" class="error apollo">An error occurred</div>
-
             <!-- Result -->
             <v-row v-else-if="data" class="result apollo" justify="space-around">
               <v-tooltip top>
@@ -83,9 +80,6 @@
             <!-- Loading -->
             <div v-if="isLoading" class="loading apollo"></div>
 
-            <!-- Error -->
-            <div v-else-if="error" class="error apollo">An error occurred</div>
-
             <!-- Result -->
             <div v-else-if="data" class="result apollo">
               <v-card class="mx-auto">
@@ -132,9 +126,6 @@
           <template v-slot="{ result: { error, data }, isLoading }">
             <!-- Loading -->
             <div v-if="isLoading" class="loading apollo"></div>
-
-            <!-- Error -->
-            <div v-else-if="error" class="error apollo">An error occurred</div>
 
             <!-- Result -->
             <div v-else-if="data" class="result apollo">

@@ -57,9 +57,10 @@ function logout() {
 function auth() {
     return new Promise((resolve, reject) => {
         if (store.getters.token) {
-            const expiry = store.getters.expiry;
+            let expiry = store.getters.expiry;
+            expiry = new Date(expiry.replace(/-/g, '/'));
             // if expired - lesser than minute
-            if (new Date(new Date(expiry) - 1 * 60000) <= new Date(expiry)) {
+            if (new Date(expiry - 1 * 60000) <= expiry) {
                 store
                     .dispatch("refresh_token")
                     .then(response => {
@@ -70,7 +71,7 @@ function auth() {
                             logout();
                         }
                     })
-                    .finally(res => {
+                    .then(res => {
                         if (!store.getters.started) {
                             start();
                         }
@@ -89,7 +90,7 @@ function auth() {
                 }).catch(error => {
                     // what if no token and no refresh_token??
                     console.log("You are guest.");
-                }).finally(res => {
+                }).then(res => {
                     if (!store.getters.started) {
                         start();
                     }
