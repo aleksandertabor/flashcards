@@ -32,7 +32,7 @@
             color="success"
             :timeout="3000"
             bottom
-            left
+            right
           >Your deck has been saved.</v-snackbar>
           <v-alert v-if="deletedCard" type="success" dismissible>Flashcard has been removed.</v-alert>
           <v-snackbar
@@ -40,8 +40,15 @@
             color="success"
             :timeout="3000"
             bottom
-            left
+            right
           >Flashcard has been removed.</v-snackbar>
+          <v-snackbar
+            v-model="savedCard"
+            color="success"
+            :timeout="3000"
+            bottom
+            right
+          >Your card has been saved.</v-snackbar>
         </v-card-actions>
 
         <v-window v-model="step">
@@ -203,6 +210,7 @@
                 <v-expansion-panel v-for="(card, index) in deck.cards" :key="'card' + card.uuid">
                   <card-editor
                     v-on:remove-card="removeThisCard(index)"
+                    v-on:save-card="saveThisCard(index)"
                     :cardToEdit="card"
                     :index="index"
                     :deckToEdit="deck.id"
@@ -273,6 +281,7 @@ export default {
       error: null,
       success: null,
       deletedCard: null,
+      savedCard: null,
       step: 1,
       imageRenderKey: 0,
       valid: true,
@@ -404,6 +413,9 @@ export default {
   methods: {
     forceImageRerender() {
       this.imageRenderKey += 1;
+    },
+    saveThisCard(index) {
+      this.savedCard = true;
     },
     removeThisCard(index) {
       this.deletedCard = true;

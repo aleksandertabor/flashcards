@@ -26,6 +26,33 @@ to {
 }
 }
 
+.custom-loader[data-v-92bc1fc0] {
+  -webkit-animation: loader-data-v-92bc1fc0 1s infinite;
+          animation: loader-data-v-92bc1fc0 1s infinite;
+  display: -webkit-box;
+  display: flex;
+}
+@-webkit-keyframes loader-data-v-92bc1fc0 {
+from {
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
+}
+to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+}
+}
+@keyframes loader-data-v-92bc1fc0 {
+from {
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
+}
+to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+}
+}
+
 .parallax .v-image__image {
   background-attachment: fixed;
   background-position: center;
@@ -45586,5 +45613,9 @@ html::-webkit-scrollbar-thumb {
 html::-webkit-scrollbar-track {
   background: -webkit-gradient(linear, left top, left bottom, from(#cacaca), to(#ffffff));
   background: linear-gradient(to bottom, #cacaca 0%, #ffffff 100%);
+}
+
+.v-snack {
+  z-index: 99999999999 !important;
 }
 

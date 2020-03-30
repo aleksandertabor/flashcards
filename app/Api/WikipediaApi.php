@@ -24,7 +24,7 @@ class WikipediaApi implements ImageContract
             ])['text'];
         }
 
-        $output = $this->client->request('GET', "media/{$imageToFind}")->getBody()->getContents();
+        $output = $this->client->request('GET', "media-list/{$imageToFind}")->getBody()->getContents();
 
         $decodedOutput = json_decode($output);
 
@@ -33,7 +33,13 @@ class WikipediaApi implements ImageContract
                 return $item->type === 'image' && $item->showInGallery === true;
             });
 
-            return $results->pluck('thumbnail.source')->random();
+            $url = $results->random()->srcset[0]->src;
+
+            if (! preg_match('~^(?:f|ht)tps?://~i', $url)) {
+                $url = 'https:'.$url;
+            }
+
+            return $url;
         }
 
         return '';

@@ -146,13 +146,6 @@
         <v-card-actions>
           <v-alert type="error" v-if="error" dismissible>{{ error }} Not saved.</v-alert>
           <v-alert v-if="success" type="success" dismissible>Your card has been saved.</v-alert>
-          <v-snackbar
-            v-model="success"
-            color="success"
-            :timeout="3000"
-            bottom
-            left
-          >Your card has been saved.</v-snackbar>
         </v-card-actions>
       </v-form>
     </v-expansion-panel-content>
@@ -264,6 +257,7 @@ export default {
           .dispatch("updateCard", this.card)
           .then(response => {
             this.success = true;
+            this.$emit("save-card");
           })
           .catch(error => {
             const {
@@ -288,6 +282,7 @@ export default {
           .then(response => {
             this.success = true;
             this.card.id = response.data.createCard.id;
+            this.$emit("save-card");
           })
           .catch(error => {
             const {
@@ -373,8 +368,8 @@ export default {
           })
           .then(response => {
             if (response.data.translate.length) {
-              const answerInput = this.$refs.answer;
-              answerInput.reset();
+              //   const answerInput = this.$refs.answer;
+              //   answerInput.reset();
               this.card.answer = response.data.translate;
               this.$forceUpdate();
             }

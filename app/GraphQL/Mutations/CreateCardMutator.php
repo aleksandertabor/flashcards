@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\UnreachableUrl;
 
 class CreateCardMutator
 {
@@ -73,6 +74,13 @@ class CreateCardMutator
                      ]);
                     throw $error;
                 }
+                if ($e instanceof UnreachableUrl) {
+                    $error = ValidationException::withMessages([
+                        'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
+                     ]);
+                    throw $error;
+                }
+
                 $error = ValidationException::withMessages([
                         'image' => [$e->getMessage()],
                      ]);

@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\UnreachableUrl;
 
 class CreateDeckMutator
 {
@@ -64,6 +65,12 @@ class CreateDeckMutator
                 }
             } catch (Exception $e) {
                 if ($e instanceof FileIsTooBig) {
+                    $error = ValidationException::withMessages([
+                        'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
+                     ]);
+                    throw $error;
+                }
+                if ($e instanceof UnreachableUrl) {
                     $error = ValidationException::withMessages([
                         'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
                      ]);

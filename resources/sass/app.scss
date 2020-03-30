@@ -22,3 +22,7 @@ html::-webkit-scrollbar-thumb {
 html::-webkit-scrollbar-track {
     background: linear-gradient(to bottom, #cacaca 0%, #ffffff 100%);
 }
+
+.v-snack {
+    z-index: 99999999999 !important;
+}

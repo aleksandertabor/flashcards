@@ -14,6 +14,7 @@
         </v-col>
         <v-col cols="12" md="6">
           <print-deck :deck="deck"></print-deck>
+          <share-deck :deck="deck"></share-deck>
         </v-col>
       </v-row>
 
@@ -40,10 +41,12 @@
 <script>
 import Cards from "./Cards";
 import PrintDeck from "./PrintDeck";
+import ShareDeck from "./ShareDeck";
 export default {
   components: {
     Cards,
-    PrintDeck
+    PrintDeck,
+    ShareDeck
   },
   data() {
     return {
