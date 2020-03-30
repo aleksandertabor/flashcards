@@ -289,9 +289,9 @@ export default {
       rules: {
         required: v => !!v || "Required.",
         min: len => v =>
-          !v || (v && v.length >= len) || "Min " + len + "characters",
+          !v || (v && v.length >= len) || "Min " + len + " characters",
         max: len => v =>
-          !v || (v && v.length <= len) || "Max " + len + "characters",
+          !v || (v && v.length <= len) || "Max " + len + " characters",
         length: len => v =>
           (v || "").length >= len ||
           "Invalid character length, required " + len,

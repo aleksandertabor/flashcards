@@ -24,7 +24,10 @@
               filled
               :loading="loading || !assetsLoaded"
               counter="255"
-              @change="autoAssets()"
+              persistent-hint
+              hint="On Auto mode press Return or Tab when editing this field"
+              @keyup.enter="autoAssets()"
+              @keydown.tab="autoAssets()"
               autofocus
             ></v-text-field>
           </v-col>
@@ -39,7 +42,7 @@
               clearable
               filled
               :loading="loading || !assetsLoaded"
-              :disabled="loading"
+              :disabled="loading || !assetsLoaded"
               counter="255"
             ></v-text-field>
           </v-col>
@@ -56,6 +59,7 @@
               clearable
               filled
               :loading="loading || !assetsLoaded"
+              :disabled="loading || !assetsLoaded"
               counter="255"
             ></v-textarea>
           </v-col>
@@ -69,6 +73,7 @@
               clearable
               filled
               :loading="loading || !assetsLoaded"
+              :disabled="loading || !assetsLoaded"
               counter="255"
             ></v-textarea>
           </v-col>
@@ -86,6 +91,7 @@
               @change="previewImage"
               filled
               :loading="loading || !assetsLoaded"
+              :disabled="loading || !assetsLoaded"
               @click:clear="forceImageRerender()"
               show-size
             ></v-file-input>
@@ -101,6 +107,7 @@
               filled
               clearable
               :loading="loading || !assetsLoaded"
+              :disabled="loading || !assetsLoaded"
               @input="forceImageRerender(); clearImageUrlValidation();"
               @click:clear="forceImageRerender(); clearImageUrlValidation();"
             ></v-text-field>
@@ -191,9 +198,9 @@ export default {
       rules: {
         required: v => !!v || "Required.",
         min: len => v =>
-          !v || (v && v.length >= len) || "Min " + len + "characters",
+          !v || (v && v.length >= len) || "Min " + len + " characters",
         max: len => v =>
-          !v || (v && v.length <= len) || "Max " + len + "characters",
+          !v || (v && v.length <= len) || "Max " + len + " characters",
         length: len => v =>
           (v || "").length >= len ||
           "Invalid character length, required " + len,
@@ -241,7 +248,9 @@ export default {
     },
     assetsLoaded() {
       for (let loading in this.loaded) {
-        if (!this.loaded[loading]) return false;
+        if (!this.loaded[loading]) {
+          return false;
+        }
       }
       return true;
     }
@@ -368,9 +377,11 @@ export default {
           })
           .then(response => {
             if (response.data.translate.length) {
-              //   const answerInput = this.$refs.answer;
-              //   answerInput.reset();
-              this.card.answer = response.data.translate;
+              if (this.card.answer !== response.data.translate) {
+                const answerInput = this.$refs.answer;
+                answerInput.reset();
+                this.card.answer = response.data.translate;
+              }
               this.$forceUpdate();
             }
           })

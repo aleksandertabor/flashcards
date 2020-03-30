@@ -20,7 +20,11 @@ if (workbox) {
     const handler = workbox.precaching.createHandlerBoundToURL('/');
     // Assuming '/' has been precached,
     // look up its corresponding cache key.
-    const navigationRoute = new workbox.routing.NavigationRoute(handler);
+    const navigationRoute = new workbox.routing.NavigationRoute(handler, {
+        denylist: [
+            new RegExp('/img/*'),
+        ],
+    });
     workbox.routing.registerRoute(navigationRoute);
 
 

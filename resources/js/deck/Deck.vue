@@ -75,9 +75,8 @@ export default {
 
 <style>
 .parallax .v-image__image {
-  background-attachment: fixed;
   background-position: center;
-  background-repeat: no-repeat;
   background-size: cover;
+  background-repeat: no-repeat;
 }
 </style>

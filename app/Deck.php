@@ -12,10 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
-use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\Models\Media;
 
 class Deck extends Model implements HasMedia
 {
@@ -99,39 +97,6 @@ class Deck extends Model implements HasMedia
 
     public function registerMediaCollections()
     {
-        // $this
-        // ->addMediaCollection('main')
-        // ->registerMediaConversions(function (Media $media) {
-        //     $this->addMediaConversion('thumbnail')
-        //         ->fit(Manipulations::FIT_STRETCH, 170, 113)
-        //         ->format(Manipulations::FORMAT_JPG);
-
-        //     $this->addMediaConversion('mobile')
-        //         ->width(320)
-        //         ->height(200)
-        //         ->format(Manipulations::FORMAT_JPG);
-
-        //     $this->addMediaConversion('desktop')
-        //         ->width(675)
-        //         ->height(450)
-        //         ->format(Manipulations::FORMAT_JPG);
-
-        //     $this->addMediaConversion('thumbnail-webp')
-        //         ->width(170)
-        //         ->height(113)
-        //         ->format(Manipulations::FORMAT_WEBP);
-
-        //     $this->addMediaConversion('mobile-webp')
-        //         ->width(320)
-        //         ->height(200)
-        //         ->format(Manipulations::FORMAT_WEBP);
-
-        //     $this->addMediaConversion('desktop-webp')
-        //         ->width(675)
-        //         ->height(450)
-        //         ->format(Manipulations::FORMAT_WEBP);
-        // })->singleFile();
-
         $this
             ->addMediaCollection('main')
             ->singleFile();
@@ -173,7 +138,7 @@ class Deck extends Model implements HasMedia
 
     public function scopeOrderByVisibility($query)
     {
-        return $query->orderBy(DB::raw("case when visibility = '".key(self::PUBLIC_VISIBILITY)."' then 1 when visibility = '".key(self::UNLISTED_VISIBILITY)."' then 2 when visibility = '".key(self::PRIVATE_VISIBILITY)."' then 3 end"));
+        return $query->orderBy(DB::raw("case when visibility = '".key(self::PUBLIC_VISIBILITY)."' then 1 when visibility = '".key(self::UNLISTED_VISIBILITY)."' then 2 when visibility = '".key(self::PRIVATE_VISIBILITY)."' then 3 end"))->latest();
     }
 
     public function user()
