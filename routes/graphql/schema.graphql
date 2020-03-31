@@ -27,7 +27,7 @@ type User {
     email: String!
     created_at: String!
     cards_count: Int! @count(relation: "publishedCards")
-    decks: [Deck!]! @hasMany @lazyLoad(relations: ["decks"])
+    decks: [Deck!]! @hasMany(scopes: ["Newest"]) @lazyLoad(relations: ["decks"])
     cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])
 }
 

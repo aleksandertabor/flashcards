@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn :loading="loading" :disabled="loading" color="success" app @click="print">
+    <v-btn x-large block :loading="loading" :disabled="loading" color="success" app @click="print">
       <v-icon>mdi-file-pdf</v-icon>Print deck
     </v-btn>
   </div>

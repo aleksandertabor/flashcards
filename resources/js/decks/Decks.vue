@@ -21,7 +21,7 @@
     </nav>
     <div v-if="loading">Decks are loading ...</div>
     <div v-else>
-      <v-row justify="space-between">
+      <v-row>
         <v-col sm="6" cols="12" md="3" v-for="(deck, index) in decks" :key="'deck' + index">
           <deck-list-item v-bind="deck"></deck-list-item>
         </v-col>

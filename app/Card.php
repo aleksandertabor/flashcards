@@ -17,6 +17,13 @@ class Card extends Model implements HasMedia
      */
     protected $fillable = ['deck_id', 'question', 'answer', 'example_question', 'example_answer'];
 
+    /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['deck'];
+
     public function registerMediaCollections()
     {
         $this

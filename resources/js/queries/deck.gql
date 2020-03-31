@@ -35,6 +35,7 @@ query deck($slug: String!) {
         description
         image
         slug
+        cards_count
         cards {
             id
             question

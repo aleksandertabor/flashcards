@@ -212,7 +212,7 @@ export default {
           "Wrong URL.",
         size: value =>
           !value ||
-          value.size < 2000000 ||
+          value.size < 2097152 ||
           "File size should be less than 2 MB!"
       }
     };

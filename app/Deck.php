@@ -138,7 +138,12 @@ class Deck extends Model implements HasMedia
 
     public function scopeOrderByVisibility($query)
     {
-        return $query->orderBy(DB::raw("case when visibility = '".key(self::PUBLIC_VISIBILITY)."' then 1 when visibility = '".key(self::UNLISTED_VISIBILITY)."' then 2 when visibility = '".key(self::PRIVATE_VISIBILITY)."' then 3 end"))->latest();
+        return $query->orderBy(DB::raw("case when visibility = '".key(self::PUBLIC_VISIBILITY)."' then 1 when visibility = '".key(self::UNLISTED_VISIBILITY)."' then 2 when visibility = '".key(self::PRIVATE_VISIBILITY)."' then 3 end"))->latest('updated_at');
+    }
+
+    public function scopeNewest($query)
+    {
+        return $query->latest();
     }
 
     public function user()

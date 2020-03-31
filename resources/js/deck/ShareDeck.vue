@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn v-if="canShare()" color="yellow" app @click="share">
+    <v-btn x-large block v-if="canShare()" color="yellow" app @click="share">
       <v-icon>mdi-share</v-icon>Share deck
     </v-btn>
   </div>
