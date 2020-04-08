@@ -57,6 +57,8 @@ if (workbox) {
                     maxEntries: 60,
                     // Cache for a maximum of a month.
                     maxAgeSeconds: 30 * 24 * 60 * 60,
+                    // Automatically cleanup if quota is exceeded.
+                    purgeOnQuotaError: true,
                 })
             ],
         })

@@ -1,6 +1,7 @@
 fragment UserDetails on User {
 	username
 	email
+    image
 	__typename
 }
 

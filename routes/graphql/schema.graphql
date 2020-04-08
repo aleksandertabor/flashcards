@@ -25,6 +25,7 @@ type User {
     id: Int!
     username: String!
     email: String!
+    image: String! @field(resolver: "App\\GraphQL\\Types\\UserType@image")
     created_at: String!
     cards_count: Int! @count(relation: "publishedCards")
     decks: [Deck!]! @hasMany(scopes: ["Newest"]) @lazyLoad(relations: ["decks"])
@@ -35,6 +36,7 @@ type AuthUser @modelClass(class: "\\App\\User") {
     id: Int!
     username: String!
     email: String!
+    image: String! @field(resolver: "App\\GraphQL\\Types\\UserType@image")
     editable: Boolean
     cards_count: Int! @count(relation: "cards")
     decks: [Deck!]! @hasMany(relation: "userDecks", scopes: ["OrderByVisibility"]) @lazyLoad(relations: ["userDecks"])
@@ -125,30 +127,32 @@ type LogoutResponse {
 
 type Mutation @middleware(checks: ["auth:api"]) {
 
-      editProfile(
-          id: Int!
-          username: String
-          email: String
-          password: String
-          password_confirmation: String
-          ): User @editProfileRules @update @able(ability: "update", find: "id")
+    editProfile(
+        id: Int!
+        username: String
+        email: String
+        password: String
+        password_confirmation: String
+        image_file: Upload
+        ): User @field(resolver: "App\\GraphQL\\Mutations\\Users\\EditProfileMutator")  @able(ability: "update", find: "id")
 
-          removeProfile(
-          id: Int!
-          ): User @delete @able(ability: "delete", find: "id")
+    removeProfile(
+    id: Int!
+    ): User @delete @able(ability: "delete", find: "id")
 
-  createDeck(input: CreateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\CreateDeckMutator") @able(ability: "create")
+    createDeck(input: CreateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\Decks\\CreateDeckMutator") @able(ability: "create")
 
-            updateDeck(input: UpdateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\UpdateDeckMutator") @able(ability: "update", find: "id")
-          removeDeck(id: ID!): Deck! @field(resolver: "App\\GraphQL\\Mutations\\RemoveDeckMutator") @able(ability: "delete", find: "id")
+    updateDeck(input: UpdateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\Decks\\UpdateDeckMutator") @able(ability: "update", find: "id")
+
+    removeDeck(id: ID!): Deck! @field(resolver: "App\\GraphQL\\Mutations\\Decks\\RemoveDeckMutator") @able(ability: "delete", find: "id")
 
 
 
-    createCard(input: CreateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\CreateCardMutator") @able(ability: "create")
+    createCard(input: CreateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\Cards\\CreateCardMutator") @able(ability: "create")
 
-        updateCard(input: UpdateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\UpdateCardMutator") @able(ability: "update", find: "id")
+    updateCard(input: UpdateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\Cards\\UpdateCardMutator") @able(ability: "update", find: "id")
 
-        removeCard(id: ID!): Card! @field(resolver: "App\\GraphQL\\Mutations\\RemoveCardMutator") @able(ability: "delete", find: "id")
+    removeCard(id: ID!): Card! @field(resolver: "App\\GraphQL\\Mutations\\Cards\\RemoveCardMutator") @able(ability: "delete", find: "id")
 
 }
 
@@ -156,20 +160,19 @@ type Mutation @middleware(checks: ["auth:api"]) {
 
 extend type Mutation {
 
-
-          logout: LogoutResponse!
-      @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@logout")
+    logout: LogoutResponse!
+      @field(resolver: "App\\GraphQL\\Mutations\\Auth\\LogoutMutator")
 
     login(data: LoginInput @spread): LoginResponse!
-    @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@login")
+    @field(resolver: "App\\GraphQL\\Mutations\\Auth\\LoginMutator")
 
-refresh_token(refresh: Boolean): RefreshResponse!
-    @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@refresh_token")
+    refresh_token(refresh: Boolean): RefreshResponse!
+    @field(resolver: "App\\GraphQL\\Mutations\\Auth\\RefreshTokenMutator")
 
     register(data:
         RegisterInput @spread
     ): LoginResponse!
-    @field(resolver: "App\\GraphQL\\Resolvers\\AuthResolver@register")
+    @field(resolver: "App\\GraphQL\\Mutations\\Auth\\RegisterMutator")
 }
 
 input CreateDeckInput {

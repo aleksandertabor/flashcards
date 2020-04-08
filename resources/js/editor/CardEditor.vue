@@ -84,6 +84,7 @@
             <v-file-input
               v-model="card.image_file"
               :rules="[rules.size]"
+              :error-messages="errorFor('image_file')"
               accept="image/png, image/jpeg, image/webp"
               placeholder="Pick an image"
               prepend-icon="mdi-camera"

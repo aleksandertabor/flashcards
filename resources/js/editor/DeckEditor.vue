@@ -83,13 +83,14 @@
                   <v-col cols="12" md="6">
                     <v-file-input
                       v-model="deck.image_file"
-                      :rules="[rules.size]"
                       accept="image/png, image/jpeg, image/webp"
                       placeholder="Pick an image"
                       prepend-icon="mdi-camera"
                       label="Image"
                       @change="previewImage"
+                      :error-messages="errorFor('image_file')"
                       filled
+                      :rules="[rules.size]"
                       @click:clear="forceImageRerender()"
                       show-size
                     ></v-file-input>

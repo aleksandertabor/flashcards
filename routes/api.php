@@ -13,27 +13,6 @@ use Illuminate\Http\Request;
 |
  */
 
-Route::group(['middleware' => ['auth:api']], function () {
-    Route::apiResource('users', 'UserController')->only(['edit', 'update', 'destroy']);
-});
-
-Route::apiResource('users', 'UserController')->only(['show']);
-
-Route::apiResource('decks', 'Api\DeckController')->only(['index', 'show']);
-
-Route::get('search', 'SearchDeckController@index');
-
-Route::post('login', 'AuthController@login');
-
-Route::post('register', 'AuthController@register');
-Route::post('logout', 'AuthController@logout');
-
-Route::post('translate', 'TranslationController');
-Route::post('detect', 'DetectionController');
-Route::post('wikipedia', 'WikipediaController');
-Route::post('twinword', 'TwinwordController');
-Route::post('languages', 'LanguagesController');
-
 Route::post('push', 'PushController@store');
 Route::get('notifications', 'PushController@push');
 Route::post('unsubscribe', 'PushController@destroy');

@@ -99,6 +99,7 @@ class Deck extends Model implements HasMedia
     {
         $this
             ->addMediaCollection('main')
+            ->acceptsMimeTypes(['image/png', 'image/jpeg', 'image/webp'])
             ->singleFile();
     }
 

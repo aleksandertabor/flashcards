@@ -1,6 +1,7 @@
 {
     "name": "Flashcards",
-    "short_name": "FC",
+    "short_name": "Flashcards",
+    "description": "Create your decks and add flashcards.",
     "background_color": "#1565c0",
     "theme_color": "#1565c0",
     "start_url": "/",

@@ -42,9 +42,11 @@ const actions = {
                     }
                 })
                 .then(response => {
+                    console.log(response.data.login.user.image);
                     let user = {
                         username: response.data.login.user.username,
                         email: response.data.login.user.email,
+                        image: response.data.login.user.image,
                         access_token: response.data.login.access_token,
                         expires_in: response.data.login.expires_in,
                     }
@@ -88,7 +90,7 @@ const actions = {
     },
     register(context, payload) {
         return new Promise((resolve, reject) => {
-            apolloClient.mutate({
+            apolloUploadClient.mutate({
                     mutation: register,
                     variables: {
                         data: payload
@@ -185,9 +187,8 @@ const actions = {
         });
     },
     editProfile(context, payload) {
-        console.log("edtProfile payload", payload);
         return new Promise((resolve, reject) => {
-            apolloClient.mutate({
+            apolloUploadClient.mutate({
                     mutation: editProfile,
                     variables: {
                         id: payload.id,
@@ -195,6 +196,7 @@ const actions = {
                         email: payload.email,
                         password: payload.password,
                         password_confirmation: payload.password_confirmation,
+                        image_file: payload.image_file,
                     },
                 })
                 .then(response => {
@@ -202,6 +204,7 @@ const actions = {
                     let currentUser = JSON.parse(localStorage.getItem('user'))
                     currentUser.username = user.username;
                     currentUser.email = user.email;
+                    currentUser.image = user.image;
                     localStorage.setItem('user', JSON.stringify(currentUser));
                     context.commit('refresh', currentUser);
                     console.log("editProfile", user);

@@ -13,6 +13,9 @@
 
     <link rel="apple-touch-icon" sizes="152x152" href="/images/icons/icon-152x152.png" type="image/png">
 
+    <meta name="msapplication-TileImage" content="/images/icons/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#000000">
+
     <meta name="theme-color" content="#1565c0">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
@@ -64,6 +67,10 @@
             }
         }
     </style>
+
+    <link rel="preload" href="{{ asset('css/app.css') }}" as="style">
+    <link rel="preload" href="{{ asset('js/app.js') }}" as="script">
+
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>

@@ -3,9 +3,12 @@
 namespace App\Traits;
 
 use Illuminate\Http\Request;
+use Laravel\Passport\Client;
 
 trait PassportTokenTrait
 {
+    private $client;
+
     /**
      * @param $credentials
      * @param $grantType
@@ -13,6 +16,8 @@ trait PassportTokenTrait
      */
     public function issueToken($credentials, $grantType, $scope = null)
     {
+        $this->client = Client::first();
+
         $credentials = [
             'username' => $credentials['username'] ?? null,
             'password' => $credentials['password'] ?? null,

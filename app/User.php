@@ -8,10 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use NotificationChannels\WebPush\HasPushSubscriptions;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, Notifiable, Sluggable, HasPushSubscriptions;
+    use HasApiTokens, Notifiable, Sluggable, HasPushSubscriptions, HasMediaTrait;
     /**
      * The attributes that are mass assignable.
      *
@@ -72,6 +74,14 @@ class User extends Authenticatable
     public function getRouteKeyName()
     {
         return 'username';
+    }
+
+    public function registerMediaCollections()
+    {
+        $this
+            ->addMediaCollection('main')
+            ->acceptsMimeTypes(['image/png', 'image/jpeg', 'image/webp'])
+            ->singleFile();
     }
 
     public function getCreatedAtAttribute($date)

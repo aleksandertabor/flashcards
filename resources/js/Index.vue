@@ -32,7 +32,11 @@
           link
         >
           <v-list-item-avatar color="teal">
-            <span class="white--text headline">{{ user.username.charAt(0).toUpperCase() }}</span>
+            <span
+              v-if="!user.image"
+              class="white--text headline"
+            >{{ user.username.charAt(0).toUpperCase() }}</span>
+            <img v-show="user.image" :src="user.image || ''" />
           </v-list-item-avatar>
 
           <v-list-item-content>

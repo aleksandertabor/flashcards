@@ -6,8 +6,12 @@
         <v-img height="100%" src="/images/bg-profile.png">
           <v-row align="end" class="fill-height pa-5 profile-row">
             <v-col class="d-flex justify-space-between" cols="12">
-              <v-avatar class="profile" color="teal" size="84">
-                <span class="white--text headline">{{ userData.username.charAt(0).toUpperCase() }}</span>
+              <v-avatar class="profile" color="teal" size="120">
+                <span
+                  v-if="!userData.image"
+                  class="white--text display-1"
+                >{{ userData.username.charAt(0).toUpperCase() }}</span>
+                <v-img v-show="userData.image" :key="imageRenderKey" :src="userData.image || ''"></v-img>
               </v-avatar>
               <div class="d-flex flex-column justify-space-around align-items-center pr-2">
                 <div class="pb-5">
@@ -94,6 +98,7 @@ export default {
   data() {
     return {
       userData: {},
+      imageRenderKey: 0,
       loading: false,
       editable: false,
       additionalView: ""
@@ -120,6 +125,7 @@ export default {
         .dispatch("profile", this.$route.params.username)
         .then(response => {
           this.userData = response.data.profile;
+          this.userData.image_file = this.userData.image || null;
           if (this.userData.id > 0) {
             this.editable = true;
           }

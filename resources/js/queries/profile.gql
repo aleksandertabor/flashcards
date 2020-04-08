@@ -4,6 +4,7 @@ query profile($username: String!) {
     id
     username
     email
+    image
     editable
     cards_count
       decks {
@@ -20,6 +21,7 @@ query profile($username: String!) {
     ... on User {
     username
     email
+    image
     cards_count
       decks {
         title
@@ -33,12 +35,13 @@ query profile($username: String!) {
     }
   }
 }
-mutation editProfile($id: Int!, $username: String, $email: String, $password: String, $password_confirmation: String) {
+mutation editProfile($id: Int!, $username: String, $email: String, $password: String, $password_confirmation: String, $image_file: Upload) {
   editProfile(
-      id: $id, username: $username, email: $email, password: $password, password_confirmation: $password_confirmation
+      id: $id, username: $username, email: $email, password: $password, password_confirmation: $password_confirmation, image_file: $image_file
   ) {
       username
       email
+      image
   }
 }
 

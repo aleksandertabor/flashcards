@@ -110,9 +110,4 @@ export default {
 </script>
 
 <style scoped>
-label {
-  font-size: 1.2em;
-  text-transform: uppercase;
-  font-weight: bolder;
-}
 </style>
