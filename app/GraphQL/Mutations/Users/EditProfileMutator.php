@@ -29,7 +29,7 @@ class EditProfileMutator
             'email' => ['sometimes', 'required', 'string', 'email', Rule::unique('users', 'email')->ignore($args['id'])],
             'password' => ['nullable', 'min:6', 'confirmed'],
             'password_confirmation' => [],
-            'image_file' => ['image', 'nullable', 'max:2048', 'mimes:jpeg,webp,png'],
+            'image_file' => ['image', 'nullable', 'sometimes', 'max:2048', 'mimes:jpeg,webp,png'],
         ]);
 
         if ($validator->fails()) {
@@ -40,20 +40,26 @@ class EditProfileMutator
 
         $user->update($args);
 
-        if ($args['image_file']) {
+        if ($image = $args['image_file'] ?? null) {
             try {
-                $user->addMedia($args['image_file'])->toMediaCollection('main');
+                $user->addMedia($image)->toMediaCollection('main');
             } catch (Exception $e) {
                 $error = ValidationException::withMessages([
-                        'image' => ['Try upload other image.'],
+                        'image_file' => ['Try upload other image.'],
                      ]);
                 throw $error;
             }
-        } else {
-            $media = $user->getFirstMedia('main');
-            if ($media) {
-                $media->delete();
+        } elseif ($args['image']) {
+            try {
+                $user->addMediaFromBase64($args['image'])->toMediaCollection('main');
+            } catch (Exception $e) {
+                $error = ValidationException::withMessages([
+                        'image_file' => ['Try upload other image.'],
+                     ]);
+                throw $error;
             }
+        } elseif (! $args['image']) {
+            $user->clearMediaCollection('main');
         }
 
         return $user;

@@ -12,6 +12,8 @@ class UserType
     {
         $url = '';
 
+        // dump($context);
+
         $media = $user->getFirstMedia('main');
 
         if ($media) {

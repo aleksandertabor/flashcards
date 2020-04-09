@@ -35,9 +35,9 @@ query profile($username: String!) {
     }
   }
 }
-mutation editProfile($id: Int!, $username: String, $email: String, $password: String, $password_confirmation: String, $image_file: Upload) {
+mutation editProfile($id: Int!, $username: String, $email: String, $password: String, $password_confirmation: String, $image_file: Upload, $image: String) {
   editProfile(
-      id: $id, username: $username, email: $email, password: $password, password_confirmation: $password_confirmation, image_file: $image_file
+      id: $id, username: $username, email: $email, password: $password, password_confirmation: $password_confirmation, image_file: $image_file, image: $image
   ) {
       username
       email

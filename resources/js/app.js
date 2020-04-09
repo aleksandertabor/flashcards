@@ -3,7 +3,6 @@ import 'cross-fetch/polyfill';
 import store from "./store";
 import router from "./routes";
 import VueRouter from "vue-router";
-import LazyLoad from "./lazyload";
 import ServiceWorker from "./plugins/ServiceWorker";
 import NotificationSystem from "./plugins/NotificationSystem";
 import Index from "./Index";
@@ -12,6 +11,7 @@ import apolloClient from "./apollo";
 import Vuetify from 'vuetify'
 import vuetify from "./vuetify";
 import VueClipboard from 'vue-clipboard2'
+import Loading from './partials/Loading';
 
 window.Vue = require('vue');
 
@@ -21,10 +21,11 @@ if ('Notification' in window) {
 
 Vue.use(Vuetify)
 Vue.use(VueRouter);
-Vue.use(LazyLoad);
 Vue.use(ServiceWorker);
 Vue.use(VueApollo);
 Vue.use(VueClipboard)
+
+Vue.component('loading', Loading);
 
 
 const apolloProvider = new VueApollo({

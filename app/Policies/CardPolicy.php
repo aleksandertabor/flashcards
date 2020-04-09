@@ -53,11 +53,11 @@ class CardPolicy
      */
     public function update(User $user, Card $card)
     {
-        if (! $user->decks()->whereId($card->deck_id)->first()) {
+        if (! $deck = $user->decks()->whereId($card->deck_id)->first()) {
             return false;
         }
 
-        return $user->id === $user->decks()->whereId($card->deck_id)->first()->user_id;
+        return $user->id === $deck->user_id;
     }
 
     /**
@@ -69,11 +69,11 @@ class CardPolicy
      */
     public function delete(User $user, Card $card)
     {
-        if (! $user->decks()->whereId($card->deck_id)->first()) {
+        if (! $deck = $user->decks()->whereId($card->deck_id)->first()) {
             return false;
         }
 
-        return $user->id === $user->decks()->whereId($card->deck_id)->first()->user_id;
+        return $user->id === $deck->user_id;
     }
 
     /**

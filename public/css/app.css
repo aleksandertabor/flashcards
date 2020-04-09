@@ -45445,7 +45445,17 @@ html {
   .v-application .float-print-right {
     float: right !important;
   }
-}@font-face {
+}
+#loading-cards[data-v-7ad9b81d] {
+  height: 100vh;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+          justify-content: center;
+}
+@font-face {
   font-family: "Roboto";
   src: url(/fonts/vendor/roboto-fontface/roboto/Roboto-Regular.woff2?73f0a88bbca1bec19fb1303c689d04c6) format("woff2"), url(/fonts/vendor/roboto-fontface/roboto/Roboto-Regular.woff?35b07eb2f8711ae08d1f58c043880930) format("woff");
   font-weight: 400;

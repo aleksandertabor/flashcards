@@ -121,10 +121,12 @@ const actions = {
                     let user = {
                         username: response.data.me.username,
                         email: response.data.me.email,
+                        image: response.data.me.image,
                     }
                     let currentUser = JSON.parse(localStorage.getItem('user')) || {}
                     currentUser.username = user.username;
                     currentUser.email = user.email;
+                    currentUser.image = user.image;
                     localStorage.setItem('user', JSON.stringify(currentUser))
                     context.commit('me', currentUser);
                     resolve(response)
@@ -197,6 +199,7 @@ const actions = {
                         password: payload.password,
                         password_confirmation: payload.password_confirmation,
                         image_file: payload.image_file,
+                        image: payload.image,
                     },
                 })
                 .then(response => {
@@ -240,7 +243,6 @@ const actions = {
     },
     decks(context, payload) {
         return new Promise((resolve, reject) => {
-            console.log(payload);
             apolloClient.query({
                     query: decks,
                     variables: {
@@ -255,7 +257,6 @@ const actions = {
                     if (decks.length) {
                         context.commit('decks', decks);
                     }
-                    console.log(response);
                     resolve(response)
                 })
                 .catch(error => {

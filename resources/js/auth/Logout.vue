@@ -1,4 +1,6 @@
-<template></template>
+<template>
+  <loading></loading>
+</template>
 
 <script>
 export default {

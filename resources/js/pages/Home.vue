@@ -26,7 +26,7 @@
         <ApolloQuery :query="require('../queries/home.gql').stats" fetchPolicy="network-only">
           <template v-slot="{ result: { error, data }, isLoading }">
             <!-- Loading -->
-            <div v-if="isLoading" class="loading apollo"></div>
+            <loading v-if="isLoading" class="loading apollo"></loading>
 
             <!-- Result -->
             <v-row v-else-if="data" class="result apollo" justify="space-around">
@@ -78,7 +78,7 @@
         >
           <template v-slot="{ result: { error, data }, isLoading }">
             <!-- Loading -->
-            <div v-if="isLoading" class="loading apollo"></div>
+            <loading v-if="isLoading" class="loading apollo"></loading>
 
             <!-- Result -->
             <div v-else-if="data" class="result apollo">
@@ -125,7 +125,7 @@
         >
           <template v-slot="{ result: { error, data }, isLoading }">
             <!-- Loading -->
-            <div v-if="isLoading" class="loading apollo"></div>
+            <loading v-if="isLoading" class="loading apollo"></loading>
 
             <!-- Result -->
             <div v-else-if="data" class="result apollo">

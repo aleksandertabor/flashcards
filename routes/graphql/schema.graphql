@@ -134,6 +134,7 @@ type Mutation @middleware(checks: ["auth:api"]) {
         password: String
         password_confirmation: String
         image_file: Upload
+        image: String
         ): User @field(resolver: "App\\GraphQL\\Mutations\\Users\\EditProfileMutator")  @able(ability: "update", find: "id")
 
     removeProfile(

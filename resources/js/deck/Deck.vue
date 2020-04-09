@@ -41,7 +41,7 @@
         </v-col>
       </v-row>
     </div>
-    <div v-else>Loading ...</div>
+    <loading v-else></loading>
     <v-item-group v-if="!loading" multiple>
       <cards :cards="this.deck.cards"></cards>
     </v-item-group>

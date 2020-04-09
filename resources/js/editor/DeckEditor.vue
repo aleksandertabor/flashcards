@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="loading">Loading ...</div>
+    <loading v-if="loading"></loading>
     <div v-else>
       <v-card>
         <v-card-title class="title font-weight-regular justify-space-between">
@@ -396,11 +396,6 @@ export default {
                   name: "deck",
                   params: { slug: deck.slug }
                 }).href;
-
-              //   this.deck = response.data.deck;
-              //   if (this.deck === null) {
-              //     this.$router.push({ name: "home" });
-              //   }
             })
             .catch(error => {
               this.$router.go(-1);
@@ -464,7 +459,6 @@ export default {
           })
           .then(() => (this.loading = false));
       } else {
-        console.log("bedzie creatowac");
         this.$store
           .dispatch("createDeck", this.deck)
           .then(response => {
@@ -476,7 +470,6 @@ export default {
                 name: "deck",
                 params: { slug: response.data.createDeck.slug }
               }).href;
-            console.log("createDeckvue", response);
           })
           .catch(error => {
             for (let i = 0; i < this.deck.cards.length; i++) {

@@ -83,10 +83,7 @@ class CreateCardMutator
                 throw $error;
             }
         } else {
-            $media = $card->getFirstMedia('main');
-            if ($media) {
-                $media->delete();
-            }
+            $card->clearMediaCollection('main');
         }
 
         return $card;

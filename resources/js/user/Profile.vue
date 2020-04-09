@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="loading">Profile is loading ...</div>
+    <loading v-if="loading"></loading>
     <div v-else>
       <v-card class="mx-auto" max-width="434" tile>
         <v-img height="100%" src="/images/bg-profile.png">
@@ -13,7 +13,7 @@
                 >{{ userData.username.charAt(0).toUpperCase() }}</span>
                 <v-img v-show="userData.image" :key="imageRenderKey" :src="userData.image || ''"></v-img>
               </v-avatar>
-              <div class="d-flex flex-column justify-space-around align-items-center pr-2">
+              <div class="d-flex flex-column justify-space-around align-items-center pr-5">
                 <div class="pb-5">
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
@@ -56,7 +56,7 @@
                   color="success"
                   depressed
                   @click="changeView('EditProfile')"
-                >Edit</v-btn>
+                >Edit account</v-btn>
               </v-badge>
               <v-badge bordered color="error" icon="mdi-account-remove" overlap>
                 <v-btn
@@ -64,7 +64,15 @@
                   color="error"
                   depressed
                   @click="changeView('RemoveProfile')"
-                >Remove</v-btn>
+                >Remove account</v-btn>
+              </v-badge>
+              <v-badge bordered color="warning" icon="mdi-camera" overlap>
+                <v-btn
+                  class="white--text mb-2"
+                  color="warning"
+                  depressed
+                  @click="changeView('ChangeAvatar')"
+                >Change Avatar</v-btn>
               </v-badge>
             </v-col>
           </v-row>
@@ -80,20 +88,20 @@
         ></component>
       </keep-alive>
 
-      <decks
+      <profile-decks
         v-if="userData.decks.length > 0"
         v-bind:decks="userData.decks"
         v-bind:editable="editable"
-      ></decks>
+      ></profile-decks>
     </div>
   </div>
 </template>
 
 <script>
-import Decks from "./Decks";
+import ProfileDecks from "./ProfileDecks";
 export default {
   components: {
-    Decks
+    ProfileDecks
   },
   data() {
     return {
@@ -125,7 +133,6 @@ export default {
         .dispatch("profile", this.$route.params.username)
         .then(response => {
           this.userData = response.data.profile;
-          this.userData.image_file = this.userData.image || null;
           if (this.userData.id > 0) {
             this.editable = true;
           }

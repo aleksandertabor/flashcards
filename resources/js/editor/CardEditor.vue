@@ -322,7 +322,24 @@ export default {
         this.$store
           .dispatch("removeCard", this.card.id)
           .then(response => {})
-          .then(() => this.$emit("remove-card"));
+          .then(() => this.$emit("remove-card"))
+          .catch(error => {
+            const {
+              graphQLErrors: { validationErrors }
+            } = error;
+            const {
+              graphQLErrors: {
+                0: { message }
+              }
+            } = error;
+            if (validationErrors) {
+              this.errors = validationErrors;
+            }
+            if (message) {
+              this.error = message;
+            }
+          })
+          .then(() => (this.loading = false));
       } else {
         this.$emit("remove-card");
       }

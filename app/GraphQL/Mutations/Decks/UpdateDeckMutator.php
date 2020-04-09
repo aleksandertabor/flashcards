@@ -81,10 +81,7 @@ class UpdateDeckMutator
                 throw $error;
             }
         } else {
-            $media = $deck->getFirstMedia('main');
-            if ($media) {
-                $media->delete();
-            }
+            $deck->clearMediaCollection('main');
         }
 
         return $deck;
