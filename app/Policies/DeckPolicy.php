@@ -30,6 +30,10 @@ class DeckPolicy
      */
     public function view(?User $user, Deck $deck)
     {
+        if (! $user) {
+            return false;
+        }
+
         if ($deck->visibility === 'public' || $deck->visibility === 'unlisted') {
             return true;
         } else {

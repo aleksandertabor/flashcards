@@ -23,6 +23,7 @@ if (workbox) {
     const navigationRoute = new workbox.routing.NavigationRoute(handler, {
         denylist: [
             new RegExp('/img/*'),
+            new RegExp('/api/*'),
         ],
     });
     workbox.routing.registerRoute(navigationRoute);
