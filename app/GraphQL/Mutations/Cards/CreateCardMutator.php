@@ -49,6 +49,7 @@ class CreateCardMutator
             try {
                 $card->addMedia($args['image_file'])->toMediaCollection('main');
             } catch (Exception $e) {
+                $card->forceDelete();
                 $error = ValidationException::withMessages([
                         'image' => ['Try upload other image.'],
                      ]);
@@ -65,20 +66,15 @@ class CreateCardMutator
                     $card->addMediaFromUrl($args['image'])->toMediaCollection('main');
                 }
             } catch (Exception $e) {
-                if ($e instanceof FileIsTooBig) {
-                    $error = ValidationException::withMessages([
-                        'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
-                     ]);
-                    throw $error;
-                }
-                if ($e instanceof UnreachableUrl) {
+                $card->forceDelete();
+                if ($e instanceof FileIsTooBig || $e instanceof UnreachableUrl) {
                     $error = ValidationException::withMessages([
                         'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
                      ]);
                     throw $error;
                 }
                 $error = ValidationException::withMessages([
-                        'image' => [$e->getMessage()],
+                        'image' => ['Try upload other image. Supported image formats: jpeg, webp, png.'],
                      ]);
                 throw $error;
             }

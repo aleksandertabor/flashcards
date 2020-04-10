@@ -41,7 +41,7 @@ class UpdateDeckMutator
 
         $deck = Deck::withoutGlobalScopes()->findOrFail($args['id']);
 
-        $deck->update($args);
+        $deck->fill($args);
 
         if ($args['image_file']) {
             try {
@@ -63,26 +63,22 @@ class UpdateDeckMutator
                     $deck->addMediaFromUrl($args['image'])->toMediaCollection('main');
                 }
             } catch (Exception $e) {
-                if ($e instanceof FileIsTooBig) {
-                    $error = ValidationException::withMessages([
-                        'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
-                     ]);
-                    throw $error;
-                }
-                if ($e instanceof UnreachableUrl) {
+                if ($e instanceof FileIsTooBig || $e instanceof UnreachableUrl) {
                     $error = ValidationException::withMessages([
                         'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
                      ]);
                     throw $error;
                 }
                 $error = ValidationException::withMessages([
-                        'image' => [$e->getMessage()],
+                        'image' => ['Try upload other image. Supported image formats: jpeg, webp, png.'],
                      ]);
                 throw $error;
             }
         } else {
             $deck->clearMediaCollection('main');
         }
+
+        $deck->save();
 
         return $deck;
     }

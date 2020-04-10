@@ -171,7 +171,7 @@ export default {
   data() {
     return {
       card: {
-        uuid: null,
+        key: null,
         id: null,
         deck_id: null,
         question: "",

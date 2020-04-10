@@ -208,7 +208,7 @@
           <v-window-item :value="2">
             <v-card-text>
               <v-expansion-panels v-if="deck.cards" focusable>
-                <v-expansion-panel v-for="(card, index) in deck.cards" :key="'card' + card.uuid">
+                <v-expansion-panel v-for="(card, index) in deck.cards" :key="'card' + card.key">
                   <card-editor
                     v-on:remove-card="removeThisCard(index)"
                     v-on:save-card="saveThisCard(index)"
@@ -247,7 +247,6 @@
 </template>
 
 <script>
-import { uuid } from "vue-uuid";
 import CardEditor from "./CardEditor";
 export default {
   components: {
@@ -388,7 +387,7 @@ export default {
               );
               this.deck.cards = deck.cards;
               for (let i = 0; i < this.deck.cards.length; i++) {
-                this.deck.cards[i].uuid = uuid.v4();
+                this.deck.cards[i].key = this.key();
               }
               this.slug =
                 window.location.origin +
@@ -407,6 +406,9 @@ export default {
       });
   },
   methods: {
+    key() {
+      return `card__${Math.random()}`;
+    },
     forceImageRerender() {
       this.imageRenderKey += 1;
     },
@@ -419,7 +421,7 @@ export default {
     },
     addCard() {
       if (this.deck.cards.length < this.cards_limit) {
-        this.deck.cards.push({ uuid: uuid.v4() });
+        this.deck.cards.push({ key: this.key() });
       }
     },
     save() {
@@ -473,7 +475,7 @@ export default {
           })
           .catch(error => {
             for (let i = 0; i < this.deck.cards.length; i++) {
-              this.deck.cards[i].uuid = uuid.v4();
+              this.deck.cards[i].key = this.key();
             }
             const {
               graphQLErrors: { validationErrors }

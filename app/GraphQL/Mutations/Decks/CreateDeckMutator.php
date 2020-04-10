@@ -48,6 +48,7 @@ class CreateDeckMutator
             try {
                 $deck->addMedia($args['image_file'])->toMediaCollection('main');
             } catch (Exception $e) {
+                $deck->forceDelete();
                 $error = ValidationException::withMessages([
                         'image' => ['Try upload other image.'],
                      ]);
@@ -64,20 +65,15 @@ class CreateDeckMutator
                     $deck->addMediaFromUrl($args['image'])->toMediaCollection('main');
                 }
             } catch (Exception $e) {
-                if ($e instanceof FileIsTooBig) {
-                    $error = ValidationException::withMessages([
-                        'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
-                     ]);
-                    throw $error;
-                }
-                if ($e instanceof UnreachableUrl) {
+                $deck->forceDelete();
+                if ($e instanceof FileIsTooBig || $e instanceof UnreachableUrl) {
                     $error = ValidationException::withMessages([
                         'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
                      ]);
                     throw $error;
                 }
                 $error = ValidationException::withMessages([
-                        'image' => [$e->getMessage()],
+                        'image' => ['Try upload other image. Supported image formats: jpeg, webp, png.'],
                      ]);
                 throw $error;
             }

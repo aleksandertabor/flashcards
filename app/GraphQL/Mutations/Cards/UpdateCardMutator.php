@@ -40,7 +40,7 @@ class UpdateCardMutator
 
         $card = Card::findOrFail($args['id']);
 
-        $card->update($args);
+        $card->fill($args);
 
         if ($args['image_file']) {
             try {
@@ -62,26 +62,22 @@ class UpdateCardMutator
                     $card->addMediaFromUrl($args['image'])->toMediaCollection('main');
                 }
             } catch (Exception $e) {
-                if ($e instanceof FileIsTooBig) {
-                    $error = ValidationException::withMessages([
-                        'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
-                     ]);
-                    throw $error;
-                }
-                if ($e instanceof UnreachableUrl) {
+                if ($e instanceof FileIsTooBig || $e instanceof UnreachableUrl) {
                     $error = ValidationException::withMessages([
                         'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
                      ]);
                     throw $error;
                 }
                 $error = ValidationException::withMessages([
-                        'image' => [$e->getMessage()],
+                        'image' => ['Try upload other image. Supported image formats: jpeg, webp, png.'],
                      ]);
                 throw $error;
             }
         } else {
             $card->clearMediaCollection('main');
         }
+
+        $card->save();
 
         return $card;
     }
