@@ -11,23 +11,23 @@
 
 Live demo: [Flash-Cards.tk](https://flash-cards.tk/)
 
-![flashcards](https://aleksandertabor.pl/wp-content/uploads/2020/04/flashcards-main-1024x502.png)
+![flashcards](https://aleksandertabor.pl/wp-content/uploads/2020/04/mainflashcards.gif)
 
 # 🚩 Table of Contents
 
-1. [Requirements](#🔌-requirements)
-2. [Installation](#🧾-installation)
+1. [Requirements](#-requirements)
+2. [Installation](#-installation)
 3. [Helpers](#ℹ️-helpers)
-4. [Built with](#🧰-built-with)
-5. [Frontend structure](#📁-frontend-structure)
-6. [GraphQL API](#💜-graphql-api)
-7. [Third Party APIs](#🧻-third-party-apis)
-8. [Logs](#📝-logs)
-9. [Notifications](#💬-notifications)
-10. [Screenshots](#🖼️-screenshots)
-11. [Featured](#🎨-features)
-12. [To-do](#📋-to-do)
-13. [Issues](#🔴-issues)
+4. [Built with](#-built-with)
+5. [Frontend structure](#-frontend-structure)
+6. [GraphQL API](#-graphql-api)
+7. [Third Party APIs](#-third-party-apis)
+8. [Logs](#-logs)
+9. [Notifications](#-notifications)
+10. [Featured](#-features)
+11. [Screenshots](#🖼-screenshots)
+12. [To-do](#-to-do)
+13. [Issues](#-issues)
 
 ## 🔌 Requirements
 
@@ -40,15 +40,15 @@ Live demo: [Flash-Cards.tk](https://flash-cards.tk/)
 
 1. `git clone https://github.com/aleksandertabor/flashcards YOURPROJECTNAME`
 2. `cd YOURPROJECTNAME`
-3. `cp .env.example .env`
-4. `php artisan key:generate`
-5. Set your `.env` with credentials to your database server (`DB_*` settings) and your domain config (`APP_URL`, `SANCTUM_STATEFUL_DOMAINS`). Remember about [3rd party APIs](#third-party-apis) for which keys are required.
-6. Install dependencies:
+3. Install dependencies:
 
     `composer install`
 
     `npm install`
 
+4. `cp .env.example .env`
+5. `php artisan key:generate`
+6. Set your `.env` with credentials to your database server (`DB_*` settings) and your domain config (`APP_URL`, `SANCTUM_STATEFUL_DOMAINS`, `SESSION_DOMAIN`). Remember about [3rd party APIs](#-third-party-apis) for which keys are required.
 8. `php artisan webpush:vapid`
 9. `php artisan migrate --seed`
     - You can specify an amount of seeds. Available seeders:
@@ -95,8 +95,8 @@ Live demo: [Flash-Cards.tk](https://flash-cards.tk/)
 - Axios
 - Laravel Sanctum/Airlock for Auth
 - Laravel Scout for searching decks
-- WebPush Notifications [compatibility](https://caniuse.com/#feat=mdn-api_notification)
 - Workbox for Progressive Web App (PWA) and working offline (caching) [compatibility](https://caniuse.com/#feat=mdn-api_serviceworker)
+- WebPush Notifications [compatibility](https://caniuse.com/#feat=mdn-api_notification)
 - Web Share API to share decks [compatibility](https://caniuse.com/#feat=web-share)
 - Web Devices API (Camera) to change avatar [compatibility](https://caniuse.com/#feat=mdn-api_mediadevices)
 - Babel for polyfills and browser compatibilities (.babelrc)
@@ -106,7 +106,7 @@ Live demo: [Flash-Cards.tk](https://flash-cards.tk/)
 
 Main file: `resources/js/app.js`
 
-Configuration files: `resources/js/config`
+Configuration files (routes, service-worker, store, vuetify): `resources/js/config`
 
 HTTP clients: `resources/js/httpClients`
 
@@ -192,48 +192,18 @@ DeckPublished `app/Notifications/DeckPublished.php`
 
 `/resources/js/plugins/NotificationSystem.js`
 
-
-## 🖼️ Screenshots
-
-Home:
-
-![Home](https://aleksandertabor.pl/wp-content/uploads/2020/04/flashcards-main-1024x502.png)
-
-Search:
-
-Profile:
-
-Deck:
-
-Deck editor:
-
-Card editor:
-
-Notifications:
-
-Share deck:
-
-Print deck:
-
-Installed App:
-
-Caching:
-
-Offline:
-
-Web Devices API (Camera):
-
-
 ## 🎨 Features
 
 - Login with username or e-mail
-- Offline mode (data is limited to your memory for cache)
+- Installable app - Add To Home Screen (A2HS)
+- Offline mode (data is limited to your memory size for cache)
 - Deck visibilities:
     - public - anybody can see
     - unlisted - only with link
     - private - only you
 
-- Multi tabs logout - if you logout, you will be out of all currently running tabs in your browser
+- Each deck is limited to 50 cards
+- Multi tabs logout - if you logout at one tab, you will be out of all currently running tabs in your browser
 - Add images from file or URL
 - Change avatar with your camera
 - Infinite scroll in searching decks
@@ -243,6 +213,49 @@ Web Devices API (Camera):
 - Print your decks with "Print Deck" button
 
     > ⚠️ Caution: not supported all languages
+
+## 🖼️ Screenshots
+
+### Home:
+
+![Home](https://aleksandertabor.pl/wp-content/uploads/2020/04/flashcards-main.png)
+
+### Search:
+
+![Search](https://aleksandertabor.pl/wp-content/uploads/2020/04/searchdecks.png)
+
+### Profile:
+
+![Profile](https://aleksandertabor.pl/wp-content/uploads/2020/04/profile.png)
+
+### Deck:
+
+![Deck](https://aleksandertabor.pl/wp-content/uploads/2020/04/deck.png)
+
+### Deck editor:
+
+![Deck Editor](https://aleksandertabor.pl/wp-content/uploads/2020/04/deckeditor.png)
+
+### Card editor:
+
+![Card Editor](https://aleksandertabor.pl/wp-content/uploads/2020/04/cardeditor.png)
+
+
+### Print deck:
+
+![Print Deck](https://aleksandertabor.pl/wp-content/uploads/2020/04/printeddeck.png)
+
+### Installable App:
+
+![Install App](https://aleksandertabor.pl/wp-content/uploads/2020/04/instalabble.gif)
+
+### Share deck:
+
+![Share Deck](https://aleksandertabor.pl/wp-content/uploads/2020/04/sharedeck.gif)
+
+### Web Devices API (Camera):
+
+![Change Avatar](https://aleksandertabor.pl/wp-content/uploads/2020/04/changeavatar.gif)
 
 ## 📋 To-do
 

@@ -16,11 +16,11 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 mix.webpackConfig({
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'resources/js/')
+            '@': path.resolve(__dirname, 'resources/js/'),
         }
     },
     output: {
-        chunkFilename: "js/chunks/[id].chunk.js"
+        chunkFilename: "js/chunks/[id].chunk.js?id=[chunkhash]"
     },
     module: {
         rules: [{
@@ -60,4 +60,4 @@ mix.options({
 
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
-    .sourceMaps();
+    .sourceMaps()

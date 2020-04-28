@@ -214,6 +214,22 @@ export default {
 </script>
 
 <style scoped>
+.v-navigation-drawer .v-list {
+  background: inherit;
+}
+.v-navigation-drawer--mini-variant .v-list-item > :first-child {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.v-navigation-drawer .v-avatar {
+  justify-content: center;
+}
+
+.v-item-group.v-bottom-navigation .v-btn.v-size--default {
+  height: inherit;
+}
+
 .v-content {
   padding-bottom: 96px !important;
 }

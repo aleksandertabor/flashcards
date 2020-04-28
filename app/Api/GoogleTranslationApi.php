@@ -24,14 +24,14 @@ class GoogleTranslationApi implements TranslationContract
                 'target' => $languages[1],
             ]);
         } catch (\Throwable $e) {
-            return [];
+            return '';
         }
 
         Log::channel('app')->info("Calling to Google Translation API - {$toTranslate}.");
 
         $result = html_entity_decode($result['text'], ENT_QUOTES, 'UTF-8');
 
-        return $result ? $result : [];
+        return $result ? $result : '';
     }
 
     public function languages() : array

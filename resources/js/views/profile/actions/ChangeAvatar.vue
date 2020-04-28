@@ -29,7 +29,7 @@
       <v-snackbar v-model="error" :timeout="2000" bottom left>Fill your data correctly.</v-snackbar>
 
       <v-dialog v-model="cameraDialog" max-width="500px" eager fullscreen scrollable>
-        <v-card>
+        <v-card class="camera-dialog">
           <v-card-text class="pa-0">
             <div class="crop">
               <video ref="video" autoplay></video>
@@ -174,20 +174,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-</style>
-
-<style scoped>
-video {
-  display: none;
-  background-color: #000000;
-  width: 200px;
-  height: 200px;
-}
-
-canvas {
-  display: none;
-  width: 100%;
-}
-</style>

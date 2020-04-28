@@ -222,11 +222,11 @@ export default {
   },
   methods: {
     initialSetup() {
+      this.card.image = null;
       this.card = this.cardToEdit !== null ? this.cardToEdit : this.card;
       this.card.deck_id =
         this.deckToEdit !== null ? this.deckToEdit : this.card.deck_id;
       this.card.image_file = null;
-      this.card.image = null;
       this.$delete(this.cardToEdit);
     },
     heading(field) {

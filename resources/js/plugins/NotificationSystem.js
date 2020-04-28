@@ -64,7 +64,6 @@ export default {
                 Notification.requestPermission().then(function (result) {
                     console.log(result);
                 });
-                const token = document.querySelector('meta[name=csrf-token]').getAttribute('content');
                 navigator.serviceWorker.ready.then(registration => {
                     registration.pushManager.getSubscription().then(subscription => {
                         if (!subscription) {
@@ -72,19 +71,13 @@ export default {
                             return
                         }
                         subscription.unsubscribe().then(() => {
-                            const token = document.querySelector('meta[name=csrf-token]').getAttribute('content');
-                            fetch('/api/unsubscribe', {
-                                    method: 'POST',
-                                    body: JSON.stringify(subscription),
+                            axios.post('/api/unsubscribe', JSON.stringify(subscription), {
                                     headers: {
                                         'Accept': 'application/json',
                                         'Content-Type': 'application/json',
-                                        'X-CSRF-Token': token
                                     }
                                 })
-                                .then((res) => {
-                                    console.log(res);
-                                })
+                                .then((res) => {})
                                 .catch((err) => {
                                     console.log(err)
                                 });
@@ -97,23 +90,16 @@ export default {
                 })
             },
             Vue.prototype.$NotificationsPushSubscription = function (pushSubscription) {
-                const token = document.querySelector('meta[name=csrf-token]').getAttribute('content');
-
-                fetch('/api/push', {
-                        method: 'POST',
-                        body: JSON.stringify(pushSubscription),
+                axios.post('/api/push', JSON.stringify(pushSubscription), {
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
-                            'X-CSRF-Token': token
                         }
                     })
                     .then((res) => {
-                        return res.json();
+                        return res;
                     })
-                    .then((res) => {
-                        console.log(res)
-                    })
+                    .then((res) => {})
                     .catch((err) => {
                         console.log(err)
                     });

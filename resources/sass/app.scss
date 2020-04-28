@@ -27,3 +27,17 @@ html::-webkit-scrollbar-track {
 .v-snack {
     z-index: 99999999999 !important;
 }
+
+.camera-dialog {
+    video {
+        display: none;
+        background-color: #000000;
+        width: 200px;
+        height: 200px;
+    }
+
+    canvas {
+        display: none;
+        width: 100%;
+    }
+}

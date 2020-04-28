@@ -161,6 +161,11 @@ export default {
 </script>
 
 <style>
+.v-badge__badge .v-icon {
+  color: inherit !important;
+  font-size: 12px !important;
+  margin: 0 -2px;
+}
 .profile-row {
   background-color: rgba(0, 255, 102, 0.59);
 }
