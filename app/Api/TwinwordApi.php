@@ -18,40 +18,55 @@ class TwinwordApi
     {
         $wasTranslated = false;
 
-        // if source lang is not english
+        // If source language is not English, then translate word to English
 
         if (! is_null($sourceLanguage) && $sourceLanguage !== 'en') {
             $wordToFind = TranslationFacade::translate($wordToFind, [
-                'source' => $sourceLanguage,
-                'target' => 'en',
-            ])['text'];
+                $sourceLanguage,
+                'en',
+            ]) ?? [];
+
+            if (! $wordToFind) {
+                return [];
+            }
+
             $wasTranslated = true;
         }
 
-        // find example for word
-        $output = $this->client->request('GET', "example/?entry={$wordToFind}")->getBody()->getContents();
+        // Find example for English word
+        try {
+            $output = $this->client->request('GET', "example/?entry={$wordToFind}")->getBody()->getContents();
+        } catch (\Throwable $e) {
+            return [];
+        }
 
         $results = json_decode($output);
 
+        // Get random example
         if (isset($results->example)) {
             $exampleEnglish = collect($results->example)->random();
         } else {
             return [];
         }
 
+        // If target language is not English, then translate target example to target language
+
         if (! is_null($targetLanguage) && $targetLanguage !== 'en') {
             $exampleTargetLanguage = TranslationFacade::translate($exampleEnglish, [
-                'source' => 'en',
-                'target' => $targetLanguage,
-            ])['text'];
+                'en',
+                $targetLanguage,
+            ]) ?? '';
         } else {
             $exampleTargetLanguage = $exampleEnglish;
         }
+
+        // If word was not English, then translate source example to source language
+
         if ($wasTranslated) {
             $exampleSourceLanguage = TranslationFacade::translate($exampleEnglish, [
-                'source' => 'en',
-                'target' => $sourceLanguage,
-            ])['text'];
+                'en',
+                $sourceLanguage,
+            ]) ?? '';
 
             return [$exampleSourceLanguage, $exampleTargetLanguage];
         } else {

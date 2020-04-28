@@ -36,17 +36,4 @@ class DeckType
             ['parent' => $deck]
         );
     }
-
-    public function image(Deck $deck, array $args, GraphQLContext $context, ResolveInfo $info)
-    {
-        $url = '';
-
-        $media = $deck->getFirstMedia('main');
-
-        if ($media) {
-            $url = $media->getFullUrl();
-        }
-
-        return $url;
-    }
 }

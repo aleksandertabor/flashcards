@@ -32,10 +32,10 @@ class TranslateQuery
         }
 
         $translation = TranslationFacade::translate($args['phrase'], [
-            'source' => $args['source'],
-            'target' => $args['target'],
+                $args['source'],
+                $args['target'],
         ]);
 
-        return $translation['text'];
+        return $translation ?? '';
     }
 }

@@ -1,0 +1,42 @@
+type Card {
+    id: Int!
+    question: String
+    answer: String
+    example_answer: String
+    example_question: String
+    image: String @with(relation: "media")
+    deck: Deck! @belongsTo
+}
+
+extend type Query {
+    cardsTotal: Int! @field(resolver: "App\\GraphQL\\Queries\\CardsTotalQuery")
+}
+
+extend type Mutation @middleware(checks: ["auth:sanctum"]) {
+    createCard(input: CreateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\Cards\\CreateCardMutator") @able(ability: "create")
+
+    updateCard(input: UpdateCardInput! @spread): Card! @field(resolver: "App\\GraphQL\\Mutations\\Cards\\UpdateCardMutator") @able(ability: "update", find: "id")
+
+    removeCard(id: ID!): Card! @field(resolver: "App\\GraphQL\\Mutations\\Cards\\RemoveCardMutator") @able(ability: "delete", find: "id")
+}
+
+input CreateCardInput {
+    deck_id: ID!
+    question: String
+    answer: String
+    example_question: String
+    example_answer: String
+    image: String
+    image_file: Upload
+}
+
+input UpdateCardInput {
+    id: ID!
+    deck_id: ID!
+    question: String
+    answer: String
+    example_question: String
+    example_answer: String
+    image: String
+    image_file: Upload
+}

@@ -3,12 +3,11 @@
 namespace App\GraphQL\Mutations\Auth;
 
 use App\Exceptions\InvalidCredentialsException;
-use App\Traits\PassportTokenTrait;
 use App\User;
-use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use GraphQL\Type\Definition\ResolveInfo;
-use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
@@ -16,8 +15,6 @@ use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class RegisterMutator
 {
-    use PassportTokenTrait;
-
     /**
      * Return a value for the field.
      *
@@ -32,39 +29,38 @@ class RegisterMutator
         $validator = Validator::make($args, [
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'password_confirmation' => ['required', 'string', 'min:6'],
+            'password_confirmation' => ['required', 'string', 'min:6', 'same:password'],
         ]);
+
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
-        $input['email'] = $args['email'];
-        $input['password'] = bcrypt($args['password']);
+
+        // Create username from email
         $username = Str::limit(Str::before($args['email'], '@'), 50, '');
+
         $usernameSize = mb_strlen($username);
+
+        // If username is too short cause of short email, set to 3 characters
         if ($usernameSize < 3) {
             $username .= Str::random(3);
         }
+
+        // Generate an unique username
         $username = SlugService::createSlug(User::class, 'username', $username);
+
+        $input['email'] = $args['email'];
+        $input['password'] = bcrypt($args['password']);
         $input['username'] = $username;
-        $user = User::create($input);
 
-        $credentials = [
-            'username' => $input['username'],
-            'password' => $args['password'],
-        ];
+        $newUser = User::create($input);
 
-        $response = $this->issueToken($credentials, 'password');
+        if (Auth::loginUsingId($newUser->id)) {
+            Log::channel('app')->info("{$newUser->username} registered.");
 
-        $decodedResponse = json_decode($response->getContent(), true);
-
-        if ($response->getStatusCode() === 200) {
-            $dt = Carbon::now();
-            $decodedResponse['expires_in'] = $dt->seconds($decodedResponse['expires_in'])->toDateTimeString();
-            Cookie::queue('_refresh_token', $decodedResponse['refresh_token'], $dt->diffInMinutes($dt->copy()->addDays(30)), '/', $context->request->getHost(), false, true);
-            $decodedResponse['user'] = $user;
-
-            return $decodedResponse;
+            return $newUser;
         }
+
         throw new InvalidCredentialsException(
             'Check your connection.',
             'Wrong credentials or server problems.'

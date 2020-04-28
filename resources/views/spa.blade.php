@@ -1,7 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
-<index>
-    @include('partials.loading')
-</index>
-@endsection
+<x-app>
+    <index>
+        <x-partials.loading/>
+    </index>
+</x-app>

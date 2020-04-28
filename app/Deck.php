@@ -6,7 +6,6 @@ use App\Notifications\DeckPublished;
 use App\Scopes\PublishedScope;
 use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Sluggable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -24,9 +23,11 @@ class Deck extends Model implements HasMedia
      * @var array
      */
     protected $fillable = ['user_id', 'title', 'description', 'lang_source_id', 'lang_target_id', 'visibility', 'slug'];
-    protected $with = ['media'];
+
     public const PUBLIC_VISIBILITY = ['public' => 'anybody can see'];
+
     public const UNLISTED_VISIBILITY = ['unlisted' => 'only with link'];
+
     public const PRIVATE_VISIBILITY = ['private' => 'only you'];
 
     public static function visibilities() : array
@@ -56,6 +57,12 @@ class Deck extends Model implements HasMedia
             }
         });
 
+        static::updated(function ($deck) {
+            if ($deck->visibility === key(self::PUBLIC_VISIBILITY)) {
+                Notification::send(NotificationUser::all(), new DeckPublished($deck));
+            }
+        });
+
         static::slugged(function ($deck) {
             if ($deck->visibility === key(self::UNLISTED_VISIBILITY) || $deck->visibility === key(self::PRIVATE_VISIBILITY)) {
                 $deck->slug = Str::random(40);
@@ -63,6 +70,7 @@ class Deck extends Model implements HasMedia
         });
 
         parent::boot();
+
         static::addGlobalScope(new PublishedScope);
     }
 
@@ -75,19 +83,6 @@ class Deck extends Model implements HasMedia
                 'onUpdate' => true,
             ],
         ];
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @param string $attribute
-     * @param array $config
-     * @param string $slug
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeWithUniqueSlugConstraints(Builder $query, $attribute, $config, $slug)
-    {
-        return $query->withoutGlobalScopes();
     }
 
     public function getRouteKeyName()
@@ -103,6 +98,11 @@ class Deck extends Model implements HasMedia
             ->singleFile();
     }
 
+    public function shouldBeSearchable()
+    {
+        return $this->visibility == key(self::PUBLIC_VISIBILITY);
+    }
+
     public function toSearchableArray()
     {
         return [
@@ -114,7 +114,20 @@ class Deck extends Model implements HasMedia
 
     public function getCreatedAtAttribute($date)
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s', $date)->diffForHumans();
+        return Carbon::parse($date)->diffForHumans();
+    }
+
+    public function getImageAttribute()
+    {
+        $url = '';
+
+        $media = $this->media->first();
+
+        if ($media) {
+            $url = $media->getFullUrl();
+        }
+
+        return $url;
     }
 
     public function scopePublished($query)

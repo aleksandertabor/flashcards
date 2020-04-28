@@ -5,8 +5,10 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Route;
 use Throwable;
+use Nuwave\Lighthouse\Exceptions\AuthenticationException;
 
 class Handler extends ExceptionHandler
 {
@@ -51,6 +53,12 @@ class Handler extends ExceptionHandler
     {
         if ($request->expectsJson() && $exception instanceof ModelNotFoundException) {
             return Route::respondWithRoute('api.fallback');
+        }
+
+        if ($exception instanceof TokenMismatchException) {
+            return response()->json([
+                'message' => 'CSRF token mismatch.',
+            ], 419);
         }
 
         return parent::render($request, $exception);

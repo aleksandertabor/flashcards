@@ -5,15 +5,13 @@ namespace App;
 use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
-use NotificationChannels\WebPush\HasPushSubscriptions;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, Notifiable, Sluggable, HasPushSubscriptions, HasMediaTrait;
+    use Sluggable, HasMediaTrait;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,6 +20,7 @@ class User extends Authenticatable implements HasMedia
     protected $fillable = [
         'username', 'email', 'password',
     ];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -55,11 +54,6 @@ class User extends Authenticatable implements HasMedia
         parent::boot();
     }
 
-    public function findForPassport($username)
-    {
-        return $this->where('username', $username)->first() ?? $this->where('email', $username)->first();
-    }
-
     public function sluggable()
     {
         return [
@@ -86,7 +80,20 @@ class User extends Authenticatable implements HasMedia
 
     public function getCreatedAtAttribute($date)
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s', $date)->diffForHumans();
+        return Carbon::parse($date)->diffForHumans();
+    }
+
+    public function getImageAttribute()
+    {
+        $url = '';
+
+        $media = $this->media->first();
+
+        if ($media) {
+            $url = $media->getFullUrl();
+        }
+
+        return $url;
     }
 
     public function setUsernameAttribute($value)
@@ -104,18 +111,18 @@ class User extends Authenticatable implements HasMedia
         return $this->hasManyThrough('App\Card', 'App\Deck');
     }
 
-    public function decks()
+    public function publishedCards()
     {
-        return $this->hasMany('App\Deck');
+        return $this->cards()->published();
     }
 
-    public function userDecks()
+    public function decks()
     {
         return $this->hasMany('App\Deck')->withoutGlobalScopes();
     }
 
-    public function publishedCards()
+    public function publishedDecks()
     {
-        return $this->cards()->published();
+        return $this->hasMany('App\Deck');
     }
 }

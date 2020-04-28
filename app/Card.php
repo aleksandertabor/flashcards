@@ -32,6 +32,19 @@ class Card extends Model implements HasMedia
             ->singleFile();
     }
 
+    public function getImageAttribute()
+    {
+        $url = '';
+
+        $media = $this->media->first();
+
+        if ($media) {
+            $url = $media->getFullUrl();
+        }
+
+        return $url;
+    }
+
     public function deck()
     {
         return $this->belongsTo('App\Deck');

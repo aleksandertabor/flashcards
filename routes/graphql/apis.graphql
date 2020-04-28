@@ -1,0 +1,16 @@
+extend type Query {
+    translate(input: TranslateInput! @spread): String! @field(resolver: "App\\GraphQL\\Queries\\TranslateQuery")
+    image(input: ImageInput! @spread): String! @field(resolver: "App\\GraphQL\\Queries\\ImageQuery")
+    example(input: TranslateInput! @spread): [String!]! @field(resolver: "App\\GraphQL\\Queries\\ExampleQuery")
+}
+
+input ImageInput {
+    phrase: String!
+    source: String!
+}
+
+input TranslateInput {
+    phrase: String!
+    source: String!
+    target: String!
+}

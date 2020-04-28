@@ -13,7 +13,24 @@ class LanguagesTableSeeder extends Seeder
      */
     public function run()
     {
-        $languages = TranslationFacade::languages();
+        $languageSource = $this->command->choice('How to fill your languages table? Seeder is default. GoogleTranslationApi requires valid GOOGLE_API_CREDENTIALS in environment variables.', ['Seeder', 'GoogleTranslationApi'], 0);
+
+        if ($languageSource === 'Seeder') {
+            $languages = [
+                [
+                    'locale' => 'en',
+                    'name' => 'English',
+                ],
+                [
+                    'locale' => 'pl',
+                    'name' => 'Polish',
+                ],
+            ];
+        } else {
+            $languages = TranslationFacade::languages();
+        }
+
+        $this->command->table(['locale', 'name'], $languages);
 
         foreach ($languages as $lang) {
             Language::create([

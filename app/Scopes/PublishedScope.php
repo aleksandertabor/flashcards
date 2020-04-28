@@ -17,6 +17,6 @@ class PublishedScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where("{$model->getTable()}.visibility", '=', "public");
+        $builder->where("{$model->getTable()}.visibility", '=', 'public');
     }
 }

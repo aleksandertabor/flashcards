@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 return [
     /*
@@ -16,7 +16,7 @@ return [
     'route' => [
         'uri' => 'api/graphql-playground',
         'name' => 'graphql-playground',
-        // 'middleware' => ['web']
+        'middleware' => ['web'],
         // 'prefix' => '',
         // 'domain' => 'graphql.' . env('APP_DOMAIN', 'localhost'),
     ],

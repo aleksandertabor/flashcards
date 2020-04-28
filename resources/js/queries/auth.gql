@@ -5,42 +5,27 @@ fragment UserDetails on User {
 	__typename
 }
 
-mutation login($data: LoginInput) {
+mutation LOGIN ($data: LoginInput) {
 	login(data: $data) {
-		access_token
-		expires_in
-		user {
-			...UserDetails
-		}
+        ...UserDetails
 	}
 }
 
-mutation refresh_token($refresh: Boolean) {
-	refresh_token(refresh: $refresh) {
-		access_token
-		expires_in
-	}
-}
-
-mutation logout {
+mutation LOGOUT {
 	logout {
 		status
 		message
 	}
 }
 
-mutation register($data: RegisterInput) {
+mutation REGISTER ($data: RegisterInput) {
 	register(data: $data) {
-		access_token
-		expires_in
-		user {
-			...UserDetails
-		}
+        ...UserDetails
 	}
 }
 
-query me {
-	me {
+query USER {
+	user {
 		...UserDetails
 	}
 }

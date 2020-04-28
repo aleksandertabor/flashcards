@@ -1,5 +1,7 @@
 <?php
 
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+
 return [
 
     /*
@@ -32,7 +34,7 @@ return [
          */
         'middleware' => [
             \Nuwave\Lighthouse\Support\Http\Middleware\AcceptJson::class,
-            'api',
+            EnsureFrontendRequestsAreStateful::class,
         ],
 
         /*

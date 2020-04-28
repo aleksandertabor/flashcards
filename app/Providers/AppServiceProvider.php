@@ -9,7 +9,6 @@ use Google\Cloud\Translate\V2\TranslateClient;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Passport\Passport;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,34 +30,39 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        Passport::withoutCookieSerialization();
 
-        $this->app->singleton(GoogleTranslationApi::class, function ($app) {
-            return new GoogleTranslationApi(
-                new TranslateClient([
-                    'keyFilePath' => base_path(env('GOOGLE_API_CREDENTIALS')),
-                ])
-            );
-        });
+        if (file_exists(base_path(env('GOOGLE_API_CREDENTIALS')))) {
+            $this->app->singleton(GoogleTranslationApi::class, function ($app) {
+                return new GoogleTranslationApi(
+                    new TranslateClient([
+                        'keyFilePath' => base_path(env('GOOGLE_API_CREDENTIALS')),
+                    ])
+                );
+            });
+        }
 
-        $this->app->singleton(WikipediaApi::class, function ($app) {
-            return new WikipediaApi(
-                new Client([
-                    'base_uri' => env('WIKIPEDIA_API_ENDPOINT'),
-                ])
-            );
-        });
+        if (env('TWINWORD_API_KEY') && env('TWINWORD_API_ENDPOINT')) {
+            $this->app->singleton(TwinwordApi::class, function ($app) {
+                return new TwinwordApi(
+                    new Client([
+                        'base_uri' => env('TWINWORD_API_ENDPOINT'),
+                        'headers' => [
+                            'X-RapidAPI-Key' => env('TWINWORD_API_KEY'),
+                        ],
+                    ])
+                );
+            });
+        }
 
-        $this->app->singleton(TwinwordApi::class, function ($app) {
-            return new TwinwordApi(
-                new Client([
-                    'base_uri' => env('TWINWORD_API_ENDPOINT'),
-                    'headers' => [
-                        'X-RapidAPI-Key' => env('TWINWORD_API_KEY'),
-                    ],
-                ])
-            );
-        });
+        if (env('WIKIPEDIA_API_ENDPOINT')) {
+            $this->app->singleton(WikipediaApi::class, function ($app) {
+                return new WikipediaApi(
+                    new Client([
+                        'base_uri' => env('WIKIPEDIA_API_ENDPOINT'),
+                    ])
+                );
+            });
+        }
 
         $this->app->bind(
             'App\Contracts\TranslationContract',
@@ -74,7 +78,5 @@ class AppServiceProvider extends ServiceProvider
             'App\Contracts\ExampleContract',
             TwinwordApi::class
         );
-
-        // JsonResource::withoutWrapping();
     }
 }

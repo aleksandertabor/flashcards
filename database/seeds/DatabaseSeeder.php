@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
             LanguagesTableSeeder::class,
             UsersTableSeeder::class,
             DecksTableSeeder::class,
-            PassportClientSeeder::class,
         ]);
     }
 }

@@ -1,0 +1,67 @@
+type Deck {
+    id: Int!
+    title: String!
+    description: String!
+    image: String! @with(relation: "media")
+    lang_source: Language! @hasOne(relation: "sourceLanguage")
+    lang_target: Language! @hasOne(relation: "targetLanguage")
+    slug: String!
+    cards_count: Int! @field(resolver: "App\\GraphQL\\Types\\DeckType@cardsCount")
+    created_at: String!
+    visibility: String!
+    cards: [Card!]! @hasMany @lazyLoad(relations: ["cards"])
+    user: User! @belongsTo
+}
+
+extend type Query {
+    deck(slug: String! @eq): Deck @find(scopes: ["WithoutScopes"]) @able(ability: "view", find: "slug")
+    decks(search: String @search, filter: [FilterClause!] @filter): [Deck!]! @paginate(model: "App\\Deck",defaultCount: 12)
+    decksTotal: Int! @count(model: "Deck")
+}
+
+input FilterClause {
+    field: String!
+    order: FilterOrder!
+    random: Int
+    orderByCount: CountInput
+}
+
+enum FilterOrder {
+    ASC
+    DESC
+    RAND
+}
+
+input CountInput {
+    model: String!
+    relation: String!
+}
+
+extend type Mutation @middleware(checks: ["auth:sanctum"]) {
+    createDeck(input: CreateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\Decks\\CreateDeckMutator") @able(ability: "create")
+
+    updateDeck(input: UpdateDeckInput! @spread): Deck! @field(resolver: "App\\GraphQL\\Mutations\\Decks\\UpdateDeckMutator") @able(ability: "update", find: "id")
+
+    removeDeck(id: ID!): Deck! @field(resolver: "App\\GraphQL\\Mutations\\Decks\\RemoveDeckMutator") @able(ability: "delete", find: "id")
+}
+
+input CreateDeckInput {
+    title: String
+    description: String
+    lang_source_id: Int
+    lang_target_id: Int
+    visibility: Visibility
+    image: String
+    image_file: Upload
+}
+
+input UpdateDeckInput {
+    id: ID!
+    title: String
+    description: String
+    lang_source_id: Int
+    lang_target_id: Int
+    visibility: Visibility
+    image: String
+    image_file: Upload
+}

@@ -13,16 +13,19 @@ use Illuminate\Http\Request;
 |
  */
 
-Route::post('push', 'PushController@store');
-Route::get('notifications', 'PushController@push');
-Route::post('unsubscribe', 'PushController@destroy');
+// Notifications
+Route::post('push', 'PushNotificationController@store');
+Route::get('notifications', 'PushNotificationController@push');
+Route::post('unsubscribe', 'PushNotificationController@destroy');
 
+// Print decks to PDF
 Route::post('deck/pdf', function (Request $request) {
     $pdf = PDF::loadView('decks.pdf', ['deck' => $request->deck]);
 
     return $pdf->download('decks.pdf');
 });
 
+// Fallback for /api/*
 Route::fallback(function () {
     return response()->json([
         'message' => 'Error 404 - not found.',

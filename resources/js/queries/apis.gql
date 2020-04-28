@@ -1,12 +1,9 @@
-
-query translate($input: TranslateInput!) {
+query TRANSLATE ($input: TranslateInput!) {
     translate(input: $input)
 }
-
-query image($input: ImageInput!) {
+query IMAGE ($input: ImageInput!) {
     image(input: $input)
 }
-
-query example($input: TranslateInput!) {
+query EXAMPLE ($input: TranslateInput!) {
     example(input: $input)
 }

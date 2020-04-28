@@ -1,0 +1,9 @@
+type Language {
+    id: Int!
+    locale: String!
+    name: String!
+}
+
+extend type Query {
+    languages: [Language!]! @all
+}

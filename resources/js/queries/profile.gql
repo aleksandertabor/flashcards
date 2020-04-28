@@ -1,4 +1,4 @@
-query profile($username: String!) {
+query PROFILE ($username: String!) {
   profile(username: $username) {
     ... on AuthUser {
     id
@@ -35,20 +35,24 @@ query profile($username: String!) {
     }
   }
 }
-mutation editProfile($id: Int!, $username: String, $email: String, $password: String, $password_confirmation: String, $image_file: Upload, $image: String) {
-  editProfile(
-      id: $id, username: $username, email: $email, password: $password, password_confirmation: $password_confirmation, image_file: $image_file, image: $image
-  ) {
+mutation EDIT_PROFILE ($data: EditProfileInput) {
+  editProfile(data : $data) {
       username
       email
       image
   }
 }
 
-mutation removeProfile($id: Int!) {
-  removeProfile(
-      id: $id
-  ) {
+mutation CHANGE_AVATAR ($data: ChangeAvatarInput) {
+  changeAvatar(data : $data) {
+      username
+      email
+      image
+  }
+}
+
+mutation REMOVE_PROFILE ($id: Int!) {
+  removeProfile(id: $id) {
       username
       email
   }

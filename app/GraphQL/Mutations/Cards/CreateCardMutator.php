@@ -4,14 +4,13 @@ namespace App\GraphQL\Mutations\Cards;
 
 use App\Card;
 use App\Deck;
+use App\GraphQL\UploadMedia;
 use App\Rules\MaximumFiftyCards;
-use Exception;
 use GraphQL\Type\Definition\ResolveInfo;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\UnreachableUrl;
 
 class CreateCardMutator
 {
@@ -41,46 +40,21 @@ class CreateCardMutator
             throw new ValidationException($validator);
         }
 
-        $deck = Deck::findOrFail($args['deck_id']);
-
-        $card = $deck->cards()->create($args);
+        $card = Card::make($args);
 
         if ($args['image_file']) {
-            try {
-                $card->addMedia($args['image_file'])->toMediaCollection('main');
-            } catch (Exception $e) {
-                $card->forceDelete();
-                $error = ValidationException::withMessages([
-                        'image' => ['Try upload other image.'],
-                     ]);
-                throw $error;
-            }
+            UploadMedia::uploadImageFromFile($args['image_file'], 'image_file', $card, 'main');
         } elseif ($args['image']) {
-            try {
-                $url = '';
-                $media = $card->getFirstMedia('main');
-                if ($media) {
-                    $url = $media->getFullUrl();
-                }
-                if ($args['image'] !== $url) {
-                    $card->addMediaFromUrl($args['image'])->toMediaCollection('main');
-                }
-            } catch (Exception $e) {
-                $card->forceDelete();
-                if ($e instanceof FileIsTooBig || $e instanceof UnreachableUrl) {
-                    $error = ValidationException::withMessages([
-                        'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
-                     ]);
-                    throw $error;
-                }
-                $error = ValidationException::withMessages([
-                        'image' => ['Try upload other image. Supported image formats: jpeg, webp, png.'],
-                     ]);
-                throw $error;
-            }
+            UploadMedia::uploadImageFromUrl($args['image'], 'image', $card, 'main');
         } else {
             $card->clearMediaCollection('main');
         }
+
+        $deck = Deck::findOrFail($args['deck_id']);
+
+        $card = $deck->cards()->save($card);
+
+        Log::channel('app')->info("New card - {$card->question} -> {$card->answer} added.");
 
         return $card;
     }

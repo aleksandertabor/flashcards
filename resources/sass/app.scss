@@ -1,11 +1,12 @@
-// Fonts
-@import 'roboto-fontface/css/roboto/sass/roboto-fontface.scss';
-
 // Variables
 @import 'variables';
 
-[v-cloak] {
+[v-cloak]>* {
     display: none
+}
+
+[v-cloak]::before {
+    content: "loading…"
 }
 
 html::-webkit-scrollbar {

@@ -3,7 +3,6 @@
 namespace App\GraphQL\Mutations\Users;
 
 use App\User;
-use Exception;
 use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -24,12 +23,11 @@ class EditProfileMutator
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
         $validator = Validator::make($args, [
-            'id' => ['required'],
+            'id' => ['required', 'exists:users,id'],
             'username' => ['sometimes', 'required', 'string', 'min:3', 'alpha_num', Rule::unique('users', 'username')->ignore($args['id'])],
             'email' => ['sometimes', 'required', 'string', 'email', Rule::unique('users', 'email')->ignore($args['id'])],
             'password' => ['nullable', 'min:6', 'confirmed'],
-            'password_confirmation' => [],
-            'image_file' => ['image', 'nullable', 'sometimes', 'max:2048', 'mimes:jpeg,webp,png'],
+            'password_confirmation' => ['same:password'],
         ]);
 
         if ($validator->fails()) {
@@ -38,29 +36,11 @@ class EditProfileMutator
 
         $user = User::findOrFail($args['id']);
 
-        $user->update($args);
+        $args = array_filter($args, function ($value) {
+            return ! is_null($value) && $value !== '';
+        });
 
-        if ($image = $args['image_file'] ?? null) {
-            try {
-                $user->addMedia($image)->toMediaCollection('main');
-            } catch (Exception $e) {
-                $error = ValidationException::withMessages([
-                        'image_file' => ['Try upload other image.'],
-                     ]);
-                throw $error;
-            }
-        } elseif ($args['image']) {
-            try {
-                $user->addMediaFromBase64($args['image'])->toMediaCollection('main');
-            } catch (Exception $e) {
-                $error = ValidationException::withMessages([
-                        'image_file' => ['Try upload other image.'],
-                     ]);
-                throw $error;
-            }
-        } elseif (! $args['image']) {
-            $user->clearMediaCollection('main');
-        }
+        $user->update($args);
 
         return $user;
     }

@@ -1,8 +1,8 @@
-query deckEditor {
+query DECK_EDITOR {
     languages {
-      id
-      locale
-      name
+        id
+        locale
+        name
     }
     __type(name: "Visibility") {
         enumValues {
@@ -12,7 +12,7 @@ query deckEditor {
     }
 }
 
-query deckToEdit($slug: String!) {
+query DECK_TO_EDIT ($slug: String!) {
     deck (slug: $slug) {
         id
         title
@@ -37,7 +37,7 @@ query deckToEdit($slug: String!) {
     }
 }
 
-mutation createDeck($input: CreateDeckInput!) {
+mutation CREATE_DECK ($input: CreateDeckInput!) {
   createDeck(input: $input) {
     id
     slug
@@ -47,7 +47,7 @@ mutation createDeck($input: CreateDeckInput!) {
   }
 }
 
-mutation updateDeck($input: UpdateDeckInput!) {
+mutation UPDATE_DECK ($input: UpdateDeckInput!) {
   updateDeck(input: $input) {
     id
     slug
@@ -57,30 +57,26 @@ mutation updateDeck($input: UpdateDeckInput!) {
   }
 }
 
-mutation removeDeck($id: ID!) {
+mutation REMOVE_DECK ($id: ID!) {
   removeDeck(id: $id) {
       id
   }
 }
 
-mutation createCard($input: CreateCardInput!) {
+mutation CREATE_CARD ($input: CreateCardInput!) {
   createCard(input: $input) {
     id
   }
 }
 
-mutation updateCard($input: UpdateCardInput!) {
+mutation UPDATE_CARD ($input: UpdateCardInput!) {
   updateCard(input: $input) {
     id
   }
 }
 
-mutation removeCard($id: ID!) {
+mutation REMOVE_CARD ($id: ID!) {
   removeCard(id: $id) {
       id
   }
-}
-
-mutation upload($file: Upload!) {
-    upload(file: $file)
 }

@@ -3,13 +3,11 @@
 namespace App\GraphQL\Mutations\Cards;
 
 use App\Card;
-use Exception;
+use App\GraphQL\UploadMedia;
 use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Facades\Validator;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\UnreachableUrl;
 
 class UpdateCardMutator
 {
@@ -43,36 +41,9 @@ class UpdateCardMutator
         $card->fill($args);
 
         if ($args['image_file']) {
-            try {
-                $card->addMedia($args['image_file'])->toMediaCollection('main');
-            } catch (Exception $e) {
-                $error = ValidationException::withMessages([
-                        'image' => ['Try upload other image.'],
-                     ]);
-                throw $error;
-            }
+            UploadMedia::uploadImageFromFile($args['image_file'], 'image_file', $card, 'main');
         } elseif ($args['image']) {
-            try {
-                $url = '';
-                $media = $card->getFirstMedia('main');
-                if ($media) {
-                    $url = $media->getFullUrl();
-                }
-                if ($args['image'] !== $url) {
-                    $card->addMediaFromUrl($args['image'])->toMediaCollection('main');
-                }
-            } catch (Exception $e) {
-                if ($e instanceof FileIsTooBig || $e instanceof UnreachableUrl) {
-                    $error = ValidationException::withMessages([
-                        'image' => [preg_replace("/\`[^)]+\`/", '', $e->getMessage())],
-                     ]);
-                    throw $error;
-                }
-                $error = ValidationException::withMessages([
-                        'image' => ['Try upload other image. Supported image formats: jpeg, webp, png.'],
-                     ]);
-                throw $error;
-            }
+            UploadMedia::uploadImageFromUrl($args['image'], 'image', $card, 'main');
         } else {
             $card->clearMediaCollection('main');
         }

@@ -33,6 +33,6 @@ class ExampleQuery
 
         $examples = ExampleFacade::example($args['phrase'], $args['source'], $args['target']);
 
-        return $examples;
+        return $examples ?? [];
     }
 }

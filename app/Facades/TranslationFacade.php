@@ -8,8 +8,7 @@ class TranslationFacade extends Facade
 {
     /**
      * A Facade to translation.
-     * @method static array translate(string $toTranslate, array $languages)
-     * @method static array detect(string $toDetect)
+     * @method static string translate(string $toTranslate, array $languages)
      * @method static array languages()
      *
      * @see \App\Contracts\TranslationContract

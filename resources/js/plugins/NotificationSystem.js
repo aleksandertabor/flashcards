@@ -1,3 +1,7 @@
+import {
+    getCookie
+} from "@/shared/utils/cookies"
+
 export default {
     install: function (Vue, name = "$NotificationSystem") {
 
@@ -53,7 +57,6 @@ export default {
                         return registration.pushManager.subscribe(subscribeOptions);
                     })
                     .then((pushSubscription) => {
-                        // console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
                         this.$NotificationsPushSubscription(pushSubscription);
                     });
             },
@@ -95,8 +98,6 @@ export default {
             },
             Vue.prototype.$NotificationsPushSubscription = function (pushSubscription) {
                 const token = document.querySelector('meta[name=csrf-token]').getAttribute('content');
-
-                console.log(pushSubscription);
 
                 fetch('/api/push', {
                         method: 'POST',

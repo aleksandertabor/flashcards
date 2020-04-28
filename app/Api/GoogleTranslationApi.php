@@ -4,6 +4,7 @@ namespace App\Api;
 
 use App\Contracts\TranslationContract;
 use Google\Cloud\Translate\V2\TranslateClient;
+use Illuminate\Support\Facades\Log;
 use Locale;
 
 class GoogleTranslationApi implements TranslationContract
@@ -15,21 +16,20 @@ class GoogleTranslationApi implements TranslationContract
         $this->client = $client;
     }
 
-    public function translate(string $toTranslate, array $languages) : array
+    public function translate(string $toTranslate, array $languages) : string
     {
-        $result = $this->client->translate($toTranslate, [
-            'source' => $languages['source'],
-            'target' => $languages['target'],
-        ]);
+        try {
+            $result = $this->client->translate($toTranslate, [
+                'source' => $languages[0],
+                'target' => $languages[1],
+            ]);
+        } catch (\Throwable $e) {
+            return [];
+        }
 
-        $result['text'] = html_entity_decode($result['text'], ENT_QUOTES, 'UTF-8');
+        Log::channel('app')->info("Calling to Google Translation API - {$toTranslate}.");
 
-        return $result ? $result : [];
-    }
-
-    public function detect(string $toDetect) : array
-    {
-        $result = $this->client->detectLanguage($toDetect);
+        $result = html_entity_decode($result['text'], ENT_QUOTES, 'UTF-8');
 
         return $result ? $result : [];
     }

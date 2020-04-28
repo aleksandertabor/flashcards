@@ -31,8 +31,8 @@ module.exports = {
         '**/mix-manifest.json',
         '**/vendor/telescope/*',
         '**/js/{manifest,vendor}.js',
-        '**/{0,1,2,3,4}.js',
+        '**/js/chunks/*',
     ],
     "swDest": "public/service-worker.js",
-    "swSrc": "resources/js/service-worker.js"
+    "swSrc": "resources/js/config/service-worker.js"
 };

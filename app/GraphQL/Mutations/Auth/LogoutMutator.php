@@ -4,7 +4,6 @@ namespace App\GraphQL\Mutations\Auth;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Nuwave\Lighthouse\Exceptions\AuthenticationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
@@ -21,11 +20,11 @@ class LogoutMutator
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        if (! Auth::guard('api')->check()) {
+        if (! Auth::check()) {
             throw new AuthenticationException('Not Authenticated');
         }
-        Auth::guard('api')->user()->token()->revoke();
-        Cookie::queue(Cookie::forget('_refresh_token'));
+
+        Auth::guard('web')->logout();
 
         return [
             'status' => 'LOGOUT',

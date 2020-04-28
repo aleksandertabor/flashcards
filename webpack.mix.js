@@ -1,4 +1,6 @@
 const mix = require('laravel-mix');
+const path = require('path');
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 /*
  |--------------------------------------------------------------------------
@@ -12,40 +14,48 @@ const mix = require('laravel-mix');
  */
 
 mix.webpackConfig({
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'resources/js/')
+        }
+    },
+    output: {
+        chunkFilename: "js/chunks/[id].chunk.js"
+    },
     module: {
         rules: [{
-            test: /\.(graphql|gql)$/,
-            exclude: /node_modules/,
-            loader: 'graphql-tag/loader',
-        }, ]
+                test: /\.(graphql|gql)$/,
+                exclude: /node_modules/,
+                loader: 'graphql-tag/loader',
+            },
+            {
+                test: /\.js$/,
+                exclude: [
+                    /node_modules\/core-js/,
+                    /node_modules\/webpack\/buildin/,
+                    /node_modules\/regenerator-runtime/,
+                ],
+                use: [{
+                    loader: 'babel-loader',
+                    options: mix.config.babel()
+                }]
+            }
+        ],
     },
+    plugins: [
+        new VuetifyLoaderPlugin(),
+    ]
 })
 
 mix.browserSync({
     proxy: 'localhost:8000',
     watch: true,
-    // files: "**/*.graphql",
 });
 
 mix.options({
     extractVueStyles: true,
+    processCssUrls: false
 });
-
-// if (mix.inProduction()) {
-
-//     mix.webpackConfig({
-//         module: {
-//             rules: [{
-//                 test: /\.js?$/,
-//                 exclude: /(node_modules|bower_components)/,
-//                 use: [{
-//                     loader: 'babel-loader',
-//                     options: mix.config.babel()
-//                 }]
-//             }]
-//         }
-//     });
-// }
 
 
 mix.js('resources/js/app.js', 'public/js')

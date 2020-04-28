@@ -19,12 +19,16 @@ class WikipediaApi implements ImageContract
     {
         if (! is_null($sourceLanguage) && $sourceLanguage !== 'en') {
             $imageToFind = TranslationFacade::translate($imageToFind, [
-                'source' => $sourceLanguage,
-                'target' => 'en',
-            ])['text'];
+                $sourceLanguage,
+                'en',
+            ]) ?? $imageToFind;
         }
 
-        $output = $this->client->request('GET', "media-list/{$imageToFind}")->getBody()->getContents();
+        try {
+            $output = $this->client->request('GET', "media-list/{$imageToFind}")->getBody()->getContents();
+        } catch (\Throwable $e) {
+            return '';
+        }
 
         $decodedOutput = json_decode($output);
 

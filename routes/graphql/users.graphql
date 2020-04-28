@@ -1,0 +1,51 @@
+type User {
+    id: Int!
+    username: String!
+    email: String!
+    image: String! @with(relation: "media")
+    created_at: String!
+    cards_count: Int! @count(relation: "publishedCards")
+    decks: [Deck!]! @hasMany(relation: "publishedDecks", scopes: ["Newest"]) @lazyLoad(relations: ["publishedDecks"])
+    cards: [Card!]! @hasMany(relation: "publishedCards") @lazyLoad(relations: ["publishedCards"])
+}
+
+type AuthUser @modelClass(class: "\\App\\User") {
+    id: Int!
+    username: String!
+    email: String!
+    image: String! @with(relation: "media")
+    editable: Boolean @auth
+    cards_count: Int! @count(relation: "cards")
+    decks: [Deck!]! @hasMany(relation: "decks", scopes: ["OrderByVisibility"]) @lazyLoad(relations: ["decks"])
+    cards: [Card!]! @hasMany(relation: "cards") @lazyLoad(relations: ["cards"])
+}
+
+union Person @union(resolveType: "App\\GraphQL\\Unions\\PersonUnion") = AuthUser | User
+
+extend type Query {
+    usersTotal: Int! @count(model: "User")
+    users: [User!]! @paginate(scopes: ["Newest"])
+    profile(username: String!): Person @field(resolver: "App\\GraphQL\\Queries\\ProfileQuery")
+}
+
+extend type Mutation @middleware(checks: ["auth:sanctum"]) {
+    editProfile(data: EditProfileInput @spread): User @field(resolver: "App\\GraphQL\\Mutations\\Users\\EditProfileMutator")  @able(ability: "update", find: "id")
+
+    changeAvatar(data: ChangeAvatarInput @spread): User @field(resolver: "App\\GraphQL\\Mutations\\Users\\ChangeAvatarMutator")  @able(ability: "update", find: "id")
+
+    removeProfile(id: Int!): User @delete @able(ability: "delete", find: "id")
+}
+
+input EditProfileInput {
+    id: Int!
+    username: String
+    email: String
+    password: String
+    password_confirmation: String
+}
+
+input ChangeAvatarInput {
+    id: Int!
+    image_file: Upload
+    image: String
+}
