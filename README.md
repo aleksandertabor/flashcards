@@ -247,15 +247,15 @@ DeckPublished `app/Notifications/DeckPublished.php`
 
 ### Installable App:
 
-![Install App](https://aleksandertabor.pl/wp-content/uploads/2020/04/instalabble.gif)
+<img src="https://aleksandertabor.pl/wp-content/uploads/2020/04/instalabble.gif" width="70%" alt="Install App"/>
 
 ### Share deck:
 
-![Share Deck](https://aleksandertabor.pl/wp-content/uploads/2020/04/sharedeck.gif)
+ <img src="https://aleksandertabor.pl/wp-content/uploads/2020/04/sharedeck.gif" width="70%" alt="Share Deck"/>
 
 ### Web Devices API (Camera):
 
-![Change Avatar](https://aleksandertabor.pl/wp-content/uploads/2020/04/changeavatar.gif)
+<img src="https://aleksandertabor.pl/wp-content/uploads/2020/04/changeavatar.gif" width="70%" alt="Change Avatar"/>
 
 ## 📋 To-do
 
@@ -270,6 +270,8 @@ DeckPublished `app/Notifications/DeckPublished.php`
 - Gamification with quizzing
 
 - More social engagement with "liking" decks and filtering them by popularity
+
+- Easier installation with Docker
 
 ## 🔴 Issues
 
