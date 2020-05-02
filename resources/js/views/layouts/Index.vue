@@ -1,5 +1,5 @@
 <template>
-  <v-app v-cloak>
+  <v-app id="v-app" v-cloak>
     <v-app-bar app color="blue darken-3" dark clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 

@@ -15,7 +15,7 @@ class UploadMedia
             $model->addMedia($image)->toMediaCollection($collection);
         } catch (Exception $e) {
             $error = ValidationException::withMessages([
-                $validationField => ['Try upload other image.'],
+                $validationField => ['Try add an other image.'],
              ]);
             throw $error;
         }
@@ -25,7 +25,7 @@ class UploadMedia
     {
         try {
             $url = '';
-            $media = $model->getFirstMedia('main');
+            $media = $model->getFirstMedia($collection);
             if ($media) {
                 $url = $media->getFullUrl();
             }
@@ -40,7 +40,7 @@ class UploadMedia
                 throw $error;
             }
             $error = ValidationException::withMessages([
-                $validationField => ['Try upload other image. Supported image formats: jpeg, webp, png.'],
+                $validationField => ['Try add an other image. Supported image formats: jpeg, webp, png.'],
              ]);
             throw $error;
         }
@@ -52,7 +52,7 @@ class UploadMedia
             $model->addMediaFromBase64($image)->toMediaCollection($collection);
         } catch (Exception $e) {
             $error = ValidationException::withMessages([
-                $validationField => ['Try upload other image.'],
+                $validationField => ['Try add an other image.'],
                  ]);
             throw $error;
         }

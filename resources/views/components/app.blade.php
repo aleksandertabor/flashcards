@@ -72,8 +72,10 @@
         }
     </style>
 
-    <link rel="preload" href="{{ asset('js/app.js') }}" as="script">
-    <link rel="preload" href="{{ asset('css/app.css') }}" as="style">
+    <link rel="preconnect" href="https://storage.googleapis.com">
+
+    <link rel="preload" href="{{ asset('js/app.js') }}" as="script" crossorigin>
+    <link rel="preload" href="{{ asset('css/app.css') }}" as="style" crossorigin>
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script src="{{ asset('js/app.js') }}" defer></script>
