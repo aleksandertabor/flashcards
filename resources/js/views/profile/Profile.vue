@@ -169,4 +169,10 @@ export default {
 .profile-row {
   background-color: rgba(0, 255, 102, 0.59);
 }
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .v-slide-group__wrapper {
+    width: 80vw;
+  }
+}
 </style>

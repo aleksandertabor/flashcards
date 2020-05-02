@@ -25,7 +25,7 @@ Live demo: [Flash-Cards.tk](https://flash-cards.tk/)
 8. [Logs](#-logs)
 9. [Notifications](#-notifications)
 10. [Features](#-features)
-11. [Screenshots](#-screenshots)
+11. [Screenshots](#%EF%B8%8F-screenshots)
 12. [To-do](#-to-do)
 13. [Issues](#-issues)
 
