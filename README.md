@@ -49,8 +49,8 @@ Live demo: [Flash-Cards.tk](https://flash-cards.tk/)
 4. `cp .env.example .env`
 5. `php artisan key:generate`
 6. Set your `.env` with credentials to your database server (`DB_*` settings) and your domain config (`APP_URL`, `SANCTUM_STATEFUL_DOMAINS`, `SESSION_DOMAIN`). Remember about [3rd party APIs](#-third-party-apis) for which keys are required.
-8. `php artisan webpush:vapid`
-9. `php artisan migrate --seed`
+7. `php artisan webpush:vapid`
+8. `php artisan migrate --seed`
     - You can specify an amount of seeds. Available seeders:
 
     `LanguagesTableSeeder::class`
@@ -65,7 +65,7 @@ Live demo: [Flash-Cards.tk](https://flash-cards.tk/)
 
     ![DecksTableSeeder](https://aleksandertabor.pl/wp-content/uploads/2020/04/deck-seeder.png)
 
-10. `php artisan storage:link` then `cd public || mv storage img`
+9. `php artisan storage:link` then `cd public || mv storage img`
 
      Why? [Custom URL in Laravel Storage - Tutorial](https://medium.com/@aleksander.tabor/custom-url-in-laravel-storage-8392a32ac955)
 
@@ -74,7 +74,14 @@ Live demo: [Flash-Cards.tk](https://flash-cards.tk/)
 
         > `http://localhost:8000/img/example-image.jpg`
 
-11. `chmod -R 777 pdf` then `mv pdf storage/app/public`
+10. `chmod -R 777 pdf` then `mv pdf storage/app/public`
+11. Build frontend with `npm run production` for production.
+
+> ⚠️ Caution: Remember about giving proper permissions to the project directory e.g.:
+```bash
+sudo chgrp -R www-data /var/www/YOURPROJECTNAME
+sudo chmod -R 775 /var/www/YOURPROJECTNAME/storage
+```
 
 ## ℹ️ Helpers
 
