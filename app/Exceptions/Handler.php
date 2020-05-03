@@ -8,7 +8,6 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Route;
 use Throwable;
-use Nuwave\Lighthouse\Exceptions\AuthenticationException;
 
 class Handler extends ExceptionHandler
 {

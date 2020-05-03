@@ -100,7 +100,7 @@ class Deck extends Model implements HasMedia
 
     public function shouldBeSearchable()
     {
-        return $this->visibility == key(self::PUBLIC_VISIBILITY);
+        return $this->visibility === key(self::PUBLIC_VISIBILITY);
     }
 
     public function toSearchableArray()

@@ -19,8 +19,6 @@ class ProfileQuery
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        $user = User::whereUsername($args['username'])->firstOrFail();
-
-        return $user;
+        return User::whereUsername($args['username'])->firstOrFail();
     }
 }

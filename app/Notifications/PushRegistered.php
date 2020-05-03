@@ -34,13 +34,13 @@ class PushRegistered extends Notification
 
     public function toWebPush($notifiable, $notification)
     {
-        return (new WebPushMessage)
-        ->title('Thank you!')
-        ->icon('/images/icons/icon-96x96.png')
-        ->body('We will inform you about new decks.')
-        ->action('See all decks', 'explore')
-        ->action('Not now', 'close')
-        ->badge('/images/icons/icon-96x96.png')
-        ->data(['action_url' => 'search']);
+        return (new WebPushMessage())
+            ->title('Thank you!')
+            ->icon('/images/icons/icon-96x96.png')
+            ->body('We will inform you about new decks.')
+            ->action('See all decks', 'explore')
+            ->action('Not now', 'close')
+            ->badge('/images/icons/icon-96x96.png')
+            ->data(['action_url' => 'search']);
     }
 }

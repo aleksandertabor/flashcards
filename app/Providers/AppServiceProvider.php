@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         if (file_exists(base_path(env('GOOGLE_API_CREDENTIALS')))) {
-            $this->app->singleton(GoogleTranslationApi::class, function ($app) {
+            $this->app->singleton(GoogleTranslationApi::class, function () {
                 return new GoogleTranslationApi(
                     new TranslateClient([
                         'keyFilePath' => base_path(env('GOOGLE_API_CREDENTIALS')),
@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         if (env('TWINWORD_API_KEY') && env('TWINWORD_API_ENDPOINT')) {
-            $this->app->singleton(TwinwordApi::class, function ($app) {
+            $this->app->singleton(TwinwordApi::class, function () {
                 return new TwinwordApi(
                     new Client([
                         'base_uri' => env('TWINWORD_API_ENDPOINT'),
@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         if (env('WIKIPEDIA_API_ENDPOINT')) {
-            $this->app->singleton(WikipediaApi::class, function ($app) {
+            $this->app->singleton(WikipediaApi::class, function () {
                 return new WikipediaApi(
                     new Client([
                         'base_uri' => env('WIKIPEDIA_API_ENDPOINT'),

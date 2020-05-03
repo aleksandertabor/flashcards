@@ -1,4 +1,5 @@
 <?php
+
 namespace App\GraphQL;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -32,7 +33,7 @@ class WithCountLoader extends BatchLoader
      *
      * The result has to be a map: [key => result]
      */
-    public function resolve(): array
+    public function resolve() : array
     {
         $parents = collect(Arr::pluck($this->keys, 'parent'));
 

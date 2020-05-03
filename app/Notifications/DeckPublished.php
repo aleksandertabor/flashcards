@@ -36,17 +36,17 @@ class DeckPublished extends Notification
 
     public function toWebPush($notifiable, $notification)
     {
-        return (new WebPushMessage)
-        ->title('🃏 New Deck was published!')
-        ->dir('ltr')
-        ->lang('en-GB')
-        ->icon('/images/icons/icon-96x96.png')
-        ->image($this->deck->getFirstMediaUrl('main'))
-        ->body("User {$this->deck->user->username} has published deck - {$this->deck->title}")
-        ->action('🃏 View deck', 'explore')
-        ->action('⌚ Maybe later', 'close')
-        ->requireInteraction(true)
-        ->badge('/images/icons/icon-96x96.png')
-        ->data(['action_url' => 'deck/'.$this->deck->slug]);
+        return (new WebPushMessage())
+            ->title('🃏 New Deck was published!')
+            ->dir('ltr')
+            ->lang('en-GB')
+            ->icon('/images/icons/icon-96x96.png')
+            ->image($this->deck->getFirstMediaUrl('main'))
+            ->body("User {$this->deck->user->username} has published deck - {$this->deck->title}")
+            ->action('🃏 View deck', 'explore')
+            ->action('⌚ Maybe later', 'close')
+            ->requireInteraction(true)
+            ->badge('/images/icons/icon-96x96.png')
+            ->data(['action_url' => 'deck/'.$this->deck->slug]);
     }
 }

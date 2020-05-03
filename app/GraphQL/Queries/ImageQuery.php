@@ -30,8 +30,6 @@ class ImageQuery
             throw new ValidationException($validator);
         }
 
-        $image = ImageFacade::random($args['phrase'], $args['source']);
-
-        return $image;
+        return ImageFacade::random($args['phrase'], $args['source']);
     }
 }

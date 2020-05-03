@@ -19,10 +19,10 @@ class PushNotificationController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-              'endpoint'    => 'required',
-              'keys.auth'   => 'required',
-              'keys.p256dh' => 'required',
-          ]);
+            'endpoint' => 'required',
+            'keys.auth' => 'required',
+            'keys.p256dh' => 'required',
+        ]);
 
         $endpoint = $request->endpoint;
         $token = $request->keys['auth'];
@@ -42,7 +42,7 @@ class PushNotificationController extends Controller
         $notificationUser->updatePushSubscription($endpoint, $key, $token);
 
         if ($completelyNew) {
-            Notification::send($notificationUser, new PushRegistered);
+            Notification::send($notificationUser, new PushRegistered());
         }
 
         return response()->json(['success' => true], 200);
@@ -55,7 +55,7 @@ class PushNotificationController extends Controller
      */
     public function push()
     {
-        Notification::send(NotificationUser::all(), new PushRegistered);
+        Notification::send(NotificationUser::all(), new PushRegistered());
 
         return response()->json(['success' => true], 200);
     }

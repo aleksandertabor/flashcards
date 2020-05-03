@@ -1,10 +1,17 @@
 {
-    "name": "laravel/laravel",
+    "name": "aleksandertabor/flashcards",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "Create your decks and add flashcards.",
     "keywords": [
-        "framework",
-        "laravel"
+        "flashcards",
+        "laravel",
+        "vue",
+        "vuetify",
+        "vuetify",
+        "pwa",
+        "spa",
+        "workbox",
+        "graphql"
     ],
     "license": "MIT",
     "require": {
@@ -34,7 +41,7 @@
         "fzaninotto/faker": "^1.4",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^4.1",
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^9.0"
     },
     "config": {
         "optimize-autoloader": true,
