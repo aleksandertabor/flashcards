@@ -1,15 +1,15 @@
-<a href="https://flash-cards.tk/">
+<a href="https://flashcards.alexprojects.pl/">
     <img src="https://aleksandertabor.pl/wp-content/uploads/2020/04/icon-128x128-1.png" alt="Flashcards logo" title="Flashcards" align="right" height="100" />
 </a>
 
 🗃️ Flashcards
 ======================
 
-> [Flashcards](https://flash-cards.tk/) - create your decks and add flashcards.
+> [Flashcards](https://flashcards.alexprojects.pl/) - create your decks and add flashcards.
 
 ## 🖥️ Demo
 
-Live demo: [Flash-Cards.tk](https://flash-cards.tk/)
+Live demo: [flashcards.alexprojects.pl](https://flashcards.alexprojects.pl/)
 
 ![flashcards](https://aleksandertabor.pl/wp-content/uploads/2020/04/mainflashcards.gif)
 
