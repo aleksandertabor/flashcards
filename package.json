@@ -14,7 +14,7 @@
         "@babel/plugin-syntax-dynamic-import": "^7.8.3",
         "@babel/preset-env": "^7.9.5",
         "@mdi/font": "^5.1.45",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "browser-sync": "^2.26.7",
         "browser-sync-webpack-plugin": "^2.0.1",
         "cross-env": "^7.0",
